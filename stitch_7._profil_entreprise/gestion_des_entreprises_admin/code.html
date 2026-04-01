@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>StageLink Burkina - Admin Companies Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-variant": "#e0e3e5",
+              "surface-container-highest": "#e0e3e5",
+              "on-surface": "#191c1e",
+              "surface": "#f7f9fb",
+              "outline-variant": "#c4c5d5",
+              "on-tertiary-container": "#acbec9",
+              "on-error": "#ffffff",
+              "tertiary-container": "#3d4d57",
+              "tertiary": "#263640",
+              "on-background": "#191c1e",
+              "primary": "#00288e",
+              "primary-fixed": "#dde1ff",
+              "on-primary-fixed": "#001453",
+              "inverse-primary": "#b8c4ff",
+              "surface-dim": "#d8dadc",
+              "outline": "#757684",
+              "on-surface-variant": "#444653",
+              "error": "#ba1a1a",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-fixed": "#0c1e26",
+              "background": "#f7f9fb",
+              "on-primary-fixed-variant": "#173bab",
+              "tertiary-fixed": "#d3e5f1",
+              "on-error-container": "#93000a",
+              "tertiary-fixed-dim": "#b7c9d5",
+              "surface-container": "#eceef0",
+              "secondary": "#0058be",
+              "on-secondary-fixed": "#001a42",
+              "on-secondary-container": "#fefcff",
+              "on-tertiary": "#ffffff",
+              "inverse-on-surface": "#eff1f3",
+              "secondary-fixed-dim": "#adc6ff",
+              "primary-container": "#1e40af",
+              "surface-tint": "#3755c3",
+              "on-primary-container": "#a8b8ff",
+              "error-container": "#ffdad6",
+              "surface-container-low": "#f2f4f6",
+              "on-tertiary-fixed-variant": "#384953",
+              "surface-bright": "#f7f9fb",
+              "on-secondary-fixed-variant": "#004395",
+              "surface-container-high": "#e6e8ea",
+              "primary-fixed-dim": "#b8c4ff",
+              "on-secondary": "#ffffff",
+              "on-primary": "#ffffff",
+              "secondary-container": "#2170e4",
+              "inverse-surface": "#2d3133",
+              "secondary-fixed": "#d8e2ff"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        display: inline-block;
+        line-height: 1;
+        text-transform: none;
+        letter-spacing: normal;
+        word-wrap: normal;
+        white-space: nowrap;
+        direction: ltr;
+      }
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f7f9fb;
+      }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full flex flex-col h-screen w-64 bg-slate-50 dark:bg-slate-900 border-r-0 z-50">
+<div class="px-6 py-8">
+<h1 class="text-xl font-bold text-blue-900 dark:text-blue-100 tracking-tight">StageLink Burkina</h1>
+<p class="text-[10px] uppercase tracking-widest font-semibold text-slate-400 mt-1">Admin Console</p>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 hover:text-blue-700 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-xs font-medium uppercase tracking-wide">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 hover:text-blue-700 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="text-xs font-medium uppercase tracking-wide">Users</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-blue-800 dark:text-blue-300 font-bold bg-blue-50 dark:bg-blue-900/20 rounded-r-full transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="business" style="font-variation-settings: 'FILL' 1;">business</span>
+<span class="text-xs font-medium uppercase tracking-wide">Companies</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 hover:text-blue-700 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="work">work</span>
+<span class="text-xs font-medium uppercase tracking-wide">Opportunities</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 hover:text-blue-700 transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="text-xs font-medium uppercase tracking-wide">Reports</span>
+</a>
+</nav>
+<div class="px-4 pb-8 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-blue-50/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-xs font-medium uppercase tracking-wide">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-blue-50/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="text-xs font-medium uppercase tracking-wide">Support</span>
+</a>
+</div>
+</aside>
+<!-- TopNavBar Shell -->
+<header class="fixed top-0 right-0 left-0 ml-64 h-16 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md flex justify-between items-center px-8 z-40 border-b border-slate-100/50 dark:border-slate-800/50 shadow-sm shadow-slate-200/50">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg group-focus-within:text-primary transition-colors" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400" placeholder="Search companies, sectors, or locations..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-slate-500 hover:text-blue-600 transition-opacity">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-slate-500 hover:text-blue-600 transition-opacity">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+<span class="text-xs font-semibold text-slate-600">Admin User</span>
+<img alt="Admin User Avatar" class="w-8 h-8 rounded-full object-cover" data-alt="professional portrait of a middle-aged male administrator with a confident expression in a clean studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPRCXX5GcqmDXU49E3VNbAB5Whw4AEKOn1HcyOmIc-oXMcULUFFNR3bbbvh4cKjAQEt1Cy7GGpAC0_gCtA7Q5vqyDoj9lXxfzTtBxBl6JWybIWbTCgX9Nrk-st9tAcYIv6J6L9TC1VoA2092YzfO5NAi0Ghbmt5WCHoB4wEC5O6pCb1aDFsokx8pniFcQj27RAD-VQuCCBsWAzTlElVLRvcIkY34kMsmzyprMYPNwO2wJPrOwmDmZdXAIYXbJi3TcMIAMluR50WuNw"/>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="ml-64 pt-24 px-10 pb-12">
+<!-- Header Section -->
+<div class="flex justify-between items-end mb-10">
+<div>
+<span class="text-[10px] font-bold text-primary uppercase tracking-[0.2em] mb-2 block">Management Dashboard</span>
+<h2 class="text-4xl font-bold tracking-tight text-on-surface">Company Directory</h2>
+<p class="text-slate-500 mt-2 text-lg">Manage professional partnerships and verification across Burkina Faso.</p>
+</div>
+</div>
+<!-- Filter Bar -->
+<div class="bg-surface-container-low rounded-2xl p-4 mb-8 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<button class="bg-surface-container-lowest text-primary px-4 py-2 rounded-xl text-sm font-semibold shadow-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
+                    All Sectors
+                </button>
+<button class="text-slate-500 px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/50 transition-colors">
+                    Verified Only
+                </button>
+<button class="text-slate-500 px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/50 transition-colors">
+                    Pending Review
+                </button>
+</div>
+<div class="text-xs font-semibold text-slate-400 uppercase tracking-widest px-4">
+                Total: 142 Companies
+            </div>
+</div>
+<!-- Companies Table Content -->
+<div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-2xl shadow-slate-200/50">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50/50">
+<th class="px-8 py-6 text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400 border-b border-slate-100">Company Name</th>
+<th class="px-8 py-6 text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400 border-b border-slate-100">Sector</th>
+<th class="px-8 py-6 text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400 border-b border-slate-100">Location</th>
+<th class="px-8 py-6 text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400 border-b border-slate-100 text-center">Total Offers</th>
+<th class="px-8 py-6 text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400 border-b border-slate-100">Status</th>
+<th class="px-8 py-6 text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400 border-b border-slate-100"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100/50">
+<!-- Row 1 -->
+<tr class="hover:bg-slate-50/50 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-primary font-bold text-lg">BT</div>
+<div>
+<div class="font-bold text-slate-900">Burkina Technologies</div>
+<div class="text-xs text-slate-400">partner since 2022</div>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-semibold">Digital Solutions</span>
+</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-2 text-slate-600">
+<span class="material-symbols-outlined text-lg text-slate-300" data-icon="location_on">location_on</span>
+<span class="text-sm font-medium">Ouagadougou</span>
+</div>
+</td>
+<td class="px-8 py-6 text-center">
+<span class="text-sm font-bold text-slate-900">24</span>
+</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-2 text-blue-700">
+<span class="material-symbols-outlined text-lg" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="text-xs font-bold uppercase">Verified</span>
+</div>
+</td>
+<td class="px-8 py-6 text-right">
+<button class="opacity-0 group-hover:opacity-100 transition-opacity text-slate-400 hover:text-primary">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-slate-50/50 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<img alt="Horizon S.A. Logo" class="w-12 h-12 rounded-xl object-cover" data-alt="modern corporate building reflection in glass facade with blue sky background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAefM6UDKF6v2TaHt9UD5VI7dDWFNKC9YQzx3m0YQ3mv4JTIV8e2-yQ_HBhwfdvvQXj4HCWt5lgbbUKL5x0mz0vTaGPUFtxQRaRfLqc6W7Vk4gFR3v3SPYo-ArWByhKI2xUKhiF9EtmecCnfPZ5bd1JXKFj-4I1C7bB7W_Izmu-J_NDKgCdNTw91IxqXBr8tAHvvcd4qFuu2hnz7yfKtNJ05R1100fw8y9IjvfEgXL3AzXEORaFPcvhddWEOn40ZSZW9HNfnGBwHxU6"/>
+<div>
+<div class="font-bold text-slate-900">Horizon S.A.</div>
+<div class="text-xs text-slate-400">partner since 2023</div>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-semibold">Banking &amp; Finance</span>
+</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-2 text-slate-600">
+<span class="material-symbols-outlined text-lg text-slate-300" data-icon="location_on">location_on</span>
+<span class="text-sm font-medium">Bobo-Dioulasso</span>
+</div>
+</td>
+<td class="px-8 py-6 text-center">
+<span class="text-sm font-bold text-slate-900">12</span>
+</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-2 text-slate-400">
+<span class="material-symbols-outlined text-lg" data-icon="pending">pending</span>
+<span class="text-xs font-bold uppercase">Pending</span>
+</div>
+</td>
+<td class="px-8 py-6 text-right">
+<button class="bg-blue-50 text-primary text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-primary hover:text-white">
+                                Review
+                            </button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-slate-50/50 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 font-bold text-lg">AG</div>
+<div>
+<div class="font-bold text-slate-900">AgriGrowth Faso</div>
+<div class="text-xs text-slate-400">partner since 2024</div>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-semibold">Agriculture</span>
+</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-2 text-slate-600">
+<span class="material-symbols-outlined text-lg text-slate-300" data-icon="location_on">location_on</span>
+<span class="text-sm font-medium">Koudougou</span>
+</div>
+</td>
+<td class="px-8 py-6 text-center">
+<span class="text-sm font-bold text-slate-900">8</span>
+</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-2 text-blue-700">
+<span class="material-symbols-outlined text-lg" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="text-xs font-bold uppercase">Verified</span>
+</div>
+</td>
+<td class="px-8 py-6 text-right">
+<button class="opacity-0 group-hover:opacity-100 transition-opacity text-slate-400 hover:text-primary">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-slate-50/50 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-primary font-bold text-lg">EN</div>
+<div>
+<div class="font-bold text-slate-900">Energie Sahel</div>
+<div class="text-xs text-slate-400">partner since 2021</div>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-xs font-semibold">Renewables</span>
+</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-2 text-slate-600">
+<span class="material-symbols-outlined text-lg text-slate-300" data-icon="location_on">location_on</span>
+<span class="text-sm font-medium">Ouagadougou</span>
+</div>
+</td>
+<td class="px-8 py-6 text-center">
+<span class="text-sm font-bold text-slate-900">31</span>
+</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-2 text-blue-700">
+<span class="material-symbols-outlined text-lg" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="text-xs font-bold uppercase">Verified</span>
+</div>
+</td>
+<td class="px-8 py-6 text-right">
+<button class="opacity-0 group-hover:opacity-100 transition-opacity text-slate-400 hover:text-primary">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Pagination -->
+<div class="px-8 py-6 flex items-center justify-between bg-slate-50/30">
+<div class="text-sm text-slate-500 font-medium">
+                    Showing <span class="text-slate-900">1</span> to <span class="text-slate-900">10</span> of <span class="text-slate-900">142</span> companies
+                </div>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-white transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center font-bold text-sm">1</button>
+<button class="w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center text-slate-600 font-medium hover:bg-white transition-colors">2</button>
+<button class="w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center text-slate-600 font-medium hover:bg-white transition-colors">3</button>
+<button class="w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-white transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Verification Insights (Bento Style) -->
+<div class="grid grid-cols-12 gap-6 mt-12">
+<div class="col-span-8 bg-primary rounded-2xl p-8 text-white relative overflow-hidden">
+<div class="relative z-10">
+<h3 class="text-2xl font-bold mb-2">Growth Milestone</h3>
+<p class="text-blue-200 max-w-md mb-6">You've successfully verified 12 companies this month. Your verification speed has increased by 15% compared to last quarter.</p>
+<button class="bg-white text-primary px-6 py-3 rounded-xl font-bold text-sm">View Verification Trends</button>
+</div>
+<span class="material-symbols-outlined absolute -right-8 -bottom-8 text-[12rem] text-white/10" data-icon="verified_user">verified_user</span>
+</div>
+<div class="col-span-4 bg-surface-container-highest rounded-2xl p-8 flex flex-col justify-center text-center">
+<div class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-2">Average Verification Time</div>
+<div class="text-5xl font-bold text-primary mb-2">2.4 Days</div>
+<div class="text-xs text-slate-400 font-medium flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-sm text-secondary" data-icon="trending_down">trending_down</span>
+                    12% faster than last month
+                </div>
+</div>
+</div>
+</main>
+</body></html>

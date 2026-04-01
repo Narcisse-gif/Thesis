@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Créer une Offre - StageLink Burkina</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-background": "#191c1e",
+              "on-surface": "#191c1e",
+              "inverse-surface": "#2d3133",
+              "surface-tint": "#3755c3",
+              "surface-variant": "#e0e3e5",
+              "inverse-primary": "#b8c4ff",
+              "on-secondary-fixed-variant": "#004395",
+              "tertiary-container": "#3d4d57",
+              "on-tertiary-fixed": "#0c1e26",
+              "surface": "#f7f9fb",
+              "on-error-container": "#93000a",
+              "surface-container-low": "#f2f4f6",
+              "secondary-fixed": "#d8e2ff",
+              "surface-container-high": "#e6e8ea",
+              "surface-container": "#eceef0",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary": "#ffffff",
+              "inverse-on-surface": "#eff1f3",
+              "primary-fixed": "#dde1ff",
+              "primary": "#00288e",
+              "outline": "#757684",
+              "on-surface-variant": "#444653",
+              "surface-bright": "#f7f9fb",
+              "primary-container": "#1e40af",
+              "tertiary-fixed": "#d3e5f1",
+              "surface-dim": "#d8dadc",
+              "surface-container-highest": "#e0e3e5",
+              "on-primary-fixed-variant": "#173bab",
+              "primary-fixed-dim": "#b8c4ff",
+              "tertiary-fixed-dim": "#b7c9d5",
+              "secondary-fixed-dim": "#adc6ff",
+              "error-container": "#ffdad6",
+              "error": "#ba1a1a",
+              "outline-variant": "#c4c5d5",
+              "on-tertiary-fixed-variant": "#384953",
+              "on-tertiary-container": "#acbec9",
+              "on-primary-fixed": "#001453",
+              "on-secondary-container": "#fefcff",
+              "on-secondary": "#ffffff",
+              "on-primary": "#ffffff",
+              "on-secondary-fixed": "#001a42",
+              "secondary-container": "#2170e4",
+              "secondary": "#0058be",
+              "background": "#f7f9fb",
+              "tertiary": "#263640",
+              "on-primary-container": "#a8b8ff",
+              "on-error": "#ffffff"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        .glass-header {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+<!-- SideNavBar (Authority: JSON & Design System) -->
+<aside class="h-screen w-64 fixed left-0 top-0 z-50 bg-slate-50 dark:bg-slate-950 flex flex-col py-8 px-4">
+<div class="mb-10 px-4">
+<h1 class="text-lg font-bold text-blue-900 dark:text-blue-100">Recruteur Portal</h1>
+<p class="text-xs text-slate-500 font-medium">Burkina Tech Solutions</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-sm font-semibold">Tableau de bord</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-white dark:bg-slate-900 text-blue-800 dark:text-blue-200 rounded-xl shadow-sm transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="work">work</span>
+<span class="text-sm font-semibold">Mes Offres</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="text-sm font-semibold">Candidatures</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="domain">domain</span>
+<span class="text-sm font-semibold">Entreprise</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-100 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-sm font-semibold">Paramètres</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-slate-200/50 pt-4">
+<button class="flex items-center gap-3 px-4 py-3 w-full text-slate-500 hover:bg-slate-100 rounded-xl transition-all">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="text-sm font-semibold">Déconnexion</span>
+</button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen">
+<!-- Header (Glassmorphism) -->
+<header class="glass-header sticky top-0 z-40 h-16 flex items-center justify-between px-10 border-b border-slate-100/50">
+<div class="flex items-center gap-4">
+<span class="text-primary font-bold tracking-tight text-xl">StageLink Burkina</span>
+<span class="h-4 w-px bg-slate-200"></span>
+<h2 class="text-slate-600 font-medium">Nouvelle Offre d'Emploi</h2>
+</div>
+<div class="flex items-center gap-6">
+<span class="material-symbols-outlined text-slate-400 cursor-pointer" data-icon="notifications">notifications</span>
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-white text-xs font-bold">BT</div>
+</div>
+</header>
+<!-- Form Body -->
+<div class="p-10 max-w-5xl mx-auto">
+<!-- Stepper Navigation (Asymmetric Layout) -->
+<div class="flex items-center gap-8 mb-12 overflow-x-auto pb-4 scrollbar-hide">
+<div class="flex items-center gap-3 flex-shrink-0">
+<div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold shadow-lg shadow-primary/20">1</div>
+<div>
+<p class="text-[10px] uppercase tracking-widest text-primary font-bold">Étape 1</p>
+<p class="text-sm font-semibold text-on-surface">Détails du poste</p>
+</div>
+</div>
+<div class="h-px w-12 bg-slate-200"></div>
+<div class="flex items-center gap-3 opacity-40 flex-shrink-0">
+<div class="w-10 h-10 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-bold">2</div>
+<div>
+<p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Étape 2</p>
+<p class="text-sm font-semibold text-slate-500">Description</p>
+</div>
+</div>
+<div class="h-px w-12 bg-slate-200"></div>
+<div class="flex items-center gap-3 opacity-40 flex-shrink-0">
+<div class="w-10 h-10 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-bold">3</div>
+<div>
+<p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Étape 3</p>
+<p class="text-sm font-semibold text-slate-500">Compétences</p>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+<!-- Main Form Section -->
+<div class="lg:col-span-2 space-y-8">
+<div class="bg-surface-container-lowest p-8 rounded-2xl shadow-sm border border-transparent">
+<h3 class="text-xl font-bold text-on-surface mb-6">Informations de base</h3>
+<div class="grid grid-cols-1 gap-6">
+<!-- Job Title -->
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-wider text-slate-500 px-1">Titre de l'offre</label>
+<input class="w-full px-5 py-4 bg-surface-container-low border-none rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400" placeholder="Ex: Développeur Fullstack Senior" type="text"/>
+</div>
+<!-- Contract Type (Grid Select) -->
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-wider text-slate-500 px-1">Type de contrat</label>
+<div class="grid grid-cols-3 gap-3">
+<button class="py-3 px-4 rounded-xl border-2 border-primary bg-primary/5 text-primary font-semibold text-sm transition-all">CDI</button>
+<button class="py-3 px-4 rounded-xl border-2 border-transparent bg-surface-container-low text-slate-500 font-semibold text-sm hover:bg-slate-200 transition-all">CDD</button>
+<button class="py-3 px-4 rounded-xl border-2 border-transparent bg-surface-container-low text-slate-500 font-semibold text-sm hover:bg-slate-200 transition-all">Stage</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Salary -->
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-wider text-slate-500 px-1">Salaire (FCFA / mois)</label>
+<div class="relative">
+<input class="w-full pl-5 pr-16 py-4 bg-surface-container-low border-none rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all" placeholder="450 000" type="number"/>
+<span class="absolute right-5 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-sm">FCFA</span>
+</div>
+</div>
+<!-- Location -->
+<div class="space-y-2">
+<label class="text-xs font-bold uppercase tracking-wider text-slate-500 px-1">Localisation</label>
+<div class="relative">
+<input class="w-full pl-12 pr-5 py-4 bg-surface-container-low border-none rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Ouagadougou" type="text"/>
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" data-icon="location_on">location_on</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center justify-between pt-4">
+<button class="px-8 py-3 text-slate-500 font-semibold hover:text-primary transition-colors">Annuler</button>
+<button class="px-10 py-4 bg-primary text-white rounded-2xl font-bold shadow-lg shadow-primary/25 hover:bg-secondary transition-all active:scale-95 flex items-center gap-2">
+                            Continuer
+                            <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Info Sidebar (Bento Style) -->
+<div class="space-y-6">
+<div class="bg-primary-container rounded-2xl p-6 text-white relative overflow-hidden group">
+<div class="relative z-10">
+<span class="material-symbols-outlined text-white/50 mb-4 scale-150 block" data-icon="lightbulb">lightbulb</span>
+<h4 class="text-lg font-bold mb-2">Conseil Recruteur</h4>
+<p class="text-sm text-white/80 leading-relaxed">Les offres mentionnant une fourchette salariale reçoivent en moyenne 40% de candidatures qualifiées supplémentaires.</p>
+</div>
+<!-- Background Texture -->
+<div class="absolute -right-8 -bottom-8 opacity-10 group-hover:scale-110 transition-transform duration-700">
+<span class="material-symbols-outlined text-[120px]" data-icon="contract">contract</span>
+</div>
+</div>
+<div class="bg-surface-container-high rounded-2xl p-6">
+<h4 class="text-sm font-bold text-on-surface mb-4">Aperçu rapide</h4>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<span class="text-xs text-slate-500">Visibilité</span>
+<span class="px-2 py-1 bg-white rounded-md text-[10px] font-bold text-primary">BOOSTÉ</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-xs text-slate-500">Portée estimée</span>
+<span class="text-xs font-bold text-on-surface">2.4k Talents</span>
+</div>
+</div>
+</div>
+<div class="aspect-square rounded-2xl overflow-hidden relative">
+<img alt="Modern Office Background" class="w-full h-full object-cover" data-alt="modern architectural building in Burkina Faso with clean geometric lines and bright clear sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCw3ff90r3n356Rm7NXmnQPdq5PnJjW6t0OYl0lk0TY9PdhZVpc13UvLKF0nWIljYQjYEL2HxkLc7dL9S-TUnt0A-cu1pE2ITksUIAFf_MrcvoYC5c1Jk0PRdKUKOMyZ3-siniZjYEcNPojcSaEIOgYdZO8mFHdpHIi_bDCbiqiZJFLV--Ji7i3OzUWRGDswjCUOzldlAgfaEkL_rw1mMev-rzZiq6kejg2rVDLk1aG08qFjLYl7fvesi5VGjKKeNX7lMgk5RROHRB7"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex items-end p-6">
+<p class="text-white text-xs font-medium">Rejoignez l'écosystème tech leader au Burkina.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Map Component Placeholder (for location context) -->
+<div class="hidden" data-location="Ouagadougou" style=""></div>
+</body></html>

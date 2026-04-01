@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>StageLink - Créer un compte entreprise</title>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- BEGIN: Custom Configuration -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'stagelink-blue': '#1E40AF',
+            'stagelink-dark': '#111827',
+            'stagelink-gray': '#F3F4F6'
+          }
+        }
+      }
+    }
+  </script>
+<!-- END: Custom Configuration -->
+<!-- BEGIN: Custom Typography Styles -->
+<style data-purpose="typography">
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+<!-- END: Custom Typography Styles -->
+<!-- BEGIN: Layout Styles -->
+<style data-purpose="layout">
+    .split-screen {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      height: 100vh;
+    }
+    @media (max-width: 1024px) {
+      .split-screen {
+        grid-template-columns: 1fr;
+      }
+      .visual-side {
+        display: none;
+      }
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 10px;
+    }
+  </style>
+<!-- END: Layout Styles -->
+</head>
+<body class="bg-white text-gray-900 antialiased overflow-hidden">
+<!-- BEGIN: Registration Page Container -->
+<main class="split-screen" data-purpose="registration-page">
+<!-- BEGIN: Left Visual Side -->
+<section class="visual-side relative bg-stagelink-blue flex flex-col justify-center p-16 overflow-hidden">
+<!-- Background Image Overlay -->
+<div class="absolute inset-0 z-0">
+<img alt="Entrepreneur africain professionnel dans un bureau moderne" class="w-full h-full object-cover opacity-30 mix-blend-multiply" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_P3NMxUs_Y8s0oUjPLKonneUgvInOrn0emgc_Ch95HWykcegaaVsS2qrKN_KyuBqjUXMkkzznWFGFfNOt_Aw5Iq9BBpK1e18dwuiW-yfwAWIWe1_OT1APkgIch_060l01LTAdA4CZLNPSgTBUn4WK-PqNtE24E9htP3E1EUOZN5zAWOGtMOL3vcGirC54nVgC50okpLojKVrb7zs00k1e0uSITAmBK20BK7ESkSV7Yx7eTeuDLr2MbwIOvj1qr9_E6ehjRn6HvZfr"/>
+</div>
+<!-- Content Overlay -->
+<div class="relative z-10 max-w-xl">
+<h1 class="text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-8">
+        Développez votre impact au Burkina Faso.
+      </h1>
+<p class="text-xl text-blue-100 leading-relaxed">
+        Rejoignez le réseau StageLink et connectez-vous avec les meilleurs talents émergents pour propulser votre entreprise vers de nouveaux sommets.
+      </p>
+</div>
+<!-- Branding / Decorative Element -->
+<div class="absolute bottom-12 left-16 z-10">
+<div class="h-1 w-24 bg-white opacity-50"></div>
+</div>
+</section>
+<!-- END: Left Visual Side -->
+<!-- BEGIN: Right Form Side -->
+<section class="form-side flex flex-col bg-white overflow-y-auto custom-scrollbar">
+<div class="max-w-xl w-full mx-auto px-8 md:px-12 py-10">
+<!-- Header Section -->
+<header class="mb-8 text-left">
+<h2 class="text-3xl font-bold text-stagelink-blue mb-2">Créer un compte entreprise</h2>
+<p class="text-gray-500">Veuillez renseigner vos informations pour vous inscrire.</p>
+</header>
+<!-- BEGIN: Registration Form -->
+<form action="#" class="space-y-6" data-purpose="enterprise-registration-form" enctype="multipart/form-data" method="POST">
+<!-- Informations Générales Section -->
+<div>
+<h3 class="text-xs font-bold uppercase tracking-widest mb-4 border-b pb-2 text-stagelink-blue">Informations Générales</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4">
+<div class="col-span-1 md:col-span-2">
+<label class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" for="company_name">Nom de l'entreprise</label>
+<input class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-stagelink-blue focus:border-stagelink-blue transition-colors text-sm" id="company_name" name="company_name" placeholder="Ex: Faso Tech Solutions" required="" type="text"/>
+</div>
+<div class="col-span-1">
+<label class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" for="email">Email Professionnel</label>
+<input class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-stagelink-blue focus:border-stagelink-blue transition-colors text-sm" id="email" name="email" placeholder="contact@entreprise.bf" required="" type="email"/>
+</div>
+<div class="col-span-1">
+<label class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" for="phone">Téléphone</label>
+<input class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-stagelink-blue focus:border-stagelink-blue transition-colors text-sm" id="phone" name="phone" placeholder="+226 XX XX XX XX" required="" type="tel"/>
+</div>
+<div class="col-span-1 md:col-span-2">
+<label class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" for="logo">Logo de l'entreprise</label>
+<input accept="image/*" class="w-full px-3 py-1.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-stagelink-blue focus:border-stagelink-blue transition-colors text-sm file:mr-4 file:py-1 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-stagelink-blue hover:file:bg-blue-100" id="logo" name="logo" type="file"/>
+</div>
+</div>
+</div>
+<!-- Informations de Localisation Section -->
+<div>
+<h3 class="text-xs font-bold uppercase tracking-widest mb-4 border-b pb-2 text-stagelink-blue">Informations de localisation</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4">
+<div class="col-span-1 md:col-span-2">
+<label class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" for="address">Adresse</label>
+<input class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-stagelink-blue focus:border-stagelink-blue transition-colors text-sm" id="address" name="address" placeholder="Rue ou Avenue, Secteur..." required="" type="text"/>
+</div>
+<div class="col-span-1">
+<label class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" for="city">Ville</label>
+<select class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-stagelink-blue focus:border-stagelink-blue transition-colors appearance-none bg-white text-sm" id="city" name="city" required="">
+<option disabled="" selected="" value="">Sélectionner</option>
+<option value="ouagadougou">Ouagadougou</option>
+<option value="bobo">Bobo-Dioulasso</option>
+<option value="koudougou">Koudougou</option>
+<option value="banfora">Banfora</option>
+<option value="ouahigouya">Ouahigouya</option>
+</select>
+</div>
+<div class="col-span-1">
+<label class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" for="postal_code">Code Postal</label>
+<input class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-stagelink-blue focus:border-stagelink-blue transition-colors text-sm" id="postal_code" name="postal_code" placeholder="BP / Code" type="text"/>
+</div>
+</div>
+</div>
+<!-- Activité & Sécurité Section -->
+<div>
+<h3 class="text-xs font-bold uppercase tracking-widest mb-4 border-b pb-2 text-stagelink-blue">Activité &amp; Sécurité</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4">
+<div class="col-span-1 md:col-span-2">
+<label class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" for="sector">Secteur d'activité</label>
+<select class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-stagelink-blue focus:border-stagelink-blue transition-colors appearance-none bg-white text-sm" id="sector" name="sector" required="">
+<option disabled="" selected="" value="">Sélectionner</option>
+<option value="it">Informatique / Technologie</option>
+<option value="finance">Banque / Finance</option>
+<option value="agro">Agro-industrie</option>
+<option value="com">Communication / Marketing</option>
+<option value="other">Autre</option>
+</select>
+</div>
+<div class="col-span-1">
+<label class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" for="password">Mot de passe</label>
+<input class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-stagelink-blue focus:border-stagelink-blue transition-colors text-sm" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+</div>
+<div class="col-span-1">
+<label class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" for="password_confirmation">Confirmer le mot de passe</label>
+<input class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-stagelink-blue focus:border-stagelink-blue transition-colors text-sm" id="password_confirmation" name="password_confirmation" placeholder="••••••••" required="" type="password"/>
+</div>
+<div class="col-span-1 md:col-span-2">
+<label class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" for="description">Description de l'entreprise</label>
+<textarea class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-stagelink-blue focus:border-stagelink-blue transition-colors text-sm" id="description" name="description" placeholder="Parlez-nous brièvement de votre activité..." rows="2"></textarea>
+</div>
+</div>
+</div>
+<!-- Submit Button -->
+<div class="pt-4">
+<button class="w-full bg-stagelink-blue hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-lg flex items-center justify-center space-x-2 shadow-lg transition-transform active:scale-95" type="submit">
+<span class="text-sm">Créer mon compte entreprise</span>
+<svg class="h-4 w-4" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</form>
+<!-- END: Registration Form -->
+<!-- Legal Notice -->
+<p class="mt-6 text-center text-[10px] text-gray-400 leading-relaxed">
+        En cliquant sur s'inscrire, vous acceptez nos <a class="text-stagelink-blue underline font-medium" href="#">Conditions d'Utilisation</a> et notre <a class="text-stagelink-blue underline font-medium" href="#">Politique de Confidentialité</a>.
+      </p>
+<!-- Login Link -->
+<div class="mt-8 pt-6 border-t border-gray-100 text-center">
+<p class="text-sm text-gray-600">
+          Déjà inscrit ? <a class="text-stagelink-blue font-bold hover:underline ml-1" href="#">Connectez-vous</a>
+</p>
+</div>
+</div>
+</section>
+<!-- END: Right Form Side -->
+</main>
+<!-- END: Registration Page Container -->
+</body></html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Entreprises - StageLink Burkina</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1E40AF",
+                        "accent-blue": "#E0F2FE",
+                        "background-light": "#f8fafc",
+                        "background-dark": "#0f172a",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .card-hover-effect {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover-effect:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        .hero-overlay {
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.5));
+        }
+        .dark .hero-overlay {
+            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.6));
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+<div class="relative flex min-h-screen flex-col overflow-x-hidden">
+<!-- Header Officiel -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 px-6 py-4 lg:px-20 bg-white dark:bg-background-dark sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<div class="h-10 w-auto">
+<img alt="StageLink Burkina Logo" class="h-full w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ADBb0uhk1_44ehfequI-KVECb_HSKPj9VGwk11P4wC4IhUkivJxbd3aT5dbemMLtV-SMaJ9YuGzTIQKl_NXj8fjMsmhmfZU79b-VKHUEuwMNbgSheP4V1uicIj4RjsUzt4BBLwc9EFMLCS7XW4pal7SL3nsyapUTSzALQKZWToqjwPVNtewvfJ04E4jDCuAYFtT3eSn5HCLmkZ1MGIgpWSZx1zt7dx4I5YDcu-wXNzliNTrMuKg4AnRn9ofp4wIdTuS2EuJR7UJ3DOooeM0"/>
+</div>
+<h2 class="text-black dark:text-white text-lg font-bold leading-tight tracking-tight">StageLink <span class="text-primary">Burkina</span></h2>
+</div>
+<div class="hidden md:flex flex-1 justify-center gap-8">
+<a class="text-slate-700 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" href="#">Accueil</a>
+<div class="group relative">
+<button class="flex items-center gap-1 text-slate-700 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors">
+                Offres
+                <span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+<div class="absolute left-0 top-full hidden w-48 pt-2 group-hover:block z-50">
+<div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg dark:border-slate-800 dark:bg-slate-900">
+<a class="block px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 hover:text-primary dark:text-slate-300 dark:hover:bg-slate-800 transition-colors" href="#">Offres de stage</a>
+<a class="block px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 hover:text-primary dark:text-slate-300 dark:hover:bg-slate-800 transition-colors" href="#">Offres d'emplois</a>
+</div>
+</div>
+</div>
+<a class="text-slate-700 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" href="#">Entreprises</a>
+<a class="text-slate-700 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" href="#">Conseils</a>
+</div>
+<div class="flex gap-3">
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center rounded-full h-10 px-6 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-sm font-bold hover:bg-slate-100 transition-all">
+<span>Connexion</span>
+</button>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center rounded-full h-10 px-6 bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-all">
+<span>S'inscrire</span>
+</button>
+</div>
+</header>
+<!-- Hero Section & Search -->
+<section class="relative py-20 md:py-32 px-4 overflow-hidden border-b border-slate-100 dark:border-slate-800">
+<!-- Background Image with Lighter Overlay -->
+<div class="absolute inset-0 z-0">
+<img alt="Modern Office" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvhrBD3oXh0ZJqllgyZwqOUIWrZWhQshV13xRs3pUG6_MyJU3C1p4horGQjhriH_o08GGu2BSaNG79hkcw1Pc4rmySWJ1YJExU7WXqiL7Z0A4GwkrAdrWyH-d8JD01lJsJgJCRcu8TTKBSei5mvRKnqht1UBqvFuiCeQhHICDQCE8m60p3u4CfMH5GWrpVlurC1Pw_zI7k9GIJoBQVuoe-nH4RlMYAYyVgv5QKijylPlH-st3RRRUmhqeqbBqhDizdPV3-BdZpMCpR"/>
+<div class="absolute inset-0 hero-overlay"></div>
+</div>
+<div class="relative z-10 max-w-4xl mx-auto text-center">
+<h2 class="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white mb-6 tracking-tight leading-tight">
+                    Propulsez votre carrière au <span class="text-primary">Burkina Faso</span>
+</h2>
+<p class="text-lg md:text-xl text-slate-800 dark:text-slate-300 mb-10 max-w-2xl mx-auto font-semibold drop-shadow-sm">
+                    Explorez les profils des entreprises leaders et trouvez l'environnement de travail qui vous correspond.
+                </p>
+<div class="flex w-full max-w-2xl mx-auto items-stretch rounded-2xl h-14 md:h-16 shadow-2xl shadow-primary/20 border border-slate-200 dark:border-slate-700 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm overflow-hidden p-1.5 transition-all focus-within:ring-2 focus-within:ring-primary/20">
+<div class="text-slate-400 flex items-center justify-center pl-4 pr-2">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="flex-1 border-none focus:ring-0 bg-transparent text-slate-900 dark:text-white px-2 text-base placeholder:text-slate-500" placeholder="Rechercher une entreprise, un secteur..." value=""/>
+<button class="bg-primary text-white font-bold px-8 md:px-12 rounded-xl hover:bg-blue-800 transition-colors">
+                        Rechercher
+                    </button>
+</div>
+</div>
+</section>
+<!-- Grid of Companies -->
+<main class="container mx-auto px-4 lg:px-10 py-20">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+<div class="flex flex-col gap-1">
+<h3 class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Entreprises vedettes</h3>
+<p class="text-slate-500 text-sm">Découvrez les recruteurs les plus actifs actuellement au Burkina</p>
+</div>
+<button class="flex items-center gap-2 px-5 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all font-semibold text-sm">
+<span class="material-symbols-outlined text-xl">tune</span>
+<span>Filtrer les résultats</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+<!-- Orange Burkina -->
+<div class="group card-hover-effect bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/60 dark:border-slate-800 p-6 flex flex-col h-full">
+<div class="flex items-start justify-between mb-5">
+<div class="w-16 h-16 rounded-2xl bg-white border border-slate-100 p-2 shadow-sm flex items-center justify-center overflow-hidden">
+<img alt="Orange Logo" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJKor9ORuxhR7IzBg-VdgDPoNioJgUf-jKbLcvy7N94E5kQ-yT3TV2ZdPUCI2G7FWe2G9P7aF9ntH4o1UPD_SA9aVWje60W55dfifglldpdfvRo5RlGot5Eq2BFufFlLYZf9yG7zQFxmhqRqhzckeZrsYELMkyuU7CZPGlwHdR7EOmLmsEQTCewTgAncs1RpeLtpEFuTerGQYIxd6J_E3X7TY-EvRGC22ASAyLC0SdoQbO1BHWXFhfgPP60z3T80ArFbzviVg11ISj"/>
+</div>
+<span class="px-3 py-1 bg-accent-blue text-primary text-[10px] font-bold rounded-full uppercase tracking-widest border border-blue-100">Télécoms</span>
+</div>
+<div class="flex-1">
+<h4 class="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-primary transition-colors">Orange Burkina</h4>
+<div class="flex items-center gap-1.5 text-slate-500 text-sm mb-4">
+<span class="material-symbols-outlined text-base">location_on</span>
+<span>Ouagadougou, Zone Commerciale</span>
+</div>
+<div class="flex items-center gap-2 text-primary bg-primary/5 px-3 py-2 rounded-lg inline-flex mb-6">
+<span class="material-symbols-outlined text-base">work</span>
+<span class="font-bold text-xs">12 offres disponibles</span>
+</div>
+</div>
+<button class="w-full py-3 bg-slate-50 dark:bg-slate-800 group-hover:bg-primary text-slate-700 dark:text-slate-300 group-hover:text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
+                        Voir le profil
+                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<!-- Coris Bank -->
+<div class="group card-hover-effect bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/60 dark:border-slate-800 p-6 flex flex-col h-full">
+<div class="flex items-start justify-between mb-5">
+<div class="w-16 h-16 rounded-2xl bg-white border border-slate-100 p-2 shadow-sm flex items-center justify-center overflow-hidden">
+<img alt="Coris Logo" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfnuUxD8aOQRZaNLk8JPCQ4tK2Z5td8Dw1cF8s0CKChxbLhh18ZyWPnsu35QoHMKs3RwcTawBTnxPeGnattpsZPG665kZ6r3Wg6BlImcq6gRXJHWAHvT-ebzV-bIQM2t-01BOZimGinVm8K0my4i5QTFAlUYNstdi9Q6O_4cnszQhOtF8O__qfdmUvY5LPafrRQZmrL4ORfzE2GdQuOsd1RJVy6RMatVdiFWquzgKbXR2BOUQKIRWD1sHtdgqHYg69kbog1ow0zSy4"/>
+</div>
+<span class="px-3 py-1 bg-accent-blue text-primary text-[10px] font-bold rounded-full uppercase tracking-widest border border-blue-100">Finance</span>
+</div>
+<div class="flex-1">
+<h4 class="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-primary transition-colors">Coris Bank International</h4>
+<div class="flex items-center gap-1.5 text-slate-500 text-sm mb-4">
+<span class="material-symbols-outlined text-base">location_on</span>
+<span>Ouagadougou, Koulouba</span>
+</div>
+<div class="flex items-center gap-2 text-primary bg-primary/5 px-3 py-2 rounded-lg inline-flex mb-6">
+<span class="material-symbols-outlined text-base">work</span>
+<span class="font-bold text-xs">8 offres disponibles</span>
+</div>
+</div>
+<button class="w-full py-3 bg-slate-50 dark:bg-slate-800 group-hover:bg-primary text-slate-700 dark:text-slate-300 group-hover:text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
+                        Voir le profil
+                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<!-- Moov Africa -->
+<div class="group card-hover-effect bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/60 dark:border-slate-800 p-6 flex flex-col h-full">
+<div class="flex items-start justify-between mb-5">
+<div class="w-16 h-16 rounded-2xl bg-white border border-slate-100 p-2 shadow-sm flex items-center justify-center overflow-hidden">
+<img alt="Moov Logo" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaXoVjnfA2l_Ji2ZANi2VLqt1ahgbeR0xz6TTmJ2sUhuEJP5bFofq7RCobYwWauTsAdugiXu-yy9algT6J7cjrWS57lXsskrbWAuUTUyw44cTDgyHKrFcQh_HWOiDiJj32BcKXFj6ymtuhdNIhcK0q0cp0Rwvmg_gAPo-KH-Ldp1lmrKHW-PMG70zl75AM6O3z6P9tUMG9hDm4DzrrpzUUl1Gcz41RpJ1XIZbX7tADYSIkmbsxIxu7hJiqYM9lD1i7_T50NKlWVRlt"/>
+</div>
+<span class="px-3 py-1 bg-accent-blue text-primary text-[10px] font-bold rounded-full uppercase tracking-widest border border-blue-100">Télécoms</span>
+</div>
+<div class="flex-1">
+<h4 class="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-primary transition-colors">Moov Africa</h4>
+<div class="flex items-center gap-1.5 text-slate-500 text-sm mb-4">
+<span class="material-symbols-outlined text-base">location_on</span>
+<span>Bobo-Dioulasso, Centre-ville</span>
+</div>
+<div class="flex items-center gap-2 text-primary bg-primary/5 px-3 py-2 rounded-lg inline-flex mb-6">
+<span class="material-symbols-outlined text-base">work</span>
+<span class="font-bold text-xs">5 offres disponibles</span>
+</div>
+</div>
+<button class="w-full py-3 bg-slate-50 dark:bg-slate-800 group-hover:bg-primary text-slate-700 dark:text-slate-300 group-hover:text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
+                        Voir le profil
+                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<!-- SONABEL -->
+<div class="group card-hover-effect bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/60 dark:border-slate-800 p-6 flex flex-col h-full">
+<div class="flex items-start justify-between mb-5">
+<div class="w-16 h-16 rounded-2xl bg-white border border-slate-100 p-2 shadow-sm flex items-center justify-center overflow-hidden">
+<img alt="SONABEL Logo" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfzKCID61waAPrnBUUKgGd5WFlHd5hoAhOCI60bMEIT7vZdw9BOH0OCVfaVEvxB7FRVCfK12XEqFknEIsbY8_JgUJpnCR_U_W4TYzAobMwiuJzVtAAqJAovfJP5_ZWeUkZzqXnM6AlQDgGuIdTgk2cRU5GwKXUTBkiXIKMa6ZegOLyCoN71YNcrSllvw4r1b-rpujs2fRUIs3ZpGvcfCn5jbbTHIzGGgVGyXNuNMSqJ1o8MAD0jJiY0ubm18lcPTXtzcipZ0kyDgDK"/>
+</div>
+<span class="px-3 py-1 bg-accent-blue text-primary text-[10px] font-bold rounded-full uppercase tracking-widest border border-blue-100">Énergie</span>
+</div>
+<div class="flex-1">
+<h4 class="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-primary transition-colors">SONABEL</h4>
+<div class="flex items-center gap-1.5 text-slate-500 text-sm mb-4">
+<span class="material-symbols-outlined text-base">location_on</span>
+<span>Ouagadougou, Gounghin</span>
+</div>
+<div class="flex items-center gap-2 text-primary bg-primary/5 px-3 py-2 rounded-lg inline-flex mb-6">
+<span class="material-symbols-outlined text-base">work</span>
+<span class="font-bold text-xs">3 offres disponibles</span>
+</div>
+</div>
+<button class="w-full py-3 bg-slate-50 dark:bg-slate-800 group-hover:bg-primary text-slate-700 dark:text-slate-300 group-hover:text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
+                        Voir le profil
+                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<!-- Onatel -->
+<div class="group card-hover-effect bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/60 dark:border-slate-800 p-6 flex flex-col h-full">
+<div class="flex items-start justify-between mb-5">
+<div class="w-16 h-16 rounded-2xl bg-white border border-slate-100 p-2 shadow-sm flex items-center justify-center overflow-hidden">
+<img alt="Onatel Logo" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSGhJvVov3xBxzVSmkBcpUAadW281Zz71gQNv4ZPEmGquUqyDpD91ufewlgdsR6yVjI-dIdS4yPcbHl9Mqi37WV3HOWlo5i1yj--AjPYlk2z8qy4a986PtKmbhh4z3bFPDd_Xlza3N3-t-oqismx4rkKud7X5kgSpm6AhxobBvj8Jj0Zz1igiZKDdJUuBBij7WxwZf-5KMNN1EeE8iTAGYH_8jaKk_bzASFDH6K9QwmCrJ1lbMf3YCFBwz9UzjBMKQNwrDxSMPMNgh"/>
+</div>
+<span class="px-3 py-1 bg-accent-blue text-primary text-[10px] font-bold rounded-full uppercase tracking-widest border border-blue-100">Télécoms</span>
+</div>
+<div class="flex-1">
+<h4 class="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-primary transition-colors">Onatel</h4>
+<div class="flex items-center gap-1.5 text-slate-500 text-sm mb-4">
+<span class="material-symbols-outlined text-base">location_on</span>
+<span>Ouagadougou, Zone Industrielle</span>
+</div>
+<div class="flex items-center gap-2 text-primary bg-primary/5 px-3 py-2 rounded-lg inline-flex mb-6">
+<span class="material-symbols-outlined text-base">work</span>
+<span class="font-bold text-xs">7 offres disponibles</span>
+</div>
+</div>
+<button class="w-full py-3 bg-slate-50 dark:bg-slate-800 group-hover:bg-primary text-slate-700 dark:text-slate-300 group-hover:text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
+                        Voir le profil
+                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<!-- Wendkuni Bank -->
+<div class="group card-hover-effect bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/60 dark:border-slate-800 p-6 flex flex-col h-full">
+<div class="flex items-start justify-between mb-5">
+<div class="w-16 h-16 rounded-2xl bg-white border border-slate-100 p-2 shadow-sm flex items-center justify-center overflow-hidden">
+<img alt="Wendkuni Bank" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1obPPxFnv40b3Nr8CniaFDgjTXhnvrmptg6iVA5TaoA_012Vh7NekgyRpYt2SAMfuK_rmZZglfqqLb73DKy0u7mqH8X2FRXTQ4qBZhF_GmPWF49rb6QzmKanHWPh-H_Hrm7c571WHdU0rpzElVy1NobrjzDPckRFaggSQnM4OEzvaI37AgYmTmrvzfhKMbPfkJ6hbaknU95xkqf1zhGary_eTpNdk8p9wKMIYXWXw2_XJpfPA-uSVYqOnLhempMhnmRUXIiCA05fv"/>
+</div>
+<span class="px-3 py-1 bg-accent-blue text-primary text-[10px] font-bold rounded-full uppercase tracking-widest border border-blue-100">Finance</span>
+</div>
+<div class="flex-1">
+<h4 class="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-primary transition-colors">Wendkuni Bank</h4>
+<div class="flex items-center gap-1.5 text-slate-500 text-sm mb-4">
+<span class="material-symbols-outlined text-base">location_on</span>
+<span>Ouagadougou, Projet ZACA</span>
+</div>
+<div class="flex items-center gap-2 text-primary bg-primary/5 px-3 py-2 rounded-lg inline-flex mb-6">
+<span class="material-symbols-outlined text-base">work</span>
+<span class="font-bold text-xs">4 offres disponibles</span>
+</div>
+</div>
+<button class="w-full py-3 bg-slate-50 dark:bg-slate-800 group-hover:bg-primary text-slate-700 dark:text-slate-300 group-hover:text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
+                        Voir le profil
+                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Pagination/Load more -->
+<div class="mt-20 flex justify-center">
+<button class="px-10 py-4 border-2 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 transition-all text-sm flex items-center gap-3">
+<span class="material-symbols-outlined text-xl">sync</span>
+                    Charger plus d'entreprises
+                </button>
+</div>
+</main>
+<!-- Footer Bleu Officiel -->
+<footer class="bg-primary text-white pt-20 pb-10">
+<div class="container mx-auto px-4 lg:px-20">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16 pb-12 border-b border-white/10">
+<div class="col-span-1 md:col-span-1">
+<div class="flex items-center gap-3 mb-8">
+<div class="bg-white p-2 rounded-lg">
+<img alt="StageLink Burkina Logo" class="h-10 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ADBb0uhk1_44ehfequI-KVECb_HSKPj9VGwk11P4wC4IhUkivJxbd3aT5dbemMLtV-SMaJ9YuGzTIQKl_NXj8fjMsmhmfZU79b-VKHUEuwMNbgSheP4V1uicIj4RjsUzt4BBLwc9EFMLCS7XW4pal7SL3nsyapUTSzALQKZWToqjwPVNtewvfJ04E4jDCuAYFtT3eSn5HCLmkZ1MGIgpWSZx1zt7dx4I5YDcu-wXNzliNTrMuKg4AnRn9ofp4wIdTuS2EuJR7UJ3DOooeM0"/>
+</div>
+<span class="text-xl font-bold tracking-tight">StageLink Burkina</span>
+</div>
+<p class="text-blue-100/80 text-sm leading-relaxed max-w-xs">
+                            La première plateforme de mise en relation entre étudiants et entreprises au Burkina Faso. Ensemble pour l'excellence professionnelle.
+                        </p>
+</div>
+<div>
+<h5 class="font-bold text-sm uppercase tracking-wider mb-8 opacity-90">Plateforme</h5>
+<ul class="space-y-4 text-blue-100/90 text-sm">
+<li><a class="hover:text-white transition-colors" href="#">Parcourir les offres</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Liste des entreprises</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Comment ça marche</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Tarifs entreprises</a></li>
+</ul>
+</div>
+<div>
+<h5 class="font-bold text-sm uppercase tracking-wider mb-8 opacity-90">Ressources</h5>
+<ul class="space-y-4 text-blue-100/90 text-sm">
+<li><a class="hover:text-white transition-colors" href="#">Modèles de CV</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Conseils d'entretien</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Blog Carrière</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Success Stories</a></li>
+</ul>
+</div>
+<div>
+<h5 class="font-bold text-sm uppercase tracking-wider mb-8 opacity-90">Contact</h5>
+<ul class="space-y-5 text-blue-100/90 text-sm">
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-xl opacity-70">mail</span>
+<span>contact@stagelink.bf</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-xl opacity-70">call</span>
+<span>+226 25 30 00 00</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-xl opacity-70">location_on</span>
+<span>Ouagadougou, Burkina Faso</span>
+</li>
+</ul>
+</div>
+</div>
+<div class="flex flex-col md:flex-row justify-between items-center gap-6 text-blue-100/60 text-xs">
+<p>© 2024 StageLink Burkina. Tous droits réservés.</p>
+<div class="flex gap-8">
+<a class="hover:text-white transition-colors" href="#">Mentions Légales</a>
+<a class="hover:text-white transition-colors" href="#">Confidentialité</a>
+<a class="hover:text-white transition-colors" href="#">CGU</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+</body></html>

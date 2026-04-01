@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gestion des Offres - StageLink Burkina</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-error": "#ffffff",
+              "tertiary": "#263640",
+              "surface-container-highest": "#e0e3e5",
+              "secondary-fixed": "#d8e2ff",
+              "on-tertiary-container": "#acbec9",
+              "on-background": "#191c1e",
+              "on-tertiary-fixed-variant": "#384953",
+              "tertiary-container": "#3d4d57",
+              "on-secondary": "#ffffff",
+              "surface-container": "#eceef0",
+              "on-surface-variant": "#444653",
+              "on-surface": "#191c1e",
+              "inverse-on-surface": "#eff1f3",
+              "tertiary-fixed": "#d3e5f1",
+              "secondary-fixed-dim": "#adc6ff",
+              "on-primary-container": "#a8b8ff",
+              "background": "#f7f9fb",
+              "surface-tint": "#3755c3",
+              "on-secondary-fixed": "#001a42",
+              "surface": "#f7f9fb",
+              "on-secondary-fixed-variant": "#004395",
+              "primary": "#00288e",
+              "on-primary": "#ffffff",
+              "primary-fixed-dim": "#b8c4ff",
+              "on-primary-fixed-variant": "#173bab",
+              "error": "#ba1a1a",
+              "on-error-container": "#93000a",
+              "surface-container-low": "#f2f4f6",
+              "inverse-primary": "#b8c4ff",
+              "on-secondary-container": "#fefcff",
+              "outline": "#757684",
+              "inverse-surface": "#2d3133",
+              "surface-dim": "#d8dadc",
+              "tertiary-fixed-dim": "#b7c9d5",
+              "outline-variant": "#c4c5d5",
+              "on-tertiary": "#ffffff",
+              "surface-variant": "#e0e3e5",
+              "surface-container-high": "#e6e8ea",
+              "on-tertiary-fixed": "#0c1e26",
+              "error-container": "#ffdad6",
+              "surface-container-lowest": "#ffffff",
+              "secondary-container": "#2170e4",
+              "secondary": "#0058be",
+              "on-primary-fixed": "#001453",
+              "surface-bright": "#f7f9fb",
+              "primary-container": "#1e40af",
+              "primary-fixed": "#dde1ff"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- SideNavBar (Authority: JSON) -->
+<aside class="flex flex-col h-full py-6 px-4 bg-slate-50 dark:bg-slate-900 h-screen w-64 fixed left-0 top-0 border-r-0 z-50">
+<div class="flex items-center gap-3 px-2 mb-10">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" data-icon="school">school</span>
+</div>
+<div>
+<h1 class="text-xl font-bold text-blue-900 dark:text-blue-100 leading-none">StageLink</h1>
+<p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mt-1">Burkina Faso</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors duration-200 text-slate-500 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-100 dark:hover:bg-slate-800 font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Tableau de bord
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors duration-200 text-blue-700 dark:text-blue-300 font-semibold border-r-4 border-blue-700 dark:border-blue-400 bg-blue-50/50 dark:bg-blue-900/20 font-inter text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="work">work</span>
+                Offres
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors duration-200 text-slate-500 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-100 dark:hover:bg-slate-800 font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+                Candidatures
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors duration-200 text-slate-500 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-100 dark:hover:bg-slate-800 font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="mail">mail</span>
+                Messages
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors duration-200 text-slate-500 dark:text-slate-400 hover:text-blue-600 hover:bg-slate-100 dark:hover:bg-slate-800 font-inter text-sm font-medium" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Paramètres
+            </a>
+</nav>
+<div class="mt-auto px-2">
+<button class="w-full bg-primary-container text-white py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:bg-secondary transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                Nouvelle Offre
+            </button>
+</div>
+</aside>
+<!-- TopNavBar (Authority: JSON) -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md flex items-center justify-between px-8 z-40 border-b border-slate-100 dark:border-slate-800 shadow-sm dark:shadow-none">
+<div class="flex items-center bg-surface-container-low rounded-full px-4 py-1.5 w-96">
+<span class="material-symbols-outlined text-slate-400 text-xl" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-slate-400" placeholder="Rechercher une offre..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<button class="relative text-slate-600 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+</button>
+<button class="text-slate-600 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+<div class="text-right">
+<p class="text-sm font-semibold text-on-surface">Digital Burkina</p>
+<p class="text-[10px] text-slate-500 uppercase tracking-tighter">Recruteur Premium</p>
+</div>
+<img alt="Photo de profil recruteur" class="w-10 h-10 rounded-full object-cover border-2 border-primary/10" data-alt="portrait of a professional West African businessman in a light blue shirt smiling confidently in a modern office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBp3hP9vnBhVT0w7a4xI3NVOImVnCLUT7n6x2Oun5O1CbszujKxPW0Cm2R1RJQsq_gWwl6njE8p7yZ1w2ft2v7UuPtzPx_uPZuox-JBmBeXIDhcxVfW06exgh7SunFJ42cvFlmkrNT5gpGD-631ieKuqTADfbsUh4NCe6NUBT9jG4b8K1QHZVOZ8wv06LkjKxmQUVX-VJuvLhKzmnFZ2ZGDcdtTzuKlFagpfgLOQFS2YWxl_0W7wtf_KNoQ3TkG83AgPtJ2H97rUn10"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-24 px-8 pb-12 min-h-screen">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+<div>
+<span class="text-primary font-semibold text-xs tracking-widest uppercase mb-2 block">Recrutement</span>
+<h2 class="text-4xl font-bold tracking-tight text-on-surface">Gestion des Offres</h2>
+<p class="text-slate-500 mt-2 font-medium">Visualisez et gérez vos opportunités de carrière actuelles.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="bg-surface-container-lowest text-on-surface px-6 py-3 rounded-2xl font-medium flex items-center gap-2 hover:bg-surface-container transition-colors shadow-sm">
+<span class="material-symbols-outlined text-xl" data-icon="file_download">file_download</span>
+                    Exporter
+                </button>
+<button class="bg-primary text-on-primary px-8 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-secondary transition-all shadow-xl shadow-primary/20">
+<span class="material-symbols-outlined text-xl" data-icon="post_add">post_add</span>
+                    Poster une nouvelle offre
+                </button>
+</div>
+</div>
+<!-- Filters & Stats Bento -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+<div class="col-span-1 md:col-span-3 bg-surface-container-low rounded-2xl p-6 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="flex flex-col gap-1">
+<label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Statut</label>
+<select class="bg-surface-container-lowest border-none rounded-xl text-sm font-semibold focus:ring-2 focus:ring-primary/20 min-w-[160px] cursor-pointer">
+<option>Tous les statuts</option>
+<option>Active</option>
+<option>Fermée</option>
+<option>Brouillon</option>
+</select>
+</div>
+<div class="flex flex-col gap-1">
+<label class="text-[10px] font-bold text-slate-400 uppercase ml-1">Type d'offre</label>
+<select class="bg-surface-container-lowest border-none rounded-xl text-sm font-semibold focus:ring-2 focus:ring-primary/20 min-w-[160px] cursor-pointer">
+<option>Tous les types</option>
+<option>Stage</option>
+<option>Emploi</option>
+</select>
+</div>
+</div>
+<div class="h-10 w-px bg-slate-200 mx-4"></div>
+<div class="flex-1 flex items-center gap-8 justify-end">
+<div class="text-right">
+<p class="text-2xl font-bold text-primary">24</p>
+<p class="text-[10px] font-bold text-slate-400 uppercase">Offres actives</p>
+</div>
+<div class="text-right">
+<p class="text-2xl font-bold text-secondary">158</p>
+<p class="text-[10px] font-bold text-slate-400 uppercase">Candidats totaux</p>
+</div>
+</div>
+</div>
+<div class="bg-primary-container rounded-2xl p-6 text-on-primary flex flex-col justify-between relative overflow-hidden group">
+<div class="relative z-10">
+<p class="text-[10px] font-bold opacity-70 uppercase tracking-widest">Performance</p>
+<h3 class="text-lg font-bold mt-1">+12% ce mois</h3>
+</div>
+<div class="mt-4 relative z-10">
+<span class="text-xs opacity-90">Taux de conversion élevé sur vos offres de stage.</span>
+</div>
+<span class="material-symbols-outlined absolute -bottom-4 -right-4 text-8xl opacity-10 group-hover:scale-110 transition-transform" data-icon="trending_up">trending_up</span>
+</div>
+</div>
+<!-- Table Section - The "No-Line" Table -->
+<div class="bg-surface-container-lowest rounded-3xl shadow-sm overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low/50">
+<th class="px-8 py-5 text-[11px] font-extrabold text-slate-500 uppercase tracking-widest">Titre de l'offre</th>
+<th class="px-6 py-5 text-[11px] font-extrabold text-slate-500 uppercase tracking-widest text-center">Type</th>
+<th class="px-6 py-5 text-[11px] font-extrabold text-slate-500 uppercase tracking-widest">Publication</th>
+<th class="px-6 py-5 text-[11px] font-extrabold text-slate-500 uppercase tracking-widest text-center">Candidats</th>
+<th class="px-6 py-5 text-[11px] font-extrabold text-slate-500 uppercase tracking-widest">Statut</th>
+<th class="px-8 py-5 text-[11px] font-extrabold text-slate-500 uppercase tracking-widest text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-transparent">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-8 py-6">
+<div>
+<p class="font-bold text-on-surface text-base group-hover:text-primary transition-colors">Développeur Fullstack React/Node</p>
+<p class="text-xs text-slate-400 font-medium">ID: SL-2024-081</p>
+</div>
+</td>
+<td class="px-6 py-6 text-center">
+<span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Emploi</span>
+</td>
+<td class="px-6 py-6">
+<p class="text-sm font-medium text-slate-600">12 Oct 2023</p>
+</td>
+<td class="px-6 py-6 text-center">
+<div class="inline-flex -space-x-2">
+<img alt="Candidat" class="w-7 h-7 rounded-full border-2 border-white object-cover" data-alt="portrait of a young African woman with professional attire and a warm smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXDluFT0F_zHWiMkDXtx6Gw_uaCJqLnGzaSqg3R7yeBIU-gX9XGa5OSj7EM3UjTTol-20Nz73lAJJxxxTwApzA1DTc-RpvkPcTdPe-ybg6yd7s9MT7T4RrInieJqX5n5OCIVw38OMDXEggplADHwfZbRq85yurkX9ILXOoNrHSjbdqxWQGmfFs2pZUsK1wSO6pvBX6-CUjHshj5qQA-CAgg3kOfU0H4QdY_UMBEpQlE-eya-8DH6gbq3LZS-8ZjBHOS8xd3-GhQG--"/>
+<img alt="Candidat" class="w-7 h-7 rounded-full border-2 border-white object-cover" data-alt="portrait of a young African man with short hair and modern glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC06hJpOQd2i3zlt1PAe_o3QSxnK7QWXK993jJC83HDthswq6NweMumnu30YJLY_aI4fbF5digDICoG_b99UDwFc3QdGs-utx2eCbeUXOSxRyWETOVO8Ybj8kfSJ2SGgwsFrwmd-vEhVX8UnqsE43j31PYaZhZRP3wWuiY96HREoV-ub0d_4oXH603uBZEM9NhtQxOulCw4pnVcrc-7eetc8lMfbmKf9iywE9YjODNLvhqFl6Yn68bdCu1M98S_7OpdyrNeX7KnSv-G"/>
+<div class="w-7 h-7 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">+42</div>
+</div>
+</td>
+<td class="px-6 py-6">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-sm font-semibold text-secondary">Active</span>
+</div>
+</td>
+<td class="px-8 py-6 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-primary hover:bg-primary/5 transition-all" title="Voir les candidats">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</button>
+<button class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-primary hover:bg-primary/5 transition-all" title="Modifier">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-primary hover:bg-primary/5 transition-all" title="Plus d'options">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-8 py-6">
+<div>
+<p class="font-bold text-on-surface text-base group-hover:text-primary transition-colors">Stagiaire Assistant Marketing</p>
+<p class="text-xs text-slate-400 font-medium">ID: SL-2024-085</p>
+</div>
+</td>
+<td class="px-6 py-6 text-center">
+<span class="bg-slate-100 text-slate-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Stage</span>
+</td>
+<td class="px-6 py-6">
+<p class="text-sm font-medium text-slate-600">08 Oct 2023</p>
+</td>
+<td class="px-6 py-6 text-center">
+<div class="inline-flex -space-x-2">
+<img alt="Candidat" class="w-7 h-7 rounded-full border-2 border-white object-cover" data-alt="smiling young woman with braided hair wearing a professional white blazer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0F_PeYTTr0Y8AjZHMpuN7VetmMM_qTsmVRrTwGoICt0q4v_cIEdzDzCuPu1bGozEguYLyY30oSuKLQr4IG4itZkqgTI2UL1Ysp6kaooON2EHn6LC_L696XxpmrSTTNsXDoOWq22lmeCiBnW_QGVVoQe_y5U03fV219NXUv9xRJkpM7MwmBJMwpAt5KCUMxTJVGziC4scjNwBT_IZnaKTgm45Zukk0l1UeYUsI3-XGATZEayjo2lFjkQb7UnJVJBRjwc6d_Qbecoy-"/>
+<div class="w-7 h-7 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">+15</div>
+</div>
+</td>
+<td class="px-6 py-6">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-sm font-semibold text-secondary">Active</span>
+</div>
+</td>
+<td class="px-8 py-6 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-primary hover:bg-primary/5 transition-all">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</button>
+<button class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-primary hover:bg-primary/5 transition-all">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+<button class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-primary hover:bg-primary/5 transition-all">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 (Closed) -->
+<tr class="hover:bg-surface-container-low transition-colors group opacity-70">
+<td class="px-8 py-6">
+<div>
+<p class="font-bold text-on-surface text-base group-hover:text-primary transition-colors">Comptable Senior</p>
+<p class="text-xs text-slate-400 font-medium">ID: SL-2024-072</p>
+</div>
+</td>
+<td class="px-6 py-6 text-center">
+<span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Emploi</span>
+</td>
+<td class="px-6 py-6">
+<p class="text-sm font-medium text-slate-600">15 Sep 2023</p>
+</td>
+<td class="px-6 py-6 text-center">
+<div class="inline-flex -space-x-2">
+<div class="w-7 h-7 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">88</div>
+</div>
+</td>
+<td class="px-6 py-6">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-slate-400"></span>
+<span class="text-sm font-semibold text-slate-500">Fermée</span>
+</div>
+</td>
+<td class="px-8 py-6 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-primary hover:bg-primary/5 transition-all">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</button>
+<button class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-primary hover:bg-primary/5 transition-all">
+<span class="material-symbols-outlined" data-icon="restart_alt">restart_alt</span>
+</button>
+<button class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-primary hover:bg-primary/5 transition-all">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 (Draft) -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-8 py-6">
+<div>
+<p class="font-bold text-on-surface text-base group-hover:text-primary transition-colors">Expert Sécurité Cloud</p>
+<p class="text-xs text-slate-400 font-medium italic">En cours de rédaction...</p>
+</div>
+</td>
+<td class="px-6 py-6 text-center">
+<span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Emploi</span>
+</td>
+<td class="px-6 py-6">
+<p class="text-sm font-medium text-slate-400">--</p>
+</td>
+<td class="px-6 py-6 text-center">
+<span class="text-xs text-slate-300">N/A</span>
+</td>
+<td class="px-6 py-6">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary-container"></span>
+<span class="text-sm font-semibold text-tertiary-container">Brouillon</span>
+</div>
+</td>
+<td class="px-8 py-6 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="text-primary text-xs font-bold uppercase tracking-widest hover:underline px-4 py-2">Publier</button>
+<button class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-primary hover:bg-primary/5 transition-all">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-8 py-5 bg-surface-container-low/30 flex items-center justify-between border-t border-slate-50">
+<p class="text-xs font-medium text-slate-500">Affichage de 1 à 4 sur 12 offres</p>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:bg-white hover:shadow-sm transition-all disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined text-lg" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center bg-primary text-white font-bold text-xs">1</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 hover:bg-white hover:shadow-sm transition-all font-bold text-xs">2</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 hover:bg-white hover:shadow-sm transition-all font-bold text-xs">3</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:bg-white hover:shadow-sm transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Featured Insight Card -->
+<div class="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
+<div class="bg-gradient-to-br from-primary to-primary-container rounded-3xl p-8 text-on-primary flex items-center gap-8 shadow-2xl shadow-primary/30">
+<div class="w-24 h-24 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-4xl" data-icon="rocket_launch">rocket_launch</span>
+</div>
+<div>
+<h3 class="text-xl font-bold mb-2">Boostez votre visibilité</h3>
+<p class="text-sm opacity-80 leading-relaxed">Les entreprises qui publient au moins 3 offres par mois reçoivent 40% de candidatures qualifiées en plus.</p>
+<button class="mt-4 text-xs font-bold uppercase tracking-widest bg-white text-primary px-5 py-2.5 rounded-xl hover:bg-slate-50 transition-colors">En savoir plus</button>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-3xl p-8 flex items-center gap-6 shadow-sm border border-slate-100/50">
+<div class="flex-1">
+<h3 class="text-lg font-bold text-on-surface mb-1">Qualité des Candidats</h3>
+<div class="flex items-end gap-2 mb-4">
+<span class="text-3xl font-black text-primary">8.4</span>
+<span class="text-slate-400 text-sm font-medium mb-1">/ 10 score moyen</span>
+</div>
+<div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 84%"></div>
+</div>
+<p class="text-[10px] text-slate-500 font-bold uppercase mt-4 tracking-wider">Top Compétence : Développement Mobile</p>
+</div>
+<div class="w-32 h-32 relative">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 100 100">
+<circle class="text-slate-100" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-primary" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-dasharray="251.2" stroke-dashoffset="40" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center flex-col">
+<span class="text-xs font-black text-on-surface">Stage</span>
+<span class="text-[10px] text-slate-400">Majorité</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button (Prohibited by Contextual Rule - Suppressing for Details view, but showing here as it's a Dashboard) -->
+<!-- The prompt asked for 'Bouton principal Poster une nouvelle offre', handled in Header and Sidebar -->
+</body></html>

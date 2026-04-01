@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Profil Entreprise - StageLink Burkina</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-error": "#ffffff",
+              "tertiary": "#263640",
+              "surface-container-highest": "#e0e3e5",
+              "secondary-fixed": "#d8e2ff",
+              "on-tertiary-container": "#acbec9",
+              "on-background": "#191c1e",
+              "on-tertiary-fixed-variant": "#384953",
+              "tertiary-container": "#3d4d57",
+              "on-secondary": "#ffffff",
+              "surface-container": "#eceef0",
+              "on-surface-variant": "#444653",
+              "on-surface": "#191c1e",
+              "inverse-on-surface": "#eff1f3",
+              "tertiary-fixed": "#d3e5f1",
+              "secondary-fixed-dim": "#adc6ff",
+              "on-primary-container": "#a8b8ff",
+              "background": "#f7f9fb",
+              "surface-tint": "#3755c3",
+              "on-secondary-fixed": "#001a42",
+              "surface": "#f7f9fb",
+              "on-secondary-fixed-variant": "#004395",
+              "primary": "#00288e",
+              "on-primary": "#ffffff",
+              "primary-fixed-dim": "#b8c4ff",
+              "on-primary-fixed-variant": "#173bab",
+              "error": "#ba1a1a",
+              "on-error-container": "#93000a",
+              "surface-container-low": "#f2f4f6",
+              "inverse-primary": "#b8c4ff",
+              "on-secondary-container": "#fefcff",
+              "outline": "#757684",
+              "inverse-surface": "#2d3133",
+              "surface-dim": "#d8dadc",
+              "tertiary-fixed-dim": "#b7c9d5",
+              "outline-variant": "#c4c5d5",
+              "on-tertiary": "#ffffff",
+              "surface-variant": "#e0e3e5",
+              "surface-container-high": "#e6e8ea",
+              "on-tertiary-fixed": "#0c1e26",
+              "error-container": "#ffdad6",
+              "surface-container-lowest": "#ffffff",
+              "secondary-container": "#2170e4",
+              "secondary": "#0058be",
+              "on-primary-fixed": "#001453",
+              "surface-bright": "#f7f9fb",
+              "primary-container": "#1e40af",
+              "primary-fixed": "#dde1ff"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- SideNavBar (Shared Component) -->
+<aside class="flex flex-col h-full py-6 px-4 h-screen w-64 fixed left-0 top-0 border-r-0 bg-slate-50 dark:bg-slate-900 z-50">
+<div class="mb-10 px-2 flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined">account_balance</span>
+</div>
+<div>
+<h1 class="text-xl font-bold text-blue-900 dark:text-blue-100 leading-tight">StageLink</h1>
+<p class="text-xs font-medium text-slate-500 uppercase tracking-widest">Burkina Faso</p>
+</div>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors duration-200 text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 hover:bg-slate-100 dark:hover:bg-slate-800" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-inter text-sm font-medium">Tableau de bord</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors duration-200 text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 hover:bg-slate-100 dark:hover:bg-slate-800" href="#">
+<span class="material-symbols-outlined">work</span>
+<span class="font-inter text-sm font-medium">Offres</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors duration-200 text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 hover:bg-slate-100 dark:hover:bg-slate-800" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-inter text-sm font-medium">Candidatures</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors duration-200 text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 hover:bg-slate-100 dark:hover:bg-slate-800" href="#">
+<span class="material-symbols-outlined">mail</span>
+<span class="font-inter text-sm font-medium">Messages</span>
+</a>
+<!-- Active State: Paramètres (closest to Profile) -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-blue-700 dark:text-blue-300 font-semibold border-r-4 border-blue-700 dark:border-blue-400 bg-blue-50/50 dark:bg-blue-900/20" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-inter text-sm font-medium">Paramètres</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 px-2">
+<button class="w-full py-3 bg-primary text-white rounded-2xl font-semibold shadow-lg shadow-primary/20 flex items-center justify-center gap-2 hover:bg-secondary transition-all">
+<span class="material-symbols-outlined">add</span>
+<span>Nouvelle Offre</span>
+</button>
+</div>
+</aside>
+<!-- TopNavBar (Shared Component) -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 flex items-center justify-between px-8 z-40 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border-b border-slate-100 dark:border-slate-800">
+<div class="flex items-center bg-surface-container-low px-4 py-2 rounded-2xl w-96">
+<span class="material-symbols-outlined text-outline text-sm mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full outline-none" placeholder="Rechercher des candidats..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4 text-slate-600">
+<button class="p-2 hover:bg-slate-100 rounded-full transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 hover:bg-slate-100 rounded-full transition-all">
+<span class="material-symbols-outlined">help</span>
+</button>
+</div>
+<div class="flex items-center gap-3 pl-6 border-l border-slate-200">
+<div class="text-right">
+<p class="text-sm font-bold text-on-surface">Recruteur Pro</p>
+<p class="text-[10px] text-slate-500 uppercase font-bold tracking-tighter">Société Générale BF</p>
+</div>
+<img alt="Photo de profil recruteur" class="w-10 h-10 rounded-full object-cover" data-alt="professional portrait of a confident african businessman in a suit with soft natural lighting and office background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7wYCX4tx8Kd4x192iHc-GxZXVTMIJZCCd3QSdbKSc2yIwM1eLlCanUxMS-jkJXiY_WyZKpQixv1tgWoxPtK1pCUGxtzOm2li7rYWL5G6JARqVg5YRF5VxuV9LNjju4nVtd5SVXDv46ySqYNh11FSzxstuDEU_hjxr9ugypGrY3jwAPeEFunl0S8JG3hIrCi_kQdWTClS9hZF8CyTenA8n-FdPoRr9Q9XbT_nyUeorigEuFX9XvRvES2JgcCdIXa4ntUBr81odcIkx"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-16 min-h-screen">
+<div class="max-w-7xl mx-auto p-8">
+<!-- Hero / Banner Section -->
+<section class="relative mb-24">
+<div class="h-64 w-full rounded-2xl overflow-hidden relative">
+<div class="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent z-10"></div>
+<img alt="Bannière entreprise" class="w-full h-full object-cover" data-alt="modern glass office building interior with spacious architectural lines and professional lighting at dusk" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCg0FoJMTftX580Y2iGJEABmxVUl2D9qrmfPFXSW-tTMAo5tFL9-U5ovJg4TYP-mKqp3hN5JK9-NhWzw3qe7kpByrisLH6ylZO4U0Rk3Kxess_VOquxpylPMuCgV41ViKDSh9sKHzAD41J1CeKH4AWKvQDfV_yK4ZGpxruH1pyHYaeXSQ7PeYgGAiXTI3DmcuOKd2_ejz_utFJLH-_mLOULbIxlaxmvPg7TNIXPZHSZHdzf8ABkiO1uw2He4tlIljUeLaeXTTrvh0VV"/>
+</div>
+<!-- Profile Overlay -->
+<div class="absolute -bottom-16 left-12 flex items-end gap-8 z-20">
+<div class="w-40 h-40 rounded-2xl bg-white p-2 shadow-2xl overflow-hidden">
+<img alt="Logo Entreprise" class="w-full h-full object-cover rounded-xl" data-alt="minimalist corporate logo of a stylized building on a white background with modern blue accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBE1cCLlJlnclwFKJ64UIGsf0rS7EJMNmiom1QToCDTzHnIDE6Q8g8tNuZr4GfdmouwGmZA9UIolC4qjNSnqJ3larNiKX7kI6DY8T5_7edT4LB9tqXLJdWwBKWme5x7J0s2ROZCR8MwMqcmewcA0zXmT6UFK9_4Wwik1DoDBzxqy0Ns3ViCpLytGuxk8rjo6xTyf37modAkEgK0dkm8W5kw6eKXKOXXKifwlaf5IZMpyqAgGvIFDGbgZTmxwcuya8-159lm5cNeqLCL"/>
+</div>
+<div class="mb-4">
+<div class="flex items-center gap-3">
+<h2 class="text-4xl font-bold text-on-surface tracking-tight">Société Générale BF</h2>
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<p class="text-primary-container font-medium flex items-center gap-2 mt-1">
+<span class="material-symbols-outlined text-sm">business</span>
+                            Secteur Bancaire &amp; Financier
+                        </p>
+</div>
+<div class="ml-auto mb-4 pb-2">
+<button class="px-6 py-3 bg-surface-container-lowest text-primary font-bold rounded-2xl shadow-lg shadow-on-surface/5 flex items-center gap-2 hover:bg-primary hover:text-white transition-all">
+<span class="material-symbols-outlined">edit</span>
+                            Modifier le profil public
+                        </button>
+</div>
+</div>
+</section>
+<!-- Bento Layout Content -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Left Column: Detailed Info -->
+<div class="col-span-8 space-y-8">
+<!-- About Section -->
+<div class="bg-surface-container-lowest p-10 rounded-2xl shadow-sm">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-xl font-bold text-on-surface">À propos de nous</h3>
+<span class="text-[10px] font-bold text-outline uppercase tracking-widest">Description</span>
+</div>
+<p class="text-on-surface-variant leading-relaxed text-lg">
+                            La Société Générale Burkina Faso est un acteur majeur du développement économique au Burkina Faso. Nous accompagnons les entreprises et les particuliers avec des solutions financières innovantes. Notre mission est de favoriser l'émergence d'une nouvelle génération de talents burkinabè en offrant des opportunités de stage et d'emploi structurantes au sein d'un environnement international.
+                        </p>
+</div>
+<!-- Gallery Section -->
+<div class="bg-surface-container-lowest p-10 rounded-2xl shadow-sm">
+<div class="flex items-center justify-between mb-8">
+<h3 class="text-xl font-bold text-on-surface">Galerie de l'entreprise</h3>
+<button class="text-primary font-semibold text-sm hover:underline">Voir tout</button>
+</div>
+<div class="grid grid-cols-3 gap-4">
+<div class="aspect-square rounded-2xl overflow-hidden bg-surface-container-low group cursor-pointer">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="diverse group of professionals having a collaborative meeting in a bright modern office workspace" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqEtqXxX9_GjlEslG0jWfEZocmu0Ah0mt6N9ql-hxbTamUgpZLf-l_QVuasBh9AxtaoNkLWhwE3gOLVwZ2y5eU9GV0Mz6irJonFK242pg9jX5cPNaSUzCJglPKnss6JHq6sQPyM7br3iNYIVOD291CBOZRRFs_a3Bc5VYfY8ITBxFjuYDIsxVHSloKu2meB33dMYctm2kg-NxwvWmfXCGMbt8_zWWkWRx0yzPmW4T3FAmQ7bwdqH7VI34W3bBTPOKQYJiiv9pK0cxe"/>
+</div>
+<div class="aspect-square rounded-2xl overflow-hidden bg-surface-container-low group cursor-pointer">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="modern corporate reception area with clean architectural lines and warm interior lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAm-xaPkUe6QbyC1hkvb1Vh20kAao7_RQ6RvF0GydsgOqEqVp_p8ndoS3TIZUc9PkuChu6VmuBcoXU1gGHoa4c2mqTToD5JUdqwgBJj-wJV-Vt_vZKgaeoHFd9gz0TXGZDkO1Szh_neX8jG0bAhsX_GTo1V0Lub_3p7S4OvkHyDQKQILPFMQZAQlVaKeSD-VN2rirDeE06LIjgeu0cXic1TdFgPP6nUgiormQmw0kJUdWLW1x7OE0uRLyA2nkb3KaZzuKjeCShlMSwW"/>
+</div>
+<div class="aspect-square rounded-2xl overflow-hidden bg-surface-container-low group cursor-pointer relative">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="three young professionals smiling and looking at a tablet together in a sunny office environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3ljPXc0ziDiAOVhIpxk6jfJLbb9zQyao6OrLAC5MXvBQ7N3L1JuR--j4bRHR8XnKC__3EkBsJmjhHcsUKQq-iecrpmmhoEnE4wGBs5clCCq1gjFfP_pN6Y-nVGHvNl9wvZESDkuoI_28G0FP0GmJyI_lSdJzgzfZp2X8CuH6Wnprp3R_WGIW8xM-zJXcihW85LCWlAmRFxGsjq8FtDwWec9mGvwlsxYYj02Wo13_-In1CukfxZIYceqPh7SATE1D-xQkYK7SVXVll"/>
+<div class="absolute inset-0 bg-primary/40 flex items-center justify-center backdrop-blur-[2px]">
+<span class="text-white font-bold text-xl">+8 photos</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Contextual Data -->
+<div class="col-span-4 space-y-8">
+<!-- Contact Card -->
+<div class="bg-primary text-white p-8 rounded-2xl shadow-xl shadow-primary/10 relative overflow-hidden">
+<div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-3xl"></div>
+<h3 class="text-xl font-bold mb-6 relative z-10">Contact direct</h3>
+<div class="space-y-6 relative z-10">
+<div class="flex items-start gap-4">
+<span class="material-symbols-outlined bg-white/20 p-2 rounded-lg text-sm">mail</span>
+<div>
+<p class="text-white/60 text-xs font-bold uppercase tracking-wider">Email RH</p>
+<p class="font-medium">recrutement@sg.bf</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<span class="material-symbols-outlined bg-white/20 p-2 rounded-lg text-sm">phone</span>
+<div>
+<p class="text-white/60 text-xs font-bold uppercase tracking-wider">Téléphone</p>
+<p class="font-medium">+226 25 30 15 15</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<span class="material-symbols-outlined bg-white/20 p-2 rounded-lg text-sm">public</span>
+<div>
+<p class="text-white/60 text-xs font-bold uppercase tracking-wider">Site Web</p>
+<p class="font-medium underline">societegenerale.bf</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Location Section -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl shadow-sm">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-xl font-bold text-on-surface">Localisation</h3>
+<span class="material-symbols-outlined text-primary">location_on</span>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-3 p-4 bg-surface-container-low rounded-xl">
+<div class="w-10 h-10 rounded-lg bg-white flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-primary text-lg">apartment</span>
+</div>
+<div>
+<p class="font-bold text-sm">Ouagadougou (HQ)</p>
+<p class="text-xs text-on-surface-variant">Avenue Kwamé Nkrumah</p>
+</div>
+</div>
+<div class="flex items-center gap-3 p-4 bg-surface-container-low rounded-xl">
+<div class="w-10 h-10 rounded-lg bg-white flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-primary text-lg">apartment</span>
+</div>
+<div>
+<p class="font-bold text-sm">Bobo-Dioulasso</p>
+<p class="text-xs text-on-surface-variant">Zone Commerciale</p>
+</div>
+</div>
+</div>
+<!-- Mini Map Replacement with Aesthetic Placeholder -->
+<div class="mt-6 rounded-2xl h-40 w-full overflow-hidden relative">
+<div class="absolute inset-0 bg-slate-200" data-location="Ouagadougou" style="">
+<img class="w-full h-full object-cover grayscale opacity-50" data-alt="abstract top-down aerial map of an urban city center with clean geometric street patterns in neutral tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARBzZgCV9yYaGk8xRnrCYoaHir8rI7CvcqaE_7vF56TnDTC-S-WPGftyN95W8Uw6Hh-pFlvbqH8g-rCNi0uZbFEIuQoIuUW-2zzwuTMXOZs-oEQFybV0zMV3oCX9Lh--hNq-36cbEy1_3G94VJ5Z0XdQJmz_Hvjj_3FefeUnT3HbKbEN8J9TVAhzDd4Td4CxF4TPwtgX3VJBTb1NVNG67OQvybJHpu20rzaaCyZizySrnQkzMWUiGU_ykddzTDAX_AsdyBpkX4YAiP"/>
+</div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="p-2 bg-primary text-white rounded-full animate-bounce">
+<span class="material-symbols-outlined">location_on</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Meta Tags / Chips -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl shadow-sm">
+<h3 class="text-sm font-bold text-outline uppercase tracking-widest mb-4">Informations clés</h3>
+<div class="flex flex-wrap gap-2">
+<span class="px-4 py-2 bg-secondary-fixed text-on-secondary-fixed text-xs font-bold rounded-full">Finance</span>
+<span class="px-4 py-2 bg-secondary-fixed text-on-secondary-fixed text-xs font-bold rounded-full">Banque</span>
+<span class="px-4 py-2 bg-secondary-fixed text-on-secondary-fixed text-xs font-bold rounded-full">Digital</span>
+<span class="px-4 py-2 bg-secondary-fixed text-on-secondary-fixed text-xs font-bold rounded-full">Innovation</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer-like Section within Canvas -->
+<footer class="mt-16 pt-8 border-t border-slate-200 flex justify-between items-center text-slate-500">
+<p class="text-sm">© 2024 StageLink Burkina - Tous droits réservés.</p>
+<div class="flex gap-6">
+<a class="hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined text-lg">share</span></a>
+<a class="hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined text-lg">print</span></a>
+<a class="hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined text-lg">report</span></a>
+</div>
+</footer>
+</div>
+</main>
+</body></html>

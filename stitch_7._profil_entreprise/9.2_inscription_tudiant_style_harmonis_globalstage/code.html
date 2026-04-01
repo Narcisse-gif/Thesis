@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>StageLink - Créer un compte étudiant</title>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- BEGIN: Custom Configuration -->
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'stagelink-blue': '#1E40AF',
+                        'stagelink-dark': '#111827',
+                        'stagelink-gray': '#F3F4F6'
+                    }
+                }
+            }
+        }
+    </script>
+<!-- END: Custom Configuration -->
+<!-- BEGIN: Custom Typography Styles -->
+<style data-purpose="typography">
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+<!-- END: Custom Typography Styles -->
+<!-- BEGIN: Layout Styles -->
+<style data-purpose="layout">
+        .split-screen {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            height: 100vh;
+        }
+        @media (max-width: 1024px) {
+            .split-screen {
+                grid-template-columns: 1fr;
+            }
+            .visual-side {
+                display: none;
+            }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+    </style>
+<!-- END: Layout Styles -->
+</head>
+<body class="bg-white text-gray-900 antialiased overflow-hidden">
+<!-- BEGIN: Registration Page Container -->
+<main class="split-screen" data-purpose="registration-page">
+<!-- BEGIN: Left Visual Side -->
+<section class="visual-side relative bg-stagelink-blue flex flex-col justify-center p-16 overflow-hidden">
+<!-- Background Image Overlay -->
+<div class="absolute inset-0 z-0">
+<img alt="Étudiant africain travaillant sur un ordinateur portable" class="w-full h-full object-cover opacity-30 mix-blend-multiply" src="https://lh3.googleusercontent.com/aida-public/AB6AXuByNt2RUZBDzQ5w1zR7g3XW8QLXB20WrgL3naM4o1IdUybriee2X-aXisfrm8A4KYgNGPeMlDrGr3A0XQKNS7pPv3piDIq_Nuyf6ry9PI9GY1T4DnjH5gVmn0LZ3MSw1nJ-BRPX1CAYFM5Ls7LpBQSnq8GJogmCgDVSVPzqhrhqTalPWheck-ar9YRFrFnT5vEiTjh6h2bw13mgRo6TgBsR-eqwBgrsd2nHSReNAGOSg9V6YcE42LVYxMLO7aSgkMUqNMPEXiRq3xjw"/>
+</div>
+<!-- Content Overlay -->
+<div class="relative z-10 max-w-xl">
+<h1 class="text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-8">
+                    Propulsez votre carrière au Burkina Faso.
+                </h1>
+<p class="text-xl text-blue-100 leading-relaxed">
+                    Rejoignez la plus grande plateforme de mise en relation entre étudiants et entreprises innovantes.
+                </p>
+</div>
+<!-- Decorative Element -->
+<div class="absolute bottom-12 left-16 z-10">
+<div class="h-1 w-24 bg-white opacity-50"></div>
+</div>
+</section>
+<!-- END: Left Visual Side -->
+<!-- BEGIN: Right Form Side -->
+<section class="form-side flex flex-col bg-white overflow-y-auto custom-scrollbar">
+<div class="max-w-xl w-full mx-auto px-8 md:px-12 py-10">
+<!-- Header Section -->
+<header class="mb-8 text-left">
+<h2 class="text-3xl font-bold text-stagelink-blue mb-2">Créer un compte étudiant</h2>
+<p class="text-gray-500">Veuillez renseigner vos informations pour vous inscrire.</p>
+</header>
+<!-- BEGIN: Registration Form -->
+<form action="#" class="space-y-6" data-purpose="student-registration-form" method="POST">
+<!-- Informations Personnelles Section -->
+<div>
+<h3 class="text-xs font-bold uppercase tracking-widest mb-4 border-b pb-2 text-stagelink-blue">Informations Personnelles</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4">
+<div class="col-span-1">
+<label class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" for="first_name">Prénom</label>
+<input class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-stagelink-blue focus:border-stagelink-blue transition-colors text-sm" id="first_name" name="first_name" placeholder="Ex: Moussa" required="" type="text"/>
+</div>
+<div class="col-span-1">
+<label class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" for="last_name">Nom</label>
+<input class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-stagelink-blue focus:border-stagelink-blue transition-colors text-sm" id="last_name" name="last_name" placeholder="Ex: Traoré" required="" type="text"/>
+</div>
+<div class="col-span-1">
+<label class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" for="email">Email</label>
+<input class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-stagelink-blue focus:border-stagelink-blue transition-colors text-sm" id="email" name="email" placeholder="moussa@exemple.bf" required="" type="email"/>
+</div>
+<div class="col-span-1">
+<label class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" for="phone">Téléphone</label>
+<input class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-stagelink-blue focus:border-stagelink-blue transition-colors text-sm" id="phone" name="phone" placeholder="+226 XX XX XX XX" required="" type="tel"/>
+</div>
+</div>
+</div>
+<!-- Parcours Académique Section -->
+<div>
+<h3 class="text-xs font-bold uppercase tracking-widest mb-4 border-b pb-2 text-stagelink-blue">Parcours Académique</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4">
+<div class="col-span-1 md:col-span-2">
+<label class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" for="university">Université / Institut</label>
+<select class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-stagelink-blue focus:border-stagelink-blue transition-colors appearance-none bg-white text-sm" id="university" name="university" required="">
+<option disabled="" selected="" value="">Sélectionner</option>
+<option value="bit">BIT Ouaga</option>
+<option value="unb">UNB Bobo</option>
+<option value="uo">Université Joseph Ki-Zerbo</option>
+<option value="u-aube">Aube Nouvelle</option>
+</select>
+</div>
+<div class="col-span-1">
+<label class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" for="study_level">Niveau d'étude</label>
+<select class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-stagelink-blue focus:border-stagelink-blue transition-colors appearance-none bg-white text-sm" id="study_level" name="study_level" required="">
+<option value="licence1">Licence 1</option>
+<option value="licence2">Licence 2</option>
+<option value="licence3">Licence 3</option>
+<option value="master1">Master 1</option>
+<option value="master2">Master 2</option>
+</select>
+</div>
+<div class="col-span-1">
+<label class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" for="study_field">Domaine d'étude</label>
+<input class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-stagelink-blue focus:border-stagelink-blue transition-colors text-sm" id="study_field" name="study_field" placeholder="Ex: Informatique, Gestion..." required="" type="text"/>
+</div>
+<div class="col-span-1 md:col-span-2">
+<label class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" for="city">Ville</label>
+<input class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-stagelink-blue focus:border-stagelink-blue transition-colors text-sm" id="city" name="city" placeholder="Ouagadougou" required="" type="text"/>
+</div>
+</div>
+</div>
+<!-- Sécurité Section -->
+<div>
+<h3 class="text-xs font-bold uppercase tracking-widest mb-4 border-b pb-2 text-stagelink-blue">Sécurité</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4">
+<div class="col-span-1">
+<label class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" for="password">Mot de passe</label>
+<input class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-stagelink-blue focus:border-stagelink-blue transition-colors text-sm" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+</div>
+<div class="col-span-1">
+<label class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" for="password_confirmation">Confirmer le mot de passe</label>
+<input class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-stagelink-blue focus:border-stagelink-blue transition-colors text-sm" id="password_confirmation" name="password_confirmation" placeholder="••••••••" required="" type="password"/>
+</div>
+</div>
+</div>
+<!-- Submit Button -->
+<div class="pt-4">
+<button class="w-full bg-stagelink-blue hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-lg flex items-center justify-center space-x-2 shadow-lg transition-transform active:scale-95" type="submit">
+<span class="text-sm">S'inscrire</span>
+<svg class="h-4 w-4" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</form>
+<!-- END: Registration Form -->
+<!-- Legal Notice -->
+<p class="mt-6 text-center text-[10px] text-gray-400 leading-relaxed">
+                    En cliquant sur s'inscrire, vous acceptez nos <a class="text-stagelink-blue underline font-medium" href="#">Conditions d'Utilisation</a> et notre <a class="text-stagelink-blue underline font-medium" href="#">Politique de Confidentialité</a>.
+                </p>
+<!-- Login Link -->
+<div class="mt-8 pt-6 border-t border-gray-100 text-center">
+<p class="text-sm text-gray-600">
+                        Déjà inscrit ? <a class="text-stagelink-blue font-bold hover:underline ml-1" href="#">Connectez-vous</a>
+</p>
+</div>
+</div>
+</section>
+<!-- END: Right Form Side -->
+</main>
+<!-- END: Registration Page Container -->
+</body></html>

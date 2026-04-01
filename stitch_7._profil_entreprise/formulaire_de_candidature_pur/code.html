@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Formulaire de Candidature Épuré | StageLink Burkina</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-container": "#1e40af",
+              "surface-container-low": "#f2f4f6",
+              "on-secondary-fixed": "#001a42",
+              "on-tertiary-fixed-variant": "#384953",
+              "secondary-fixed-dim": "#adc6ff",
+              "on-primary-fixed-variant": "#173bab",
+              "outline-variant": "#c4c5d5",
+              "on-surface-variant": "#444653",
+              "on-secondary-fixed-variant": "#004395",
+              "on-primary-container": "#a8b8ff",
+              "on-background": "#191c1e",
+              "outline": "#757684",
+              "on-secondary": "#ffffff",
+              "error": "#ba1a1a",
+              "surface": "#f7f9fb",
+              "surface-container": "#eceef0",
+              "primary-fixed": "#dde1ff",
+              "on-surface": "#191c1e",
+              "primary": "#00288e",
+              "tertiary": "#263640",
+              "surface-container-high": "#e6e8ea",
+              "surface-dim": "#d8dadc",
+              "on-tertiary": "#ffffff",
+              "on-primary": "#ffffff",
+              "primary-fixed-dim": "#b8c4ff",
+              "on-secondary-container": "#fefcff",
+              "secondary-container": "#2170e4",
+              "background": "#f7f9fb",
+              "on-primary-fixed": "#001453",
+              "inverse-surface": "#2d3133",
+              "surface-variant": "#e0e3e5",
+              "tertiary-container": "#3d4d57",
+              "secondary": "#0058be",
+              "tertiary-fixed": "#d3e5f1",
+              "surface-container-lowest": "#ffffff",
+              "tertiary-fixed-dim": "#b7c9d5",
+              "on-tertiary-container": "#acbec9",
+              "secondary-fixed": "#d8e2ff",
+              "on-tertiary-fixed": "#0c1e26",
+              "inverse-on-surface": "#eff1f3",
+              "error-container": "#ffdad6",
+              "surface-tint": "#3755c3",
+              "on-error": "#ffffff",
+              "surface-bright": "#f7f9fb",
+              "on-error-container": "#93000a",
+              "inverse-primary": "#b8c4ff",
+              "surface-container-highest": "#e0e3e5"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-white/70 dark:bg-slate-900/70 backdrop-blur-lg border-b border-blue-50/10 dark:border-slate-800/50 shadow-sm fixed top-0 w-full z-50 font-inter antialiased">
+<div class="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
+<div class="text-xl font-bold tracking-tight text-blue-900 dark:text-blue-100">
+                StageLink Burkina
+            </div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-blue-700 dark:text-blue-400 font-semibold transition-colors" href="#">Explorer</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-600 transition-colors" href="#">Candidatures</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-blue-600 transition-colors" href="#">Enregistrés</a>
+</nav>
+<div class="flex items-center gap-4 text-blue-900 dark:text-blue-400">
+<span class="material-symbols-outlined cursor-pointer hover:text-blue-600 active:scale-95 duration-200">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-blue-600 active:scale-95 duration-200">account_circle</span>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-4 sm:px-6 lg:px-8">
+<div class="max-w-3xl mx-auto">
+<!-- Application Form -->
+<div class="bg-surface-container-lowest rounded-2xl p-8 lg:p-12 shadow-[0_8px_32px_rgba(25,28,30,0.04)]">
+<header class="mb-10 text-center">
+<h2 class="text-3xl font-bold text-on-surface mb-3">Formulaire de Candidature Épuré</h2>
+<p class="text-on-surface-variant max-w-lg mx-auto">Complétez les informations ci-dessous pour commencer votre parcours professionnel.</p>
+</header>
+<form class="space-y-12">
+<!-- Section 1: Informations Personnelles -->
+<section class="space-y-6">
+<div class="flex items-center gap-3 pb-2 border-b border-surface-variant">
+<span class="material-symbols-outlined text-primary">person</span>
+<h3 class="font-bold text-on-surface uppercase tracking-wider text-xs">Informations Personnelles</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="text-sm font-semibold text-on-surface-variant ml-1">Nom Complet</label>
+<input class="w-full bg-surface-container-low border-0 rounded-2xl p-4 focus:ring-2 focus:ring-primary/20 transition-all text-on-surface placeholder:text-outline-variant" placeholder="Jean-Baptiste Kaboré" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-semibold text-on-surface-variant ml-1">Adresse E-mail</label>
+<input class="w-full bg-surface-container-low border-0 rounded-2xl p-4 focus:ring-2 focus:ring-primary/20 transition-all text-on-surface placeholder:text-outline-variant" placeholder="jean.k@domain.bf" type="email"/>
+</div>
+<div class="md:col-span-2 space-y-2">
+<label class="text-sm font-semibold text-on-surface-variant ml-1">Numéro de Téléphone</label>
+<input class="w-full bg-surface-container-low border-0 rounded-2xl p-4 focus:ring-2 focus:ring-primary/20 transition-all text-on-surface placeholder:text-outline-variant" placeholder="+226 -- -- -- --" type="tel"/>
+</div>
+</div>
+</section>
+<!-- Section 2: Profil Académique et Professionnel -->
+<section class="space-y-6">
+<div class="flex items-center gap-3 pb-2 border-b border-surface-variant">
+<span class="material-symbols-outlined text-primary">school</span>
+<h3 class="font-bold text-on-surface uppercase tracking-wider text-xs">Profil Académique &amp; Professionnel</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="md:col-span-2 space-y-2">
+<label class="text-sm font-semibold text-on-surface-variant ml-1">Université / École</label>
+<input class="w-full bg-surface-container-low border-0 rounded-2xl p-4 focus:ring-2 focus:ring-primary/20 transition-all text-on-surface placeholder:text-outline-variant" placeholder="Université Joseph Ki-Zerbo" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-semibold text-on-surface-variant ml-1">Domaine d'Études</label>
+<input class="w-full bg-surface-container-low border-0 rounded-2xl p-4 focus:ring-2 focus:ring-primary/20 transition-all text-on-surface placeholder:text-outline-variant" placeholder="Génie Logiciel" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-semibold text-on-surface-variant ml-1">Niveau d'Expérience</label>
+<select class="w-full bg-surface-container-low border-0 rounded-2xl p-4 focus:ring-2 focus:ring-primary/20 transition-all text-on-surface appearance-none">
+<option>Sélectionnez un niveau</option>
+<option>Étudiant de premier cycle</option>
+<option>Étudiant en Master / Doctorat</option>
+<option>Débutant (0-2 ans)</option>
+<option>Professionnel (2+ ans)</option>
+</select>
+</div>
+</div>
+</section>
+<!-- Section 3: Chargement de Documents -->
+<section class="space-y-6">
+<div class="flex items-center gap-3 pb-2 border-b border-surface-variant">
+<span class="material-symbols-outlined text-primary">upload_file</span>
+<h3 class="font-bold text-on-surface uppercase tracking-wider text-xs">Chargement de Documents</h3>
+</div>
+<div class="relative group">
+<input class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" type="file"/>
+<div class="border-2 border-dashed border-outline-variant rounded-2xl p-10 text-center transition-colors group-hover:bg-primary/5 group-hover:border-primary/40">
+<span class="material-symbols-outlined text-primary text-4xl mb-3">cloud_upload</span>
+<p class="text-on-surface font-medium">Cliquez pour télécharger ou glissez-déposez</p>
+<p class="text-xs text-on-surface-variant mt-2">PDF ou DOCX (Max. 5Mo)</p>
+</div>
+</div>
+</section>
+<button class="w-full bg-primary hover:bg-secondary text-on-primary py-5 rounded-2xl font-bold text-lg shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-3 mt-10" type="submit">
+<span>Soumettre la Candidature</span>
+<span class="material-symbols-outlined">send</span>
+</button>
+</form>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-white dark:bg-slate-950 shadow-[0_-8px_32px_rgba(25,28,30,0.06)] z-50 rounded-t-3xl">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2" href="#">
+<span class="material-symbols-outlined">work_outline</span>
+<span class="text-[10px] font-semibold uppercase tracking-wider mt-1">Explorer</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-blue-50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 rounded-2xl px-5 py-2" href="#">
+<span class="material-symbols-outlined">assignment_turned_in</span>
+<span class="text-[10px] font-semibold uppercase tracking-wider mt-1">Postulé</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2" href="#">
+<span class="material-symbols-outlined">bookmark_border</span>
+<span class="text-[10px] font-semibold uppercase tracking-wider mt-1">Sauvé</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2" href="#">
+<span class="material-symbols-outlined">person_outline</span>
+<span class="text-[10px] font-semibold uppercase tracking-wider mt-1">Profil</span>
+</a>
+</nav>
+</body></html>
