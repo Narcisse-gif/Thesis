@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#00288e",
+              "outline-variant": "#c4c5d5",
+              "inverse-on-surface": "#eff1f3",
+              "surface-bright": "#f7f9fb",
+              "tertiary": "#263640",
+              "tertiary-fixed": "#d3e5f1",
+              "surface-variant": "#e0e3e5",
+              "secondary-fixed-dim": "#adc6ff",
+              "secondary-container": "#2170e4",
+              "on-secondary-fixed": "#001a42",
+              "on-primary-fixed": "#001453",
+              "inverse-primary": "#b8c4ff",
+              "on-secondary": "#ffffff",
+              "error-container": "#ffdad6",
+              "tertiary-container": "#3d4d57",
+              "on-secondary-container": "#fefcff",
+              "surface-container-high": "#e6e8ea",
+              "inverse-surface": "#2d3133",
+              "tertiary-fixed-dim": "#b7c9d5",
+              "on-secondary-fixed-variant": "#004395",
+              "on-primary": "#ffffff",
+              "surface": "#f7f9fb",
+              "on-surface-variant": "#444653",
+              "on-tertiary-fixed": "#0c1e26",
+              "on-tertiary": "#ffffff",
+              "on-primary-container": "#a8b8ff",
+              "background": "#f7f9fb",
+              "surface-dim": "#d8dadc",
+              "surface-container": "#eceef0",
+              "surface-container-lowest": "#ffffff",
+              "surface-container-highest": "#e0e3e5",
+              "secondary-fixed": "#d8e2ff",
+              "primary-container": "#1e40af",
+              "outline": "#757684",
+              "on-background": "#191c1e",
+              "surface-container-low": "#f2f4f6",
+              "on-error-container": "#93000a",
+              "primary-fixed-dim": "#b8c4ff",
+              "on-tertiary-container": "#acbec9",
+              "on-error": "#ffffff",
+              "primary-fixed": "#dde1ff",
+              "on-tertiary-fixed-variant": "#384953",
+              "on-surface": "#191c1e",
+              "secondary": "#0058be",
+              "error": "#ba1a1a",
+              "surface-tint": "#3755c3",
+              "on-primary-fixed-variant": "#173bab"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary/10">
+<!-- SideNavBar (Shared Component) -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r-0 bg-slate-50 dark:bg-slate-900 flex flex-col py-8 px-4 z-50">
+<div class="mb-10 px-4">
+<h1 class="text-xl font-bold tracking-tight text-blue-900 dark:text-blue-100">StageLink Burkina</h1>
+<p class="text-[0.75rem] font-semibold text-slate-500 uppercase tracking-wider mt-1">Espace Étudiant</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 dark:text-slate-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors duration-150 ease-in-out active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-[0.75rem] font-semibold uppercase tracking-wide">Tableau de bord</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 dark:text-slate-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors duration-150 ease-in-out active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-[0.75rem] font-semibold uppercase tracking-wide">Profil</span>
+</a>
+<!-- Active State: Candidatures -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-blue-800 dark:text-blue-400 font-semibold border-r-4 border-blue-800 dark:border-blue-400 bg-blue-50/50 dark:bg-blue-900/20 transition-colors duration-150 ease-in-out active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="text-[0.75rem] font-semibold uppercase tracking-wide">Candidatures</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 dark:text-slate-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors duration-150 ease-in-out active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
+<span class="text-[0.75rem] font-semibold uppercase tracking-wide">Favoris</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 dark:text-slate-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors duration-150 ease-in-out active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-[0.75rem] font-semibold uppercase tracking-wide">Paramètres</span>
+</a>
+</nav>
+<div class="mt-auto px-4 flex items-center gap-3 pt-6 border-t border-slate-200 dark:border-slate-800">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center overflow-hidden">
+<img alt="Photo de profil étudiant" class="w-full h-full object-cover" data-alt="portrait of a confident young African university student smiling in a modern campus setting, soft professional lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSVS-47JAtwgyBRwm89SdtuILofW84VrXGbnCx3sd-VE2blzfV8ZzkscSK-5prgKPkN3IMcfGIBKc3Y8reHfm1JhAFaXIwV6klmfh5XCo8E5elsDDX_wqGZwGQoZo1t0OqnU3Bi2D2VGXNtdnvE297voQNX41JGQScSdwuc06uhAm39jjkIoZPW_0xpu2czzfSDSuzPjf8HTQgc_uGbz-2MOjQWppqzAcE8w9mTlfxYfDmJjzxsjXr1ZkMJ-SanU4a9OmqtGHRitL3"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-semibold text-on-surface truncate">Moussa Traoré</p>
+<p class="text-xs text-slate-500 truncate">Informatique, 3ème année</p>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen">
+<!-- TopNavBar (Shared Component) -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 z-40 bg-white/70 dark:bg-slate-950/70 backdrop-blur-lg flex justify-between items-center px-8 shadow-sm dark:shadow-none">
+<div class="flex-1 flex items-center gap-4">
+<div class="relative w-full max-w-md focus-within:ring-2 focus-within:ring-blue-500/20 rounded-2xl transition-all">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" data-icon="search">search</span>
+<input class="w-full pl-12 pr-4 py-2 bg-surface-container-low border-none rounded-2xl text-sm focus:ring-0 placeholder:text-slate-400" placeholder="Rechercher une candidature..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-all relative">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-400" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+<div class="h-8 w-px bg-slate-200 dark:bg-slate-800 mx-2"></div>
+<h2 class="text-sm font-medium text-slate-600 dark:text-slate-400">Mes Candidatures</h2>
+</div>
+</header>
+<!-- Canvas Content -->
+<div class="pt-24 pb-12 px-8 max-w-7xl mx-auto">
+<!-- Hero / Header Section -->
+<div class="mb-10 flex justify-between items-end">
+<div>
+<span class="text-[0.75rem] font-bold text-primary uppercase tracking-[0.2em] mb-2 block">Suivi de carrière</span>
+<h2 class="text-3xl font-bold text-on-surface tracking-tight">Candidatures en cours</h2>
+<p class="text-slate-500 mt-2">Gérez vos opportunités de stage et suivez vos progrès en temps réel.</p>
+</div>
+<div class="flex gap-3">
+<div class="flex -space-x-3 overflow-hidden">
+<div class="inline-block h-10 w-10 rounded-full ring-4 ring-surface bg-surface-container-high flex items-center justify-center text-[0.65rem] font-bold text-primary-container">+12</div>
+</div>
+</div>
+</div>
+<!-- Bento Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+<div class="md:col-span-1 p-6 rounded-2xl bg-surface-container-low transition-all hover:translate-y-[-4px]">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-blue-800 p-2 bg-blue-50 dark:bg-blue-900/30 rounded-xl" data-icon="send">send</span>
+</div>
+<p class="text-3xl font-bold text-on-surface">08</p>
+<p class="text-sm font-semibold text-slate-500 mt-1 uppercase tracking-wider">Envoyées</p>
+</div>
+<div class="md:col-span-1 p-6 rounded-2xl bg-surface-container-low transition-all hover:translate-y-[-4px]">
+<div class="flex items-center justify-between mb-4">
+<span class="material-symbols-outlined text-amber-600 p-2 bg-amber-50 rounded-xl" data-icon="update">update</span>
+</div>
+<p class="text-3xl font-bold text-on-surface">03</p>
+<p class="text-sm font-semibold text-slate-500 mt-1 uppercase tracking-wider">En attente</p>
+</div>
+<div class="md:col-span-2 p-6 rounded-2xl bg-primary-container text-white relative overflow-hidden group">
+<div class="relative z-10">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-white/80" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="text-[0.75rem] font-bold uppercase tracking-widest text-white/80">Prochaine étape</span>
+</div>
+<h3 class="text-xl font-semibold mb-2">Entretien avec Orange BF</h3>
+<p class="text-white/70 text-sm">Demain à 10:30 • Siège social, Ouaga 2000</p>
+</div>
+<div class="absolute -right-8 -bottom-8 opacity-10 group-hover:scale-110 transition-transform duration-700">
+<span class="material-symbols-outlined text-[120px]" data-icon="event_upcoming">event_upcoming</span>
+</div>
+</div>
+</div>
+<!-- Table Section -->
+<section class="bg-surface-container-lowest rounded-2xl shadow-sm overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low/50">
+<th class="px-8 py-5 text-[0.75rem] font-bold uppercase tracking-wider text-slate-500">Entreprise &amp; Poste</th>
+<th class="px-8 py-5 text-[0.75rem] font-bold uppercase tracking-wider text-slate-500">Date d'envoi</th>
+<th class="px-8 py-5 text-[0.75rem] font-bold uppercase tracking-wider text-slate-500">Statut</th>
+<th class="px-8 py-5 text-[0.75rem] font-bold uppercase tracking-wider text-slate-500 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+<!-- Row 1: Accepted -->
+<tr class="group hover:bg-surface-container-low transition-colors">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center border border-slate-100 overflow-hidden">
+<img alt="Logo Orange" class="w-8 h-8 object-contain" data-alt="abstract minimalist corporate logo of a technology company in orange and white, professional aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUBkWdIt3xqxNDX7MNXz8e4WLDUDOHhDwhe7i1CHyOfDCQbLJfgrYxYSVBi-L1mg8mpCp1JYBjk6mF7lGDnSCfIboMYDIIGzi0ju4bfYXmG_ZnXzlyodjHUsB-ivVOmiuljlLdYEuVxhwNzmCaZHCoJRB7EWAfZ6uAV2bqnV0PTKe7HtDZRd7MbJ4KmMdxJe-wfkZDeCFJsv7LIZTe6da_G6WAmDQetsaPwa6e6auNez6t95mA7ZmeRwK37NcmckAbQTd077Ue4Uz4"/>
+</div>
+<div>
+<h4 class="font-semibold text-on-surface">Développeur Fullstack Junior</h4>
+<p class="text-xs text-slate-500">Orange Burkina Faso • Ouagadougou</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-2 text-slate-600">
+<span class="material-symbols-outlined text-[18px]" data-icon="calendar_today">calendar_today</span>
+<span class="text-sm">12 Oct 2023</span>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide bg-blue-50 text-blue-800 border border-blue-100">
+                                        Accepté
+                                    </span>
+</td>
+<td class="px-8 py-6 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="px-4 py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition-colors">Voir détails</button>
+<button class="px-4 py-2 text-xs font-bold bg-primary text-white rounded-lg shadow-sm hover:bg-secondary transition-all">Contacter</button>
+</div>
+</td>
+</tr>
+<!-- Row 2: Pending -->
+<tr class="group hover:bg-surface-container-low transition-colors">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center border border-slate-100 overflow-hidden">
+<img alt="Logo Coris Bank" class="w-8 h-8 object-contain" data-alt="financial services institution logo, modern and minimalist, professional blue and gold tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0RInhi9ABZQt_yNrzvO0AJGviGDRwxBFOriXQg0N_rhKe_M4KGZFy4SUr0h2hpbTGVD62hzgDUxSC-sq_RQMGhWy8Bsftm7GdSq8iyiOSKkEgN1EFSvsAVZoUEEI7S-4smryTYXtPBozFIG4huFLgvQEI4Qti7mNeQ0j58U-gDL21LlhGjGj9KGFJ-zCIXIHWJLJqIjmzl8Ja3DtnL0SdN-BvIDZNbsSMoD-UI3WzcNDSXbY-bvcegl0JpZHlUx-bIfxj93WAwaHJ"/>
+</div>
+<div>
+<h4 class="font-semibold text-on-surface">Analyste Cybersécurité (Stage)</h4>
+<p class="text-xs text-slate-500">Coris Bank International • Bobo-Dioulasso</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-2 text-slate-600">
+<span class="material-symbols-outlined text-[18px]" data-icon="calendar_today">calendar_today</span>
+<span class="text-sm">15 Oct 2023</span>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide bg-amber-50 text-amber-700 border border-amber-100">
+                                        En attente
+                                    </span>
+</td>
+<td class="px-8 py-6 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="px-4 py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition-colors">Voir détails</button>
+<button class="px-4 py-2 text-xs font-bold bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition-all">Relancer</button>
+</div>
+</td>
+</tr>
+<!-- Row 3: Rejected -->
+<tr class="group hover:bg-surface-container-low transition-colors">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center border border-slate-100 overflow-hidden">
+<img alt="Logo Moov" class="w-8 h-8 object-contain" data-alt="telecommunications company logo on white background, blue and purple brand colors, sleek tech aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZ0eDWdjbnc-qMOkL5dJntbdO5b4Rtu2S8_ltbhPAVubxXBsOr02DnPN9J67vlwZ3R7I6e0Hi8P8cEfL_IhWJ1Pu1W7_ywjCDV5CDrNTv-m5ZgL7ITydLBM93peDUk3Qscu0p9gCqWHF1QA7RFBdvrOqoXQ7ToFjEu-OpsTliZi5JD4_5-jSPUoaOzx2GHc0uwMjcPgQF-kWWMM6LnlCZp1LPt2_u5WMsi5CrxOpbnk5AJRL52uNMhP_z-l64bE4K99JpPMUUJX2ov"/>
+</div>
+<div>
+<h4 class="font-semibold text-on-surface">Assistant Marketing Digital</h4>
+<p class="text-xs text-slate-500">Moov Africa • Ouagadougou</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-2 text-slate-600">
+<span class="material-symbols-outlined text-[18px]" data-icon="calendar_today">calendar_today</span>
+<span class="text-sm">08 Oct 2023</span>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide bg-slate-100 text-slate-500 border border-slate-200">
+                                        Refusé
+                                    </span>
+</td>
+<td class="px-8 py-6 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="px-4 py-2 text-xs font-bold text-slate-400 hover:text-slate-600 rounded-lg transition-colors">Archive</button>
+<button class="px-4 py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition-colors">Détails</button>
+</div>
+</td>
+</tr>
+<!-- Row 4: Accepted (Alternate Blue/Gray Style) -->
+<tr class="group hover:bg-surface-container-low transition-colors">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center border border-slate-100 overflow-hidden">
+<img alt="Logo SONABEL" class="w-8 h-8 object-contain" data-alt="energy corporation logo, minimalist professional utility company icon, industrial clean style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9NLgmPIsruqxcZ36gKGPa6sia5-xcyFZDT2qMQGl8HfhzYt4FiF-VMqYZNj7XLxd8P0B4YtjgzPy3OYCL7CKfZ2x4a5821kq-j3z6iIR5tnPARf_gvBBLdJQy3jR0AwBJaXHNWlpZ3BLtDVxUI-B0GZUb7sqHjbz_rWLNeeaa2cq5lfQ6O6y-aKE7JGS3YrLkMJ69KX-lql353IWba6kTSy4--Cxd251qJbgGY1gnXW8Y8uRe5Nb4J6OK4LmYCojZf-fEtM4vb1km"/>
+</div>
+<div>
+<h4 class="font-semibold text-on-surface">Technicien Réseaux (Stage)</h4>
+<p class="text-xs text-slate-500">SONABEL • Ouagadougou</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-2 text-slate-600">
+<span class="material-symbols-outlined text-[18px]" data-icon="calendar_today">calendar_today</span>
+<span class="text-sm">01 Oct 2023</span>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide bg-blue-50 text-blue-800 border border-blue-100">
+                                        Accepté
+                                    </span>
+</td>
+<td class="px-8 py-6 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="px-4 py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition-colors">Voir détails</button>
+<button class="px-4 py-2 text-xs font-bold bg-primary text-white rounded-lg shadow-sm hover:bg-secondary transition-all">Contacter</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination / Footer -->
+<div class="px-8 py-4 bg-slate-50/50 flex justify-between items-center">
+<p class="text-[0.75rem] font-semibold text-slate-500 uppercase tracking-widest">Affichage de 1-4 sur 8 candidatures</p>
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 cursor-not-allowed">
+<span class="material-symbols-outlined text-[18px]" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-white shadow-sm">
+<span class="text-xs font-bold">1</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-600 hover:border-primary transition-colors">
+<span class="text-xs font-bold">2</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-600 hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Contextual FAB (Suppressing as per guidelines for a "Candidatures" list screen, but adding as a subtle 'New Application' trigger if needed) -->
+<!-- Suppressed: The screen's focus is on tracking/management -->
+</body></html>

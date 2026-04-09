@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "background": "#f7f9fb",
+                        "on-primary-fixed-variant": "#173bab",
+                        "on-primary-container": "#a8b8ff",
+                        "on-surface-variant": "#444653",
+                        "primary": "#00288e",
+                        "on-error-container": "#93000a",
+                        "on-surface": "#191c1e",
+                        "surface-container-low": "#f2f4f6",
+                        "surface": "#f7f9fb",
+                        "tertiary-container": "#3d4d57",
+                        "primary-container": "#1e40af",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-variant": "#e0e3e5",
+                        "surface-container-high": "#e6e8ea",
+                        "primary-fixed": "#dde1ff",
+                        "inverse-on-surface": "#eff1f3",
+                        "tertiary": "#263640",
+                        "surface-dim": "#d8dadc",
+                        "secondary": "#0058be",
+                        "secondary-fixed": "#d8e2ff",
+                        "on-tertiary": "#ffffff",
+                        "inverse-surface": "#2d3133",
+                        "secondary-container": "#2170e4",
+                        "on-background": "#191c1e",
+                        "surface-bright": "#f7f9fb",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#b7c9d5",
+                        "on-primary": "#ffffff",
+                        "outline": "#757684",
+                        "on-primary-fixed": "#001453",
+                        "on-tertiary-fixed": "#0c1e26",
+                        "surface-container": "#eceef0",
+                        "primary-fixed-dim": "#b8c4ff",
+                        "tertiary-fixed": "#d3e5f1",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-secondary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-secondary-container": "#fefcff",
+                        "error": "#ba1a1a",
+                        "surface-tint": "#3755c3",
+                        "on-tertiary-fixed-variant": "#384953",
+                        "on-secondary-fixed": "#001a42",
+                        "on-tertiary-container": "#acbec9",
+                        "outline-variant": "#c4c5d5",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "inverse-primary": "#b8c4ff",
+                        "on-secondary-fixed-variant": "#004395"
+                    },
+                    fontFamily: {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-nav { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(16px); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full z-40 h-screen w-64 bg-slate-50 dark:bg-slate-900 font-inter antialiased">
+<div class="flex flex-col h-full py-6">
+<div class="px-6 mb-10">
+<span class="text-xl font-bold tracking-tight text-blue-900 dark:text-blue-100">StageLink Burkina</span>
+<p class="text-xs font-medium tracking-wide uppercase text-slate-500 mt-1">Espace Étudiant</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-blue-700 dark:hover:text-blue-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-sm font-medium">Tableau de bord</span>
+</a>
+<!-- Active Item: Profil -->
+<a class="flex items-center gap-3 px-4 py-3 text-blue-800 dark:text-blue-300 font-bold border-r-4 border-blue-800 dark:border-blue-400 bg-blue-50/50 dark:bg-blue-900/20 transition-all" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="text-sm">Profil</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-blue-700 dark:hover:text-blue-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="text-sm font-medium">Candidatures</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-blue-700 dark:hover:text-blue-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">bookmark</span>
+<span class="text-sm font-medium">Favoris</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-blue-700 dark:hover:text-blue-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="text-sm font-medium">Notifications</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-blue-700 dark:hover:text-blue-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-sm font-medium">Paramètres</span>
+</a>
+</nav>
+<div class="mt-auto px-4 space-y-1 border-t border-slate-100 pt-6">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-blue-700 dark:hover:text-blue-200 transition-colors" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="text-sm font-medium">Aide</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-error hover:bg-error-container/20 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="text-sm font-medium">Déconnexion</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- TopNavBar Shell -->
+<header class="fixed top-0 right-0 left-64 z-30 h-16 glass-nav border-b border-slate-100 flex items-center justify-between px-8">
+<div class="flex items-center gap-4 bg-surface-container-lowest px-4 py-2 rounded-2xl w-96">
+<span class="material-symbols-outlined text-outline">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full" placeholder="Rechercher un stage, une entreprise..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-slate-500 hover:text-primary transition-all">
+<span class="material-symbols-outlined">mail</span>
+</button>
+<button class="text-slate-500 hover:text-primary transition-all">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="h-8 w-px bg-slate-200"></div>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-2xl text-sm font-semibold hover:bg-secondary transition-all shadow-md">
+                Déposer CV
+            </button>
+<div class="flex items-center gap-3 cursor-pointer group">
+<img class="w-10 h-10 rounded-full object-cover ring-2 ring-transparent group-hover:ring-primary/20 transition-all" data-alt="professional portrait of a young West African student with a confident smile, clean studio background, professional lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjpWkwjW0QfPrNFP0qkll68ta4BXWlsBJ9237kJS98eii_73aHm8WlCvwNf60-n-ejFjJ-wJVrfMkoYSM_Gq0PFWXjCl45DtJOuJtGpJixG-SeXWXNyQk0lo_4Vo0ebN6BsPfiyr9xMnoEkHhaFEkeyHeZcQmuBwmkh3ELshM_o-JlmHH_QQZMHxRVEM3MUvz0YNTd5r2LtQO55iY_bndgwEBFljHQP0LOlfD80UW4oMUFzuchuWqjgbRIz5-a_HB4Lv5b67gcBvFZ"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-24 pb-12 px-12 max-w-7xl mx-auto">
+<!-- Hero Header Section -->
+<section class="mb-12 flex flex-col md:flex-row items-end justify-between gap-8">
+<div class="flex items-center gap-8">
+<div class="relative">
+<img class="w-40 h-40 rounded-2xl object-cover shadow-xl border-4 border-white" data-alt="headshot of a smiling young Burkinabè professional woman against a minimal grey background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBG-R6Zhc_bpWtkMpLl5OGoqziwHa5L1YpWjeTXCF5lXgGJm1FS-ISArUttp-09xNlqALNKoyGpn0dBZ7kz41LjEXZZtsZg3hD6ie1kpVb4e88hAEY-oPVBKQA3PsouUHKS5BzXk9i-QedE4qZi_No1PQ6DXPsPOz5UVUeCLHlNXqeCkOzEJUD8DHda6Tfg4PW2n46sdThx0rX2HVcnxkcqH66hU85lJnXOsdSjDHvp-km6EhotqhdoOUFA_T5qEDosGdJS4EtRecdc"/>
+<div class="absolute -bottom-2 -right-2 bg-primary text-on-primary p-2 rounded-xl shadow-lg">
+<span class="material-symbols-outlined text-sm">edit</span>
+</div>
+</div>
+<div>
+<span class="text-xs font-bold tracking-[0.2em] text-secondary uppercase mb-2 block">Étudiant en Master II</span>
+<h1 class="text-5xl font-extrabold text-on-surface tracking-tight mb-2">Awa Traoré</h1>
+<div class="flex items-center gap-4 text-on-surface-variant">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span class="text-sm font-medium">Ouagadougou, Burkina Faso</span>
+</div>
+<div class="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="text-sm font-medium text-secondary">Profil Vérifié</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="bg-surface-container-highest px-6 py-3 rounded-2xl text-sm font-bold text-on-surface hover:bg-surface-variant transition-all">
+                    Partager Profil
+                </button>
+<button class="bg-primary text-on-primary px-8 py-3 rounded-2xl text-sm font-bold shadow-lg hover:shadow-primary/20 transition-all">
+                    Modifier le profil
+                </button>
+</div>
+</section>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Left Column: Academic & Personal -->
+<div class="col-span-12 lg:col-span-8 space-y-8">
+<!-- Personal Info Card -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl shadow-sm">
+<h3 class="text-xl font-bold text-on-surface mb-8 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">person_outline</span>
+                        À propos de moi
+                    </h3>
+<p class="text-on-surface-variant leading-relaxed text-lg mb-8">
+                        Étudiante passionnée par le développement logiciel et l'intelligence artificielle. Actuellement en Master 2 à l'Université Joseph Ki-Zerbo, je recherche un stage de fin d'études pour mettre mes compétences au service de l'innovation numérique au Burkina Faso.
+                    </p>
+<div class="grid grid-cols-2 gap-y-6 gap-x-12 border-t border-slate-50 pt-8">
+<div>
+<span class="text-xs font-semibold text-outline tracking-wider uppercase">Email</span>
+<p class="text-on-surface font-medium mt-1">awa.traore@email.bf</p>
+</div>
+<div>
+<span class="text-xs font-semibold text-outline tracking-wider uppercase">Téléphone</span>
+<p class="text-on-surface font-medium mt-1">+226 70 00 00 00</p>
+</div>
+<div>
+<span class="text-xs font-semibold text-outline tracking-wider uppercase">Langues</span>
+<p class="text-on-surface font-medium mt-1">Français (Natif), Anglais (B2), Moore</p>
+</div>
+<div>
+<span class="text-xs font-semibold text-outline tracking-wider uppercase">Disponibilité</span>
+<p class="text-on-surface font-medium mt-1">Immédiate (6 mois)</p>
+</div>
+</div>
+</div>
+<!-- Academic Timeline -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl shadow-sm">
+<h3 class="text-xl font-bold text-on-surface mb-10 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">school</span>
+                        Parcours Académique
+                    </h3>
+<div class="relative space-y-12 before:absolute before:inset-0 before:ml-5 before:h-full before:w-0.5 before:bg-slate-100">
+<!-- Timeline Item 1 -->
+<div class="relative flex items-start pl-12">
+<div class="absolute left-0 flex h-10 w-10 items-center justify-center rounded-full bg-primary-fixed text-primary ring-8 ring-white">
+<span class="material-symbols-outlined text-xl">workspace_premium</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-lg font-bold text-on-surface">Master en Informatique (Génie Logiciel)</h4>
+<span class="bg-secondary-fixed text-on-secondary-fixed-variant px-3 py-1 rounded-full text-xs font-bold">En cours</span>
+</div>
+<p class="text-secondary font-semibold mb-2">Université Joseph Ki-Zerbo</p>
+<p class="text-on-surface-variant text-sm leading-relaxed">Spécialisation dans les architectures microservices et le Cloud Computing. Major de promotion au premier semestre.</p>
+<p class="text-outline text-xs mt-3 font-medium tracking-wide">2022 — Présent</p>
+</div>
+</div>
+<!-- Timeline Item 2 -->
+<div class="relative flex items-start pl-12">
+<div class="absolute left-0 flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-500 ring-8 ring-white">
+<span class="material-symbols-outlined text-xl">history_edu</span>
+</div>
+<div class="flex-1">
+<h4 class="text-lg font-bold text-on-surface mb-2">Licence en Sciences Informatiques</h4>
+<p class="text-secondary font-semibold mb-2">ESI (École Supérieure d'Informatique)</p>
+<p class="text-on-surface-variant text-sm leading-relaxed">Formation polyvalente en algorithmique, bases de données et réseaux. Projet de fin de cycle : Application mobile de gestion agricole.</p>
+<p class="text-outline text-xs mt-3 font-medium tracking-wide">2019 — 2022</p>
+</div>
+</div>
+<!-- Timeline Item 3 -->
+<div class="relative flex items-start pl-12">
+<div class="absolute left-0 flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-500 ring-8 ring-white">
+<span class="material-symbols-outlined text-xl">done_all</span>
+</div>
+<div class="flex-1">
+<h4 class="text-lg font-bold text-on-surface mb-2">Baccalauréat Série C</h4>
+<p class="text-secondary font-semibold mb-2">Lycée Philippe Zinda Kaboré</p>
+<p class="text-outline text-xs mt-3 font-medium tracking-wide">2019</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Skills & Documents -->
+<div class="col-span-12 lg:col-span-4 space-y-8">
+<!-- Skills Card -->
+<div class="bg-primary-container p-8 rounded-2xl shadow-xl text-white">
+<h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined">psychology</span>
+                        Compétences
+                    </h3>
+<div class="space-y-6">
+<div>
+<span class="text-xs font-bold text-on-primary-container uppercase tracking-widest block mb-3">Développement</span>
+<div class="flex flex-wrap gap-2">
+<span class="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-medium backdrop-blur-sm border border-white/10">Java / Spring Boot</span>
+<span class="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-medium backdrop-blur-sm border border-white/10">React.js</span>
+<span class="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-medium backdrop-blur-sm border border-white/10">Python</span>
+<span class="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-medium backdrop-blur-sm border border-white/10">Flutter</span>
+</div>
+</div>
+<div>
+<span class="text-xs font-bold text-on-primary-container uppercase tracking-widest block mb-3">Outils &amp; Cloud</span>
+<div class="flex flex-wrap gap-2">
+<span class="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-medium backdrop-blur-sm border border-white/10">Docker</span>
+<span class="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-medium backdrop-blur-sm border border-white/10">Git / GitHub</span>
+<span class="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-medium backdrop-blur-sm border border-white/10">AWS Essentials</span>
+</div>
+</div>
+<div>
+<span class="text-xs font-bold text-on-primary-container uppercase tracking-widest block mb-3">Soft Skills</span>
+<div class="flex flex-wrap gap-2">
+<span class="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-medium backdrop-blur-sm border border-white/10">Agilité Scrum</span>
+<span class="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-medium backdrop-blur-sm border border-white/10">Esprit d'équipe</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Documents Card -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl shadow-sm">
+<h3 class="text-xl font-bold text-on-surface mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">folder_open</span>
+                        Mes Documents
+                    </h3>
+<div class="space-y-4">
+<!-- CV -->
+<div class="group flex items-center justify-between p-4 rounded-xl bg-surface-container-low hover:bg-surface-container hover:shadow-sm transition-all cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-800 flex items-center justify-center">
+<span class="material-symbols-outlined">picture_as_pdf</span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Curriculum Vitae</p>
+<p class="text-[10px] text-outline uppercase font-semibold">Mis à jour hier</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">download</span>
+</div>
+<!-- Lettre de motivation -->
+<div class="group flex items-center justify-between p-4 rounded-xl bg-surface-container-low hover:bg-surface-container hover:shadow-sm transition-all cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Lettre de Motivation</p>
+<p class="text-[10px] text-outline uppercase font-semibold">PDF • 120 KB</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">visibility</span>
+</div>
+<!-- Certifications -->
+<div class="group flex items-center justify-between p-4 rounded-xl bg-surface-container-low hover:bg-surface-container hover:shadow-sm transition-all cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center">
+<span class="material-symbols-outlined">military_tech</span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Certificats &amp; Diplômes</p>
+<p class="text-[10px] text-outline uppercase font-semibold">ZIP • 4.5 MB</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">download</span>
+</div>
+</div>
+<button class="w-full mt-6 py-3 border-2 border-dashed border-outline-variant rounded-xl text-outline text-xs font-bold uppercase tracking-wider hover:border-primary hover:text-primary transition-all">
+                        + Ajouter un document
+                    </button>
+</div>
+<!-- Profile Completion Widget -->
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-50">
+<div class="flex justify-between items-center mb-4">
+<span class="text-sm font-bold text-on-surface">Complétion du profil</span>
+<span class="text-primary font-black">85%</span>
+</div>
+<div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 85%"></div>
+</div>
+<p class="text-[11px] text-on-surface-variant mt-4 leading-relaxed">
+                        Complétez vos <strong class="text-primary">références professionnelles</strong> pour atteindre 100% et booster votre visibilité auprès des recruteurs.
+                    </p>
+</div>
+</div>
+</div>
+</main>
+</body></html>

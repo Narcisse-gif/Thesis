@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import logo from '../assets/logo.png';
 
 export default function RegisterSelectionPage() {
   return (
@@ -7,7 +8,7 @@ export default function RegisterSelectionPage() {
       <header className="w-full px-6 py-4 flex items-center justify-between bg-white/40 dark:bg-background-dark/40 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-800/50 sticky top-0 z-50">
         <div className="flex items-center gap-4">
           <div className="h-10 w-auto">
-            <img alt="StageLink Burkina Logo" className="h-full object-contain filter drop-shadow-sm" src="https://lh3.googleusercontent.com/aida/ADBb0uh1YSnwGNNGuIzY9RBpdJjIr-ijXLYWWRvnakidV3VjbmlGQ332MnN-iKlDnUPqmJtFxa4Ssf7BJ7YqiE-Bu9B6xJ2DjaJyROVDPKE2M8XdOZygSpoIvmhTOvMwjgdcfv_IEa8XKESlpXTkQtCdJD2dECrWKg34hp5O8DtW4Bw7SSC2ox0yxQfWgW_Oe-wqifDOhYiHIyBn8vMlIaigkSPnAMwYmvCSvbLtX4jUTzOZIhVjVZ5sFfgNGwWXDlKrLKwwr2fitRlitNg" />
+            <img alt="StageLink Burkina Logo" className="h-full object-contain filter drop-shadow-sm" src={logo} />
           </div>
           <div className="hidden sm:block">
             <h1 className="text-xl font-bold tracking-tight"><span className="text-black dark:text-white">StageLink</span> <span className="text-primary">Burkina</span></h1>

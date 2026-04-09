@@ -1,4 +1,4 @@
-import StudentDashboardLayout from '../components/StudentDashboardLayout';
+﻿import StudentDashboardLayout from '../components/StudentDashboardLayout';
 import { useNavigate } from 'react-router-dom';
 
 export default function StudentDashboardPage() {
@@ -6,7 +6,7 @@ export default function StudentDashboardPage() {
   return (
     <StudentDashboardLayout>
       {/* Stats Widgets */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100/50 flex items-center justify-between group hover:shadow-md transition-all duration-500">
           <div className="space-y-2">
             <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em]">Candidatures</p>
@@ -34,6 +34,15 @@ export default function StudentDashboardPage() {
             <span className="material-symbols-outlined !text-2xl" style={{ fontVariationSettings: "'wght' 300, 'FILL' 1" }}>verified</span>
           </div>
         </div>
+        <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100/50 flex items-center justify-between group hover:shadow-md transition-all duration-500">
+          <div className="space-y-2">
+            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em]">Refusées</p>
+            <h3 className="text-4xl font-extrabold text-slate-900">03</h3>
+          </div>
+          <div className="h-14 w-14 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-600 transition-all duration-300">
+            <span className="material-symbols-outlined !text-2xl" style={{ fontVariationSettings: "'wght' 300" }}>cancel</span>
+          </div>
+        </div>
       </section>
 
       {/* Main Grid */}
@@ -55,7 +64,7 @@ export default function StudentDashboardPage() {
                 <img alt="Orange" className="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzQFQ3MVuViO1GCsXkSY4V4Mf7C6unAifZZ2JQ5O5bLXINVIRVVNHAvd-Dzy3cptvzRgBtvxpeUVC4Ut1Wqb1JNfio7ciwr_pq3VN5rQFZN2xaiGQLyVrfLRUuhE-C9XkDp0kUYTVkbNzAVTCQvyQ7T51iyESlDSmz_mwnDK_h8YOYQ7wlZXjFb3HDPzncHILft5N62OZZyqNHSYUBP5lDqWxRwS4FbJqj0E1ZxVaqRaTYes-v-A7f2cjkbYo5TdgAcXGKrTBX8mN-" />
               </div>
               <div className="flex-1">
-                <h4 className="font-bold text-slate-900 text-[16px] group-hover:text-primary transition-colors">Développeur Full-stack</h4>
+                <h4 className="font-bold text-slate-900 text-[16px] group-hover:text-primary transition-colors">D├®veloppeur Full-stack</h4>
                 <div className="flex flex-wrap items-center gap-3 mt-1">
                   <span className="text-[13px] text-slate-500 font-medium">Orange Burkina</span>
                   <span className="hidden sm:block w-1 h-1 bg-slate-300 rounded-full"></span>
@@ -63,7 +72,7 @@ export default function StudentDashboardPage() {
                 </div>
                 <div className="flex items-center gap-1.5 mt-3">
                   <span className="material-symbols-outlined text-slate-400 !text-[14px]">event</span>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Postulé le 12 Oct.</span>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Postul├® le 12 Oct.</span>
                 </div>
               </div>
               <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end mt-2 sm:mt-0">
@@ -88,7 +97,7 @@ export default function StudentDashboardPage() {
                 </div>
                 <div className="flex items-center gap-1.5 mt-3">
                   <span className="material-symbols-outlined text-slate-400 !text-[14px]">event</span>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Postulé le 05 Oct.</span>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Postul├® le 05 Oct.</span>
                 </div>
               </div>
               <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end mt-2 sm:mt-0">
@@ -106,10 +115,10 @@ export default function StudentDashboardPage() {
               </div>
               <div className="flex-1">
                 <h4 className="font-bold text-slate-500 text-[16px]">Marketing Digital</h4>
-                <p className="text-[13px] text-slate-400 font-medium mt-1">Digital Agency • Ouagadougou</p>
+                <p className="text-[13px] text-slate-400 font-medium mt-1">Digital Agency ÔÇó Ouagadougou</p>
               </div>
               <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end mt-2 sm:mt-0">
-                <span className="px-4 py-1.5 rounded-full bg-slate-100 text-slate-400 text-[10px] font-bold uppercase tracking-widest">Expiré</span>
+                <span className="px-4 py-1.5 rounded-full bg-slate-100 text-slate-400 text-[10px] font-bold uppercase tracking-widest">Expir├®</span>
                 <button className="p-2 text-slate-200">
                   <span className="material-symbols-outlined">more_horiz</span>
                 </button>
@@ -128,7 +137,7 @@ export default function StudentDashboardPage() {
                 <h3 className="text-[18px] font-bold tracking-tight">Presque fini !</h3>
                 <span className="material-symbols-outlined text-white/40 !text-xl">help</span>
               </div>
-              <p className="text-[13px] text-blue-100/70 mb-10 leading-relaxed font-medium">Ton profil est complété à <span className="font-bold text-white">85%</span>. Ajoute une certification pour te démarquer.</p>
+              <p className="text-[13px] text-blue-100/70 mb-10 leading-relaxed font-medium">Ton profil est compl├®t├® ├á <span className="font-bold text-white">85%</span>. Ajoute une certification pour te d├®marquer.</p>
               
               <div className="relative mb-10">
                 <div className="overflow-hidden h-2 flex rounded-full bg-white/10">
@@ -144,7 +153,7 @@ export default function StudentDashboardPage() {
               </div>
               
               <button className="w-full bg-white text-primary font-bold py-4 rounded-2xl hover:bg-blue-50 transition-all active:scale-[0.98] text-[14px] shadow-lg shadow-black/5" onClick={() => navigate('/etudiant/profil')}>
-                Compléter mon profil
+                Compl├®ter mon profil
               </button>
             </div>
           </div>
@@ -164,8 +173,8 @@ export default function StudentDashboardPage() {
                     <img alt="Moov" className="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQK1UykHeauswjuQ95yZURUFBZI1JXsZWYZ1lhPGOB_4Hfzlse7GosvXeYBmjqzsD3HNuxQagWPeSZyFzkMptt_8firAEszIv_uOtOh6YQ_waDy8ZywWKTMXX1wCzOdwT6Y7gO9sZY1WZSvTxwHJhNCXbUco95zv_Kj5rmPIWtrSihRk4xOFiHScUIhc8OgswFhxAvW7YEoS6NcVn3LFBXEK7LV-U-0_TG5ufm_324poKT3TJolBWP_uf9UKZdV0vVg1_jGpN493S6" />
                   </div>
                   <div className="flex-1 w-full">
-                    <h4 className="font-bold text-[14px] text-slate-900 group-hover:text-primary transition-colors">Ingénieur Réseaux</h4>
-                    <p className="text-[12px] text-slate-500 font-medium">Moov Africa • Ouaga</p>
+                    <h4 className="font-bold text-[14px] text-slate-900 group-hover:text-primary transition-colors">Ing├®nieur R├®seaux</h4>
+                    <p className="text-[12px] text-slate-500 font-medium">Moov Africa ÔÇó Ouaga</p>
                     <div className="flex flex-wrap items-center justify-between mt-4 pt-4 border-t border-slate-50">
                       <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Il y a 2j</span>
                       <div className="text-[12px] font-bold text-primary flex items-center gap-1.5 group-hover:translate-x-1 transition-transform">
@@ -185,7 +194,7 @@ export default function StudentDashboardPage() {
                   </div>
                   <div className="flex-1 w-full">
                     <h4 className="font-bold text-[14px] text-slate-900 group-hover:text-primary transition-colors">Tech Maintenance</h4>
-                    <p className="text-[12px] text-slate-500 font-medium">SONABEL • Koudougou</p>
+                    <p className="text-[12px] text-slate-500 font-medium">SONABEL ÔÇó Koudougou</p>
                     <div className="flex flex-wrap items-center justify-between mt-4 pt-4 border-t border-slate-50">
                       <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-2 py-0.5 rounded">Nouveau</span>
                       <div className="text-[12px] font-bold text-primary flex items-center gap-1.5 group-hover:translate-x-1 transition-transform">

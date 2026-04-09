@@ -7,10 +7,10 @@ export default function StudentProfilePage() {
       <section className="mb-12 flex flex-col md:flex-row items-end justify-between gap-8">
         <div className="flex flex-col sm:flex-row items-center sm:items-end gap-8 text-center sm:text-left">
           <div className="relative">
-            <img 
-              className="w-40 h-40 rounded-3xl object-cover shadow-xl border-4 border-white" 
-              alt="Awa Traoré" 
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBG-R6Zhc_bpWtkMpLl5OGoqziwHa5L1YpWjeTXCF5lXgGJm1FS-ISArUttp-09xNlqALNKoyGpn0dBZ7kz41LjEXZZtsZg3hD6ie1kpVb4e88hAEY-oPVBKQA3PsouUHKS5BzXk9i-QedE4qZi_No1PQ6DXPsPOz5UVUeCLHlNXqeCkOzEJUD8DHda6Tfg4PW2n46sdThx0rX2HVcnxkcqH66hU85lJnXOsdSjDHvp-km6EhotqhdoOUFA_T5qEDosGdJS4EtRecdc" 
+            <img
+              className="w-40 h-40 rounded-3xl object-cover shadow-xl border-4 border-white"
+              alt="Awa Traoré"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBG-R6Zhc_bpWtkMpLl5OGoqziwHa5L1YpWjeTXCF5lXgGJm1FS-ISArUttp-09xNlqALNKoyGpn0dBZ7kz41LjEXZZtsZg3hD6ie1kpVb4e88hAEY-oPVBKQA3PsouUHKS5BzXk9i-QedE4qZi_No1PQ6DXPsPOz5UVUeCLHlNXqeCkOzEJUD8DHda6Tfg4PW2n46sdThx0rX2HVcnxkcqH66hU85lJnXOsdSjDHvp-km6EhotqhdoOUFA_T5qEDosGdJS4EtRecdc"
             />
             <button className="absolute -bottom-2 -right-2 bg-primary text-white p-2.5 rounded-xl shadow-lg hover:bg-blue-800 transition-colors">
               <span className="material-symbols-outlined !text-sm">edit</span>
@@ -33,22 +33,14 @@ export default function StudentProfilePage() {
           </div>
         </div>
         <div className="flex gap-3 w-full md:w-auto">
-          <button className="flex-1 md:flex-none bg-white border border-slate-200 px-6 py-3 rounded-2xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition-all shadow-sm">
-            Partager Profil
-          </button>
           <button className="flex-1 md:flex-none bg-primary text-white px-8 py-3 rounded-2xl text-sm font-bold shadow-lg shadow-primary/20 hover:bg-blue-800 transition-all hover:-translate-y-0.5">
             Modifier le profil
           </button>
         </div>
       </section>
 
-      {/* Bento Grid Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
-        {/* Left Column: Academic & Personal */}
         <div className="lg:col-span-8 space-y-8">
-          
-          {/* Personal Info Card */}
           <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100/50">
             <h3 className="text-xl font-bold text-slate-900 mb-8 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary">person_outline</span>
@@ -77,7 +69,6 @@ export default function StudentProfilePage() {
             </div>
           </div>
 
-          {/* Academic Timeline */}
           <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100/50">
             <div className="flex justify-between items-center mb-10">
               <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
@@ -88,10 +79,8 @@ export default function StudentProfilePage() {
                 <span className="material-symbols-outlined">add</span>
               </button>
             </div>
-            
+
             <div className="relative space-y-10 sm:space-y-12 before:absolute before:inset-0 before:ml-5 before:h-full before:w-0.5 before:bg-slate-100">
-              
-              {/* Timeline Item 1 */}
               <div className="relative flex items-start pl-12">
                 <div className="absolute left-0 flex h-10 w-10 items-center justify-center rounded-full bg-blue-50 text-primary ring-8 ring-white">
                   <span className="material-symbols-outlined !text-xl">workspace_premium</span>
@@ -107,7 +96,6 @@ export default function StudentProfilePage() {
                 </div>
               </div>
 
-              {/* Timeline Item 2 */}
               <div className="relative flex items-start pl-12">
                 <div className="absolute left-0 flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-500 ring-8 ring-white">
                   <span className="material-symbols-outlined !text-xl">history_edu</span>
@@ -120,7 +108,6 @@ export default function StudentProfilePage() {
                 </div>
               </div>
 
-              {/* Timeline Item 3 */}
               <div className="relative flex items-start pl-12">
                 <div className="absolute left-0 flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-500 ring-8 ring-white">
                   <span className="material-symbols-outlined !text-xl">done_all</span>
@@ -131,15 +118,11 @@ export default function StudentProfilePage() {
                   <p className="text-slate-400 text-[11px] font-bold tracking-widest uppercase">2019</p>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
 
-        {/* Right Column: Skills & Documents */}
         <div className="lg:col-span-4 space-y-8">
-          
-          {/* Skills Card */}
           <div className="bg-primary p-8 rounded-[2rem] shadow-xl shadow-primary/20 text-white relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
             <div className="relative z-10">
@@ -157,39 +140,37 @@ export default function StudentProfilePage() {
                 <div>
                   <span className="text-[10px] font-bold text-blue-200 uppercase tracking-widest block mb-3">Développement</span>
                   <div className="flex flex-wrap gap-2">
-                    <span className="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-semibold backdrop-blur-sm border border-white/10">Java / Spring Boot</span>
-                    <span className="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-semibold backdrop-blur-sm border border-white/10">React.js</span>
-                    <span className="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-semibold backdrop-blur-sm border border-white/10">Python</span>
-                    <span className="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-semibold backdrop-blur-sm border border-white/10">Flutter</span>
+                    <span className="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-semibold border border-white/10">Java / Spring Boot</span>
+                    <span className="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-semibold border border-white/10">React.js</span>
+                    <span className="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-semibold border border-white/10">Python</span>
+                    <span className="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-semibold border border-white/10">Flutter</span>
                   </div>
                 </div>
                 <div>
                   <span className="text-[10px] font-bold text-blue-200 uppercase tracking-widest block mb-3">Outils & Cloud</span>
                   <div className="flex flex-wrap gap-2">
-                    <span className="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-semibold backdrop-blur-sm border border-white/10">Docker</span>
-                    <span className="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-semibold backdrop-blur-sm border border-white/10">Git / GitHub</span>
-                    <span className="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-semibold backdrop-blur-sm border border-white/10">AWS Essentials</span>
+                    <span className="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-semibold border border-white/10">Docker</span>
+                    <span className="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-semibold border border-white/10">Git / GitHub</span>
+                    <span className="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-semibold border border-white/10">AWS Essentials</span>
                   </div>
                 </div>
                 <div>
                   <span className="text-[10px] font-bold text-blue-200 uppercase tracking-widest block mb-3">Soft Skills</span>
                   <div className="flex flex-wrap gap-2">
-                    <span className="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-semibold backdrop-blur-sm border border-white/10">Agilité Scrum</span>
-                    <span className="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-semibold backdrop-blur-sm border border-white/10">Travail en équipe</span>
+                    <span className="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-semibold border border-white/10">Agilité Scrum</span>
+                    <span className="bg-white/10 text-white px-3 py-1.5 rounded-lg text-xs font-semibold border border-white/10">Travail en équipe</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Documents Card */}
           <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100/50">
             <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary">folder_open</span>
               Mes Documents
             </h3>
             <div className="space-y-4">
-              {/* CV */}
               <div className="group flex items-center justify-between p-4 rounded-2xl bg-slate-50 hover:bg-white hover:shadow-md transition-all duration-300 border border-transparent hover:border-slate-100 cursor-pointer">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
@@ -205,7 +186,6 @@ export default function StudentProfilePage() {
                 </button>
               </div>
 
-              {/* Lettre de motivation */}
               <div className="group flex items-center justify-between p-4 rounded-2xl bg-slate-50 hover:bg-white hover:shadow-md transition-all duration-300 border border-transparent hover:border-slate-100 cursor-pointer">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-xl bg-slate-200 text-slate-600 flex items-center justify-center">
@@ -221,7 +201,6 @@ export default function StudentProfilePage() {
                 </button>
               </div>
 
-              {/* Certifications */}
               <div className="group flex items-center justify-between p-4 rounded-2xl bg-slate-50 hover:bg-white hover:shadow-md transition-all duration-300 border border-transparent hover:border-slate-100 cursor-pointer">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-xl bg-slate-200 text-slate-600 flex items-center justify-center">
@@ -243,7 +222,6 @@ export default function StudentProfilePage() {
             </button>
           </div>
 
-          {/* Profile Completion Widget */}
           <div className="bg-gradient-to-br from-blue-50 to-white p-6 rounded-3xl shadow-sm border border-blue-100/50 relative overflow-hidden">
             <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl"></div>
             <div className="flex justify-between items-center mb-4 relative z-10">
@@ -251,15 +229,12 @@ export default function StudentProfilePage() {
               <span className="text-primary font-black">85%</span>
             </div>
             <div className="w-full h-2.5 bg-slate-200/50 rounded-full overflow-hidden relative z-10">
-              <div className="h-full bg-primary rounded-full relative overflow-hidden" style={{ width: '85%' }}>
-                <div className="absolute inset-0 bg-white/20 animate-[shimmer_2s_infinite] -translate-x-full"></div>
-              </div>
+              <div className="h-full bg-primary rounded-full" style={{ width: '85%' }}></div>
             </div>
             <p className="text-[12px] text-slate-600 mt-4 leading-relaxed relative z-10">
               Complétez vos <strong className="text-primary">références professionnelles</strong> pour atteindre 100% et booster votre visibilité auprès des recruteurs.
             </p>
           </div>
-
         </div>
       </div>
     </StudentDashboardLayout>

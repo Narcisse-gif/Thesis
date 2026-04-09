@@ -1,4 +1,4 @@
-import AdminDashboardLayout from '../components/AdminDashboardLayout';
+﻿import AdminDashboardLayout from '../components/AdminDashboardLayout';
 
 export default function AdminDashboardPage() {
   return (
@@ -153,7 +153,7 @@ export default function AdminDashboardPage() {
                 <img alt="User" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgESvMY-v_4Rt43ZAfVwE5eyu9EDcNn1SRMG5gubaZb--MwzhwKe40H7rTHijWqK6MLxcRKbbX9fwElIfJHU2gyaolrVRL7VQpOkvAIz4jjg2rw7z8YkTfuYY8vqVTsskjUoi8ZqTTDF19YUhCtoSBWuS32VAsclvexgrU50v1ibjzBcERTE_OjuutxVozpuz72_eMeStIYLBWKYDOln16CUTr5Lo0MBWe7YaNjU-zX3X3u4G_HNBTe1v8DSPFno1qFzYOGtLvsmgB" />
               </div>
               <div>
-                <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">Moussa Traoré</p>
+                <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">Moussa Traor├®</p>
                 <p className="text-[13px] text-slate-500 font-medium leading-tight mt-1">Verified their student account via University ID.</p>
                 <span className="text-[10px] font-bold tracking-widest text-slate-400 bg-slate-50 border border-slate-100 px-2 py-0.5 rounded-md mt-2 inline-block uppercase">2 Hours Ago</span>
               </div>

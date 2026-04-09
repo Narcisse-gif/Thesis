@@ -1,4 +1,4 @@
-import EnterpriseDashboardLayout from '../components/EnterpriseDashboardLayout';
+﻿import EnterpriseDashboardLayout from '../components/EnterpriseDashboardLayout';
 
 export default function EnterpriseDashboardPage() {
   return (
@@ -6,7 +6,7 @@ export default function EnterpriseDashboardPage() {
       {/* Welcome Section */}
       <section className="mb-10 text-center sm:text-left">
         <h2 className="text-3xl font-bold tracking-tight text-primary mb-2">Bonjour, Cina Burkina SA</h2>
-        <p className="text-slate-500 text-[16px] sm:text-lg">Voici l'état actuel de vos recrutements à Ouagadougou.</p>
+        <p className="text-slate-500 text-[16px] sm:text-lg">Voici l'├®tat actuel de vos recrutements ├á Ouagadougou.</p>
       </section>
 
       {/* Stats Bento Grid */}
@@ -32,7 +32,7 @@ export default function EnterpriseDashboardPage() {
             </div>
             <span className="text-[12px] font-bold text-blue-600 bg-blue-50 border border-blue-100/50 px-2.5 py-1 rounded-lg">+5</span>
           </div>
-          <p className="text-slate-500 text-sm font-medium">Candidatures reçues</p>
+          <p className="text-slate-500 text-sm font-medium">Candidatures re├ºues</p>
           <h3 className="text-3xl font-bold text-slate-900 mt-1.5">148</h3>
         </div>
 
@@ -44,7 +44,7 @@ export default function EnterpriseDashboardPage() {
             </div>
             <span className="text-[12px] font-bold text-slate-700 bg-slate-50 border border-slate-200/50 px-2.5 py-1 rounded-lg">Aujourd'hui</span>
           </div>
-          <p className="text-slate-500 text-sm font-medium">Entretiens prévus</p>
+          <p className="text-slate-500 text-sm font-medium">Entretiens pr├®vus</p>
           <h3 className="text-3xl font-bold text-slate-900 mt-1.5">8</h3>
         </div>
 
@@ -55,7 +55,7 @@ export default function EnterpriseDashboardPage() {
               <span className="material-symbols-outlined !text-[24px]">archive</span>
             </div>
           </div>
-          <p className="text-slate-500 text-sm font-medium">Offres archivées</p>
+          <p className="text-slate-500 text-sm font-medium">Offres archiv├®es</p>
           <h3 className="text-3xl font-bold text-slate-900 mt-1.5">56</h3>
         </div>
 
@@ -64,10 +64,10 @@ export default function EnterpriseDashboardPage() {
       {/* Main Dashboard Layout */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
         
-        {/* Candidatures Récentes Section */}
+        {/* Candidatures R├®centes Section */}
         <div className="xl:col-span-2 space-y-6">
           <div className="flex items-center justify-between px-2">
-            <h3 className="text-[20px] font-bold text-slate-900">Candidatures Récentes</h3>
+            <h3 className="text-[20px] font-bold text-slate-900">Candidatures R├®centes</h3>
             <button className="text-[14px] font-semibold text-primary hover:text-blue-800 transition-colors">Voir tout</button>
           </div>
           
@@ -88,14 +88,14 @@ export default function EnterpriseDashboardPage() {
                   <tr className="hover:bg-slate-50 transition-colors group">
                     <td className="px-6 py-5">
                       <div className="flex items-center gap-4">
-                        <img className="w-10 h-10 rounded-full object-cover" alt="Awa Ouédraogo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMdaQs9jDUAf3Mob27C2S78sKPEkKONJoNB2dHciWUs5ELxuhAh4urNyjb-k6ktzVVZGdMWzQZl42WNXSayw2c4xK4q-4StP_mN6dSreflose_YPN7_wEHrVePDCzfBAxFM8_bMWTOsdM8UWRFItuTZ1uVx1xki-odsB6_0evlmFP_pg7dwIyzmEbaVp3amtncE0YCg5Ij42uNjhJ_Q0CCpj1OfA2GsItfgciEKYWS84J_ZkZjKSu-hB0KCsVXC3RfHDJreoC6UXYy" />
+                        <img className="w-10 h-10 rounded-full object-cover" alt="Awa Ou├®draogo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMdaQs9jDUAf3Mob27C2S78sKPEkKONJoNB2dHciWUs5ELxuhAh4urNyjb-k6ktzVVZGdMWzQZl42WNXSayw2c4xK4q-4StP_mN6dSreflose_YPN7_wEHrVePDCzfBAxFM8_bMWTOsdM8UWRFItuTZ1uVx1xki-odsB6_0evlmFP_pg7dwIyzmEbaVp3amtncE0YCg5Ij42uNjhJ_Q0CCpj1OfA2GsItfgciEKYWS84J_ZkZjKSu-hB0KCsVXC3RfHDJreoC6UXYy" />
                         <div>
-                          <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">Awa Ouédraogo</p>
+                          <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">Awa Ou├®draogo</p>
                           <p className="text-[12px] text-slate-500">Ouagadougou, BF</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-5 text-[14px] text-slate-600 font-medium">Développeur Backend</td>
+                    <td className="px-6 py-5 text-[14px] text-slate-600 font-medium">D├®veloppeur Backend</td>
                     <td className="px-6 py-5 text-[14px] text-slate-500">Il y a 2h</td>
                     <td className="px-6 py-5">
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-100/50 uppercase tracking-wider">Nouveau</span>
@@ -110,9 +110,9 @@ export default function EnterpriseDashboardPage() {
                   <tr className="hover:bg-slate-50 transition-colors group">
                     <td className="px-6 py-5">
                       <div className="flex items-center gap-4">
-                        <img className="w-10 h-10 rounded-full object-cover" alt="Moussa Traoré" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBAWamYdotB-CXEtU_Qvswed_FhAkaoO8drPxQ1FAXcPIf8ERDHULMVCxlVABQOGGjmCYz4VAEd80KlD9N1ENCIZ-Z4fqFglGLaRp0ggue17Jor1K_lGsclZg3f2JqKk62Td0cV8xqMzV5fU5Xp7OkeheG14RG3AicaZNCDP6jotERF0x6_D6Lh8Wbjs4CwOpD69qS1ZmeVCDVpyvLZulzv6WZNXiVNWtgLHcMBySZPG0pJ0A7lfLioFaom5UBL-mHE86M0fCB5l2A" />
+                        <img className="w-10 h-10 rounded-full object-cover" alt="Moussa Traor├®" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBAWamYdotB-CXEtU_Qvswed_FhAkaoO8drPxQ1FAXcPIf8ERDHULMVCxlVABQOGGjmCYz4VAEd80KlD9N1ENCIZ-Z4fqFglGLaRp0ggue17Jor1K_lGsclZg3f2JqKk62Td0cV8xqMzV5fU5Xp7OkeheG14RG3AicaZNCDP6jotERF0x6_D6Lh8Wbjs4CwOpD69qS1ZmeVCDVpyvLZulzv6WZNXiVNWtgLHcMBySZPG0pJ0A7lfLioFaom5UBL-mHE86M0fCB5l2A" />
                         <div>
-                          <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">Moussa Traoré</p>
+                          <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">Moussa Traor├®</p>
                           <p className="text-[12px] text-slate-500">Bobo-Dioulasso, BF</p>
                         </div>
                       </div>
@@ -164,7 +164,7 @@ export default function EnterpriseDashboardPage() {
                     <td className="px-6 py-5 text-[14px] text-slate-600 font-medium">Chef de Projet IT</td>
                     <td className="px-6 py-5 text-[14px] text-slate-500">Il y a 1 sem</td>
                     <td className="px-6 py-5">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-500 text-white uppercase tracking-wider">Accepté</span>
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-500 text-white uppercase tracking-wider">Accept├®</span>
                     </td>
                     <td className="px-6 py-5 text-right">
                       <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm shadow-transparent hover:shadow-slate-200/50 border border-transparent hover:border-slate-100">
@@ -194,8 +194,8 @@ export default function EnterpriseDashboardPage() {
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100/50 hover:shadow-md hover:border-primary/20 transition-all group">
               <div className="flex justify-between items-start mb-5">
                 <div>
-                  <h4 className="font-bold text-slate-900 text-[16px] group-hover:text-primary transition-colors">Développeur Backend (Node.js)</h4>
-                  <p className="text-[12px] text-slate-500 mt-1">Publié il y a 5 jours • Stage de 6 mois</p>
+                  <h4 className="font-bold text-slate-900 text-[16px] group-hover:text-primary transition-colors">D├®veloppeur Backend (Node.js)</h4>
+                  <p className="text-[12px] text-slate-500 mt-1">Publi├® il y a 5 jours ÔÇó Stage de 6 mois</p>
                 </div>
                 <span className="p-2 flex items-center justify-center bg-blue-50 text-blue-600 rounded-xl">
                   <span className="material-symbols-outlined !text-[18px]">rocket</span>
@@ -210,7 +210,7 @@ export default function EnterpriseDashboardPage() {
                 <span className="text-[13px] font-semibold text-slate-600">15 candidatures</span>
               </div>
               <div className="flex gap-3">
-                <button className="flex-1 py-2.5 text-[13px] font-bold text-primary bg-primary/5 rounded-xl hover:bg-primary hover:text-white transition-all">Gérer l'offre</button>
+                <button className="flex-1 py-2.5 text-[13px] font-bold text-primary bg-primary/5 rounded-xl hover:bg-primary hover:text-white transition-all">G├®rer l'offre</button>
                 <button className="px-3.5 py-2.5 flex items-center justify-center rounded-xl bg-slate-50 text-[13px] font-bold border border-slate-100 text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-all">
                   <span className="material-symbols-outlined !text-[18px]">share</span>
                 </button>
@@ -222,7 +222,7 @@ export default function EnterpriseDashboardPage() {
               <div className="flex justify-between items-start mb-5">
                 <div>
                   <h4 className="font-bold text-slate-900 text-[16px] group-hover:text-primary transition-colors">Assistant Marketing Digital</h4>
-                  <p className="text-[12px] text-slate-500 mt-1">Publié il y a 10 jours • Stage de 3 mois</p>
+                  <p className="text-[12px] text-slate-500 mt-1">Publi├® il y a 10 jours ÔÇó Stage de 3 mois</p>
                 </div>
                 <span className="p-2 flex items-center justify-center bg-blue-50 text-blue-600 rounded-xl">
                   <span className="material-symbols-outlined !text-[18px]">rocket</span>
@@ -236,7 +236,7 @@ export default function EnterpriseDashboardPage() {
                 <span className="text-[13px] font-semibold text-slate-600">9 candidatures</span>
               </div>
               <div className="flex gap-3">
-                <button className="flex-1 py-2.5 text-[13px] font-bold text-primary bg-primary/5 rounded-xl hover:bg-primary hover:text-white transition-all">Gérer l'offre</button>
+                <button className="flex-1 py-2.5 text-[13px] font-bold text-primary bg-primary/5 rounded-xl hover:bg-primary hover:text-white transition-all">G├®rer l'offre</button>
                 <button className="px-3.5 py-2.5 flex items-center justify-center rounded-xl bg-slate-50 text-[13px] font-bold border border-slate-100 text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-all">
                   <span className="material-symbols-outlined !text-[18px]">share</span>
                 </button>

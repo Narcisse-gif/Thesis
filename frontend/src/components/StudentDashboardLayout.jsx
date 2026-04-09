@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
+import logo from '../assets/logo.png';
 
 export default function StudentDashboardLayout({ children }) {
   const location = useLocation();
@@ -11,11 +12,13 @@ export default function StudentDashboardLayout({ children }) {
       {/* Sidebar */}
       <aside className="hidden md:flex flex-col h-screen w-72 bg-white fixed left-0 top-0 py-12 px-8 z-50 border-r border-slate-100/60 shadow-sm">
         <div className="mb-16">
-          <Link to="/etudiant/dashboard" className="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary !text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>layers</span>
-            StageLink
+          <Link to="/etudiant/dashboard" className="flex items-center gap-3">
+            <img alt="StageLink Burkina Logo" className="h-10 w-auto object-contain" src={logo} />
+            <div>
+              <p className="text-xl font-bold tracking-tight text-slate-900">StageLink</p>
+              <p className="text-[10px] font-bold tracking-[0.2em] text-primary uppercase mt-1">BURKINA FASO</p>
+            </div>
           </Link>
-          <p className="text-[10px] font-bold tracking-[0.2em] text-primary uppercase mt-1">BURKINA FASO</p>
         </div>
         
         <nav className="flex-1 space-y-2">
@@ -25,22 +28,28 @@ export default function StudentDashboardLayout({ children }) {
             {isActive('/etudiant/dashboard') && <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[3px] h-[14px] bg-primary rounded-l-md"></div>}
           </Link>
           
+          <Link to="/etudiant/stages" className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-all group ${isActive('/etudiant/stages') ? 'text-primary bg-primary/[0.03] nav-active font-semibold' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 font-medium'}`}>
+            <span className={`material-symbols-outlined text-xl ${isActive('/etudiant/stages') ? '' : 'text-slate-400 group-hover:text-slate-600'}`}>school</span>
+            <span className="text-[14px]">Offres de stage</span>
+            {isActive('/etudiant/stages') && <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[3px] h-[14px] bg-primary rounded-l-md"></div>}
+          </Link>
+
+          <Link to="/etudiant/emplois" className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-all group ${isActive('/etudiant/emplois') ? 'text-primary bg-primary/[0.03] nav-active font-semibold' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 font-medium'}`}>
+            <span className={`material-symbols-outlined text-xl ${isActive('/etudiant/emplois') ? '' : 'text-slate-400 group-hover:text-slate-600'}`}>work</span>
+            <span className="text-[14px]">Offres d'emploi</span>
+            {isActive('/etudiant/emplois') && <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[3px] h-[14px] bg-primary rounded-l-md"></div>}
+          </Link>
+
+          <Link to="/etudiant/candidatures" className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-all group ${isActive('/etudiant/candidatures') ? 'text-primary bg-primary/[0.03] nav-active font-semibold' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 font-medium'}`}>
+            <span className={`material-symbols-outlined text-xl ${isActive('/etudiant/candidatures') ? '' : 'text-slate-400 group-hover:text-slate-600'}`}>description</span>
+            <span className="text-[14px]">Mes candidatures</span>
+            {isActive('/etudiant/candidatures') && <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[3px] h-[14px] bg-primary rounded-l-md"></div>}
+          </Link>
+
           <Link to="/etudiant/profil" className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-all group ${isActive('/etudiant/profil') ? 'text-primary bg-primary/[0.03] nav-active font-semibold' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 font-medium'}`}>
             <span className={`material-symbols-outlined text-xl ${isActive('/etudiant/profil') ? '' : 'text-slate-400 group-hover:text-slate-600'}`}>person</span>
             <span className="text-[14px]">Profil</span>
             {isActive('/etudiant/profil') && <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[3px] h-[14px] bg-primary rounded-l-md"></div>}
-          </Link>
-          
-          <Link to="/etudiant/candidatures" className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-all group ${isActive('/etudiant/candidatures') ? 'text-primary bg-primary/[0.03] nav-active font-semibold' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 font-medium'}`}>
-            <span className={`material-symbols-outlined text-xl ${isActive('/etudiant/candidatures') ? '' : 'text-slate-400 group-hover:text-slate-600'}`}>work</span>
-            <span className="text-[14px]">Candidatures</span>
-            {isActive('/etudiant/candidatures') && <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[3px] h-[14px] bg-primary rounded-l-md"></div>}
-          </Link>
-
-          <Link to="/etudiant/favoris" className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-all group ${isActive('/etudiant/favoris') ? 'text-primary bg-primary/[0.03] nav-active font-semibold' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 font-medium'}`}>
-            <span className={`material-symbols-outlined text-xl ${isActive('/etudiant/favoris') ? '' : 'text-slate-400 group-hover:text-slate-600'}`}>bookmark</span>
-            <span className="text-[14px]">Favoris</span>
-            {isActive('/etudiant/favoris') && <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[3px] h-[14px] bg-primary rounded-l-md"></div>}
           </Link>
 
           <Link to="/etudiant/parametres" className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-all group ${isActive('/etudiant/parametres') ? 'text-primary bg-primary/[0.03] nav-active font-semibold' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 font-medium'}`}>
@@ -51,15 +60,15 @@ export default function StudentDashboardLayout({ children }) {
         </nav>
         
         <div className="mt-auto pt-8 border-t border-slate-50">
-          <div className="bg-slate-50 rounded-2xl p-4 flex items-center gap-3">
+          <Link to="/conseils" className="bg-slate-50 rounded-2xl p-4 flex items-center gap-3 hover:bg-blue-50 transition-colors">
             <div className="h-10 w-10 rounded-xl bg-white flex items-center justify-center text-slate-400 shadow-sm">
               <span className="material-symbols-outlined !text-xl">help_outline</span>
             </div>
             <div>
               <p className="text-[12px] font-semibold text-slate-700">Aide & Support</p>
-              <p className="text-[10px] text-slate-400">Centre d'assistance</p>
+              <p className="text-[10px] text-slate-400">Aller vers les conseils</p>
             </div>
-          </div>
+          </Link>
         </div>
       </aside>
 
@@ -115,14 +124,20 @@ export default function StudentDashboardLayout({ children }) {
         <Link to="/etudiant/dashboard" className={`text-primary`}>
           <span className="material-symbols-outlined !text-2xl" style={{ fontVariationSettings: isActive('/etudiant/dashboard') ? "'FILL' 1" : "" }}>grid_view</span>
         </Link>
-        <Link to="/etudiant/candidatures" className="text-slate-400 hover:text-primary">
-          <span className="material-symbols-outlined !text-2xl" style={{ fontVariationSettings: isActive('/etudiant/candidatures') ? "'FILL' 1" : "" }}>work</span>
+        <Link to="/etudiant/stages" className="text-slate-400 hover:text-primary">
+          <span className="material-symbols-outlined !text-2xl" style={{ fontVariationSettings: isActive('/etudiant/stages') ? "'FILL' 1" : "" }}>school</span>
         </Link>
-        <Link to="/etudiant/favoris" className="text-slate-400 hover:text-primary">
-          <span className="material-symbols-outlined !text-2xl" style={{ fontVariationSettings: isActive('/etudiant/favoris') ? "'FILL' 1" : "" }}>bookmark</span>
+        <Link to="/etudiant/emplois" className="text-slate-400 hover:text-primary">
+          <span className="material-symbols-outlined !text-2xl" style={{ fontVariationSettings: isActive('/etudiant/emplois') ? "'FILL' 1" : "" }}>work</span>
+        </Link>
+        <Link to="/etudiant/candidatures" className="text-slate-400 hover:text-primary">
+          <span className="material-symbols-outlined !text-2xl" style={{ fontVariationSettings: isActive('/etudiant/candidatures') ? "'FILL' 1" : "" }}>description</span>
         </Link>
         <Link to="/etudiant/profil" className="text-slate-400 hover:text-primary">
           <span className="material-symbols-outlined !text-2xl" style={{ fontVariationSettings: isActive('/etudiant/profil') ? "'FILL' 1" : "" }}>person</span>
+        </Link>
+        <Link to="/etudiant/parametres" className="text-slate-400 hover:text-primary">
+          <span className="material-symbols-outlined !text-2xl" style={{ fontVariationSettings: isActive('/etudiant/parametres') ? "'FILL' 1" : "" }}>settings</span>
         </Link>
       </nav>
     </div>

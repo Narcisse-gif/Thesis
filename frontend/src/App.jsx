@@ -12,12 +12,17 @@ import StudentDashboardPage from './pages/StudentDashboardPage';
 import StudentApplicationsPage from './pages/StudentApplicationsPage';
 import StudentFavoritesPage from './pages/StudentFavoritesPage';
 import StudentProfilePage from './pages/StudentProfilePage';
+import StudentOffersSearchPage from './pages/StudentOffersSearchPage';
+import StudentSettingsPage from './pages/StudentSettingsPage';
 import EnterpriseDashboardPage from './pages/EnterpriseDashboardPage';
 import EnterpriseOffersPage from './pages/EnterpriseOffersPage';
 import EnterpriseCandidatesPage from './pages/EnterpriseCandidatesPage';
 import EnterpriseCreateOfferPage from './pages/EnterpriseCreateOfferPage';
+import EnterpriseMessagesPage from './pages/EnterpriseMessagesPage';
+import EnterpriseSettingsPage from './pages/EnterpriseSettingsPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import OfferDetailPage from './pages/OfferDetailPage';
+import InternshipDetailPage from './pages/InternshipDetailPage';
 import EnterpriseDetailPage from './pages/EnterpriseDetailPage';
 import ApplicationFormPage from './pages/ApplicationFormPage';
 
@@ -29,7 +34,7 @@ function App() {
         <Route path="/stages" element={<InternshipsPage />} />
         <Route path="/emplois" element={<JobsPage />} />
         <Route path="/emplois/:id" element={<OfferDetailPage />} />
-        <Route path="/stages/:id" element={<OfferDetailPage />} />
+        <Route path="/stages/:id" element={<InternshipDetailPage />} />
         <Route path="/postuler/:id" element={<ApplicationFormPage />} />
         <Route path="/entreprises" element={<EnterprisesPage />} />
         <Route path="/entreprises/:id" element={<EnterpriseDetailPage />} />
@@ -39,13 +44,18 @@ function App() {
         <Route path="/inscription/etudiant" element={<StudentRegisterPage />} />
         <Route path="/inscription/entreprise" element={<EnterpriseRegisterPage />} />
         <Route path="/etudiant/dashboard" element={<StudentDashboardPage />} />
+        <Route path="/etudiant/stages" element={<StudentOffersSearchPage offerType="stage" />} />
+        <Route path="/etudiant/emplois" element={<StudentOffersSearchPage offerType="emploi" />} />
         <Route path="/etudiant/candidatures" element={<StudentApplicationsPage />} />
         <Route path="/etudiant/favoris" element={<StudentFavoritesPage />} />
         <Route path="/etudiant/profil" element={<StudentProfilePage />} />
+        <Route path="/etudiant/parametres" element={<StudentSettingsPage />} />
         <Route path="/entreprise/dashboard" element={<EnterpriseDashboardPage />} />
         <Route path="/entreprise/offres" element={<EnterpriseOffersPage />} />
         <Route path="/entreprise/offres/nouvelle" element={<EnterpriseCreateOfferPage />} />
         <Route path="/entreprise/candidats" element={<EnterpriseCandidatesPage />} />
+        <Route path="/entreprise/messages" element={<EnterpriseMessagesPage />} />
+        <Route path="/entreprise/parametres" element={<EnterpriseSettingsPage />} />
         <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
       </Routes>
     </BrowserRouter>

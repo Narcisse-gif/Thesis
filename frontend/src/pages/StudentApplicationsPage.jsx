@@ -1,193 +1,122 @@
+import { useMemo, useState } from 'react';
 import StudentDashboardLayout from '../components/StudentDashboardLayout';
 
+const applications = [
+  { id: 1, offer: 'Développeur Fullstack Junior', company: 'Orange Burkina Faso', initials: 'OR', logo: 'https://logo.clearbit.com/orange.com', city: 'Ouagadougou', type: 'Stage', date: '12/10/2023', status: 'Acceptee' },
+  { id: 2, offer: 'Analyste Cybersécurité', company: 'Coris Bank International', initials: 'CB', logo: 'https://logo.clearbit.com/corisbankinternational.com', city: 'Bobo-Dioulasso', type: 'Stage', date: '15/10/2023', status: 'En attente' },
+  { id: 3, offer: 'Assistant Marketing Digital', company: 'Moov Africa', initials: 'MV', logo: 'https://logo.clearbit.com/moov-africa.com', city: 'Ouagadougou', type: 'Emploi', date: '08/10/2023', status: 'Rejetee' },
+  { id: 4, offer: 'Data Analyst Junior', company: 'UBA Burkina', initials: 'UBA', logo: 'https://logo.clearbit.com/ubagroup.com', city: 'Ouagadougou', type: 'Stage', date: '05/10/2023', status: 'En attente' },
+  { id: 5, offer: 'Support IT', company: 'SONABEL', initials: 'SNB', logo: 'https://logo.clearbit.com/sonabel.bf', city: 'Koudougou', type: 'Emploi', date: '28/09/2023', status: 'En attente' },
+  { id: 6, offer: 'Comptable Junior', company: 'BOA Burkina', initials: 'BOA', logo: 'https://logo.clearbit.com/boaburkina.com', city: 'Ouagadougou', type: 'Emploi', date: '21/09/2023', status: 'Acceptee' }
+];
+
+const statusStyle = {
+  Acceptee: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  'En attente': 'bg-blue-50 text-blue-700 border-blue-200',
+  Rejetee: 'bg-red-50 text-red-700 border-red-200'
+};
+
 export default function StudentApplicationsPage() {
+  const [statusFilter, setStatusFilter] = useState('Tous');
+  const [typeFilter, setTypeFilter] = useState('Tous');
+  const [cityFilter, setCityFilter] = useState('Toutes');
+  const [search, setSearch] = useState('');
+
+  const filteredApplications = useMemo(() => {
+    return applications.filter((application) => {
+      const statusMatch = statusFilter === 'Tous' ? true : application.status === statusFilter;
+      const typeMatch = typeFilter === 'Tous' ? true : application.type === typeFilter;
+      const cityMatch = cityFilter === 'Toutes' ? true : application.city === cityFilter;
+      const searchMatch =
+        application.offer.toLowerCase().includes(search.toLowerCase()) ||
+        application.company.toLowerCase().includes(search.toLowerCase());
+
+      return statusMatch && typeMatch && cityMatch && searchMatch;
+    });
+  }, [statusFilter, typeFilter, cityFilter, search]);
+
   return (
     <StudentDashboardLayout>
-      {/* Hero / Header Section */}
-      <div className="mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
-        <div>
-          <span className="text-[0.75rem] font-bold text-primary uppercase tracking-[0.2em] mb-2 block">Suivi de carrière</span>
-          <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Candidatures en cours</h2>
-          <p className="text-slate-500 mt-2">Gérez vos opportunités de stage et suivez vos progrès en temps réel.</p>
+      <section className="space-y-8">
+        <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
+          <h2 className="text-2xl font-bold text-slate-900 mb-2">Mes candidatures</h2>
+          <p className="text-slate-500 text-sm">Suivez vos candidatures avec filtrage par statut, type et ville.</p>
         </div>
-        <div className="flex gap-3 hidden sm:flex">
-          <div className="flex -space-x-3 overflow-hidden">
-            <div className="inline-flex h-10 w-10 rounded-full ring-4 ring-white bg-slate-100 items-center justify-center text-[0.65rem] font-bold text-primary">+12</div>
-          </div>
-        </div>
-      </div>
 
-      {/* Bento Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-        <div className="md:col-span-1 p-6 rounded-2xl bg-white shadow-sm hover:shadow-md transition-all border border-slate-100/50 hover:-translate-y-1 duration-300">
-          <div className="flex items-center justify-between mb-4">
-            <span className="material-symbols-outlined text-blue-800 p-2 bg-blue-50 rounded-xl" style={{ fontVariationSettings: "'FILL' 0" }}>send</span>
-          </div>
-          <p className="text-3xl font-bold text-slate-900">08</p>
-          <p className="text-sm font-semibold text-slate-500 mt-1 uppercase tracking-wider">Envoyées</p>
-        </div>
-        
-        <div className="md:col-span-1 p-6 rounded-2xl bg-white shadow-sm hover:shadow-md transition-all border border-slate-100/50 hover:-translate-y-1 duration-300">
-          <div className="flex items-center justify-between mb-4">
-            <span className="material-symbols-outlined text-amber-600 p-2 bg-amber-50 rounded-xl" style={{ fontVariationSettings: "'FILL' 0" }}>update</span>
-          </div>
-          <p className="text-3xl font-bold text-slate-900">03</p>
-          <p className="text-sm font-semibold text-slate-500 mt-1 uppercase tracking-wider">En attente</p>
-        </div>
-        
-        <div className="md:col-span-2 p-6 rounded-2xl bg-primary text-white relative overflow-hidden group shadow-lg shadow-primary/20 hover:-translate-y-1 transition-all duration-300">
-          <div className="relative z-10 hidden sm:block">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="material-symbols-outlined text-white/80" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-              <span className="text-[0.75rem] font-bold uppercase tracking-widest text-white/80">Prochaine étape</span>
-            </div>
-            <h3 className="text-xl font-semibold mb-2">Entretien avec Orange BF</h3>
-            <p className="text-white/70 text-sm">Demain à 10:30 • Siège social, Ouaga 2000</p>
-          </div>
-          <div className="relative z-10 sm:hidden">
-            <h3 className="text-xl font-semibold mb-2">Entretien avec Orange BF</h3>
-            <p className="text-white/70 text-sm">Demain à 10:30</p>
-          </div>
-          <div className="absolute -right-8 -bottom-8 opacity-10 group-hover:scale-110 transition-transform duration-700">
-            <span className="material-symbols-outlined text-[120px]" style={{ fontVariationSettings: "'FILL' 1" }}>event_upcoming</span>
+        <div className="bg-white rounded-2xl border border-blue-100 p-5 shadow-sm">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+            <input
+              className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:ring-4 focus:ring-primary/10"
+              placeholder="Rechercher offre ou entreprise..."
+              type="text"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+            />
+            <select className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+              <option>Tous</option>
+              <option>Acceptee</option>
+              <option>En attente</option>
+              <option>Rejetee</option>
+            </select>
+            <select className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm" value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}>
+              <option>Tous</option>
+              <option>Stage</option>
+              <option>Emploi</option>
+            </select>
+            <select className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm" value={cityFilter} onChange={(event) => setCityFilter(event.target.value)}>
+              <option>Toutes</option>
+              <option>Ouagadougou</option>
+              <option>Bobo-Dioulasso</option>
+              <option>Koudougou</option>
+            </select>
           </div>
         </div>
-      </div>
 
-      {/* Table Section */}
-      <section className="bg-white rounded-2xl shadow-sm border border-slate-100/50 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-[800px]">
-            <thead>
-              <tr className="bg-slate-50 border-b border-slate-100">
-                <th className="px-8 py-5 text-[0.75rem] font-bold uppercase tracking-wider text-slate-500">Entreprise & Poste</th>
-                <th className="px-8 py-5 text-[0.75rem] font-bold uppercase tracking-wider text-slate-500">Date d'envoi</th>
-                <th className="px-8 py-5 text-[0.75rem] font-bold uppercase tracking-wider text-slate-500">Statut</th>
-                <th className="px-8 py-5 text-[0.75rem] font-bold uppercase tracking-wider text-slate-500 text-right">Actions</th>
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-x-auto">
+          <table className="w-full min-w-[760px] text-left">
+            <thead className="bg-slate-50 border-b border-slate-100">
+              <tr>
+                <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Offre</th>
+                <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Entreprise</th>
+                <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Type</th>
+                <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Ville</th>
+                <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Date</th>
+                <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Statut</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              
-              {/* Row 1: Accepted */}
-              <tr className="group hover:bg-slate-50 transition-colors">
-                <td className="px-8 py-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center border border-slate-100 overflow-hidden shrink-0">
-                      <img alt="Logo Orange" className="w-8 h-8 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUBkWdIt3xqxNDX7MNXz8e4WLDUDOHhDwhe7i1CHyOfDCQbLJfgrYxYSVBi-L1mg8mpCp1JYBjk6mF7lGDnSCfIboMYDIIGzi0ju4bfYXmG_ZnXzlyodjHUsB-ivVOmiuljlLdYEuVxhwNzmCaZHCoJRB7EWAfZ6uAV2bqnV0PTKe7HtDZRd7MbJ4KmMdxJe-wfkZDeCFJsv7LIZTe6da_G6WAmDQetsaPwa6e6auNez6t95mA7ZmeRwK37NcmckAbQTd077Ue4Uz4" />
+              {filteredApplications.map((row) => (
+                <tr key={row.id} className="hover:bg-slate-50 transition-colors">
+                  <td className="px-6 py-4 text-sm font-semibold text-slate-900">{row.offer}</td>
+                  <td className="px-6 py-4 text-sm text-slate-600">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-xl bg-white border border-blue-100 overflow-hidden p-1.5 shrink-0">
+                        <img
+                          alt={`Logo ${row.company}`}
+                          className="w-full h-full object-contain"
+                          src={row.logo}
+                          onError={(event) => {
+                            event.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(row.initials)}&background=e0ecff&color=1d4ed8&bold=true`;
+                          }}
+                        />
+                      </div>
+                      <span>{row.company}</span>
                     </div>
-                    <div>
-                      <h4 className="font-semibold text-slate-900">Développeur Fullstack Junior</h4>
-                      <p className="text-xs text-slate-500">Orange Burkina Faso • Ouagadougou</p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-8 py-6">
-                  <div className="flex items-center gap-2 text-slate-600">
-                    <span className="material-symbols-outlined text-[18px]">calendar_today</span>
-                    <span className="text-sm">12 Oct 2023</span>
-                  </div>
-                </td>
-                <td className="px-8 py-6">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide bg-emerald-50 text-emerald-700 border border-emerald-100">
-                    Accepté
-                  </span>
-                </td>
-                <td className="px-8 py-6 text-right">
-                  <div className="flex items-center justify-end gap-2">
-                    <button className="px-4 py-2 text-xs font-bold text-primary hover:bg-blue-50 rounded-lg transition-colors">Voir détails</button>
-                    <button className="px-4 py-2 text-xs font-bold bg-primary text-white rounded-lg shadow-sm hover:bg-blue-800 transition-all">Contacter</button>
-                  </div>
-                </td>
-              </tr>
-
-              {/* Row 2: Pending */}
-              <tr className="group hover:bg-slate-50 transition-colors">
-                <td className="px-8 py-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center border border-slate-100 overflow-hidden shrink-0">
-                      <img alt="Logo Coris Bank" className="w-8 h-8 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0RInhi9ABZQt_yNrzvO0AJGviGDRwxBFOriXQg0N_rhKe_M4KGZFy4SUr0h2hpbTGVD62hzgDUxSC-sq_RQMGhWy8Bsftm7GdSq8iyiOSKkEgN1EFSvsAVZoUEEI7S-4smryTYXtPBozFIG4huFLgvQEI4Qti7mNeQ0j58U-gDL21LlhGjGj9KGFJ-zCIXIHWJLJqIjmzl8Ja3DtnL0SdN-BvIDZNbsSMoD-UI3WzcNDSXbY-bvcegl0JpZHlUx-bIfxj93WAwaHJ" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-slate-900">Analyste Cybersécurité (Stage)</h4>
-                      <p className="text-xs text-slate-500">Coris Bank International • Bobo-Dioulasso</p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-8 py-6">
-                  <div className="flex items-center gap-2 text-slate-600">
-                    <span className="material-symbols-outlined text-[18px]">calendar_today</span>
-                    <span className="text-sm">15 Oct 2023</span>
-                  </div>
-                </td>
-                <td className="px-8 py-6">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide bg-amber-50 text-amber-700 border border-amber-100">
-                    En attente
-                  </span>
-                </td>
-                <td className="px-8 py-6 text-right">
-                  <div className="flex items-center justify-end gap-2">
-                    <button className="px-4 py-2 text-xs font-bold text-primary hover:bg-blue-50 rounded-lg transition-colors">Voir détails</button>
-                    <button className="px-4 py-2 text-xs font-bold bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition-all">Relancer</button>
-                  </div>
-                </td>
-              </tr>
-
-              {/* Row 3: Rejected */}
-              <tr className="group hover:bg-slate-50 transition-colors">
-                <td className="px-8 py-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center border border-slate-100 overflow-hidden shrink-0">
-                      <img alt="Logo Moov" className="w-8 h-8 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZ0eDWdjbnc-qMOkL5dJntbdO5b4Rtu2S8_ltbhPAVubxXBsOr02DnPN9J67vlwZ3R7I6e0Hi8P8cEfL_IhWJ1Pu1W7_ywjCDV5CDrNTv-m5ZgL7ITydLBM93peDUk3Qscu0p9gCqWHF1QA7RFBdvrOqoXQ7ToFjEu-OpsTliZi5JD4_5-jSPUoaOzx2GHc0uwMjcPgQF-kWWMM6LnlCZp1LPt2_u5WMsi5CrxOpbnk5AJRL52uNMhP_z-l64bE4K99JpPMUUJX2ov" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-slate-900">Assistant Marketing Digital</h4>
-                      <p className="text-xs text-slate-500">Moov Africa • Ouagadougou</p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-8 py-6">
-                  <div className="flex items-center gap-2 text-slate-600">
-                    <span className="material-symbols-outlined text-[18px]">calendar_today</span>
-                    <span className="text-sm">08 Oct 2023</span>
-                  </div>
-                </td>
-                <td className="px-8 py-6">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide bg-slate-100 text-slate-500 border border-slate-200">
-                    Refusé
-                  </span>
-                </td>
-                <td className="px-8 py-6 text-right">
-                  <div className="flex items-center justify-end gap-2">
-                    <button className="px-4 py-2 text-xs font-bold text-slate-400 hover:text-slate-600 rounded-lg transition-colors">Archive</button>
-                    <button className="px-4 py-2 text-xs font-bold text-primary hover:bg-blue-50 rounded-lg transition-colors">Détails</button>
-                  </div>
-                </td>
-              </tr>
-
+                  </td>
+                  <td className="px-6 py-4 text-sm text-slate-600">{row.type}</td>
+                  <td className="px-6 py-4 text-sm text-slate-500">{row.city}</td>
+                  <td className="px-6 py-4 text-sm text-slate-500">{row.date}</td>
+                  <td className="px-6 py-4 text-sm">
+                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${statusStyle[row.status]}`}>
+                      {row.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
-
-        {/* Pagination / Footer */}
-        <div className="px-8 py-4 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-[0.75rem] font-semibold text-slate-500 uppercase tracking-widest text-center sm:text-left">Affichage de 1-3 sur 8 candidatures</p>
-          <div className="flex gap-2">
-            <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 cursor-not-allowed">
-              <span className="material-symbols-outlined text-[18px]">chevron_left</span>
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-white shadow-sm">
-              <span className="text-xs font-bold">1</span>
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-600 hover:border-primary transition-colors">
-              <span className="text-xs font-bold">2</span>
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-600 hover:border-primary transition-colors">
-              <span className="material-symbols-outlined text-[18px]">chevron_right</span>
-            </button>
-          </div>
-        </div>
       </section>
-
     </StudentDashboardLayout>
   );
 }

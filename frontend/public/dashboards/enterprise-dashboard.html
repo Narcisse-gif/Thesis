@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>StageLink Burkina - Dashboard Entreprise</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-header {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(0, 40, 142, 0.05);
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-error": "#ffffff",
+              "tertiary": "#263640",
+              "surface-container-highest": "#e0e3e5",
+              "secondary-fixed": "#d8e2ff",
+              "on-tertiary-container": "#acbec9",
+              "on-background": "#191c1e",
+              "on-tertiary-fixed-variant": "#384953",
+              "tertiary-container": "#3d4d57",
+              "on-secondary": "#ffffff",
+              "surface-container": "#eceef0",
+              "on-surface-variant": "#444653",
+              "on-surface": "#191c1e",
+              "inverse-on-surface": "#eff1f3",
+              "tertiary-fixed": "#d3e5f1",
+              "secondary-fixed-dim": "#adc6ff",
+              "on-primary-container": "#a8b8ff",
+              "background": "#f7f9fb",
+              "surface-tint": "#3755c3",
+              "on-secondary-fixed": "#001a42",
+              "surface": "#f7f9fb",
+              "on-secondary-fixed-variant": "#004395",
+              "primary": "#00288e",
+              "on-primary": "#ffffff",
+              "primary-fixed-dim": "#b8c4ff",
+              "on-primary-fixed-variant": "#173bab",
+              "error": "#ba1a1a",
+              "on-error-container": "#93000a",
+              "surface-container-low": "#f2f4f6",
+              "inverse-primary": "#b8c4ff",
+              "on-secondary-container": "#fefcff",
+              "outline": "#757684",
+              "inverse-surface": "#2d3133",
+              "surface-dim": "#d8dadc",
+              "tertiary-fixed-dim": "#b7c9d5",
+              "outline-variant": "#c4c5d5",
+              "on-tertiary": "#ffffff",
+              "surface-variant": "#e0e3e5",
+              "surface-container-high": "#e6e8ea",
+              "on-tertiary-fixed": "#0c1e26",
+              "error-container": "#ffdad6",
+              "surface-container-lowest": "#ffffff",
+              "secondary-container": "#2170e4",
+              "secondary": "#0058be",
+              "on-primary-fixed": "#001453",
+              "surface-bright": "#f7f9fb",
+              "primary-container": "#1e40af",
+              "primary-fixed": "#dde1ff"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-surface text-on-surface min-h-screen">
+<!-- SideNavBar Anchor -->
+<aside class="hidden md:flex flex-col h-full py-6 px-4 h-screen w-64 fixed left-0 top-0 border-r-0 bg-slate-50 dark:bg-slate-900 z-50">
+<div class="mb-10 px-2 flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-2xl" data-icon="rocket_launch">rocket_launch</span>
+</div>
+<div>
+<h1 class="text-xl font-bold text-blue-900 dark:text-blue-100 tracking-tight">StageLink</h1>
+<p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Burkina Faso</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl font-inter text-sm font-semibold text-blue-700 dark:text-blue-300 border-r-4 border-blue-700 dark:border-blue-400 bg-blue-50/50 dark:bg-blue-900/20 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Tableau de bord
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl font-inter text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="work">work</span>
+                Offres
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl font-inter text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+                Candidatures
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl font-inter text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="mail">mail</span>
+                Messages
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl font-inter text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Paramètres
+            </a>
+</nav>
+<div class="mt-auto pt-6 border-t border-slate-100 dark:border-slate-800">
+<button class="w-full bg-primary hover:bg-secondary text-white py-3 px-4 rounded-2xl font-semibold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                Nouvelle Offre
+            </button>
+</div>
+</aside>
+<!-- TopNavBar Anchor -->
+<header class="fixed top-0 right-0 w-full md:w-[calc(100%-16rem)] h-16 glass-header z-40 flex items-center justify-between px-8">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg" data-icon="search">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Rechercher une candidature..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="relative text-slate-600 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+</button>
+<button class="text-slate-600 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<div class="flex items-center gap-3 pl-4 border-l border-slate-100">
+<div class="text-right hidden sm:block">
+<p class="text-xs font-bold text-on-surface">Cina Burkina SA</p>
+<p class="text-[10px] text-slate-500">Recruteur Pro</p>
+</div>
+<img alt="Photo de profil recruteur" class="w-10 h-10 rounded-xl object-cover ring-2 ring-primary/10" data-alt="Portrait photo of a professional West African businessman in a light blue suit smiling warmly in a bright modern office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJqU_z885wsfTY4g3y616w-sAYQPeMjz4phQuYrHylkxbmljApD9IkvUfBIpo_bAf0L4uBVCTW5O6oXsoHNpkEHWwZNO75N4MqThzQq5_-06SfSTuly50ZICW95FWHbrzlahKWEc7F7et_OgK28obOMvyHGmdLv7mIXhqcFyiSBrr9e5nz_CL-MJJ7688-ymNF9J-27Aae2nKxAYKdfztKOkwCHvers0jAPz5m-GCQzHQ2YRZU369KMLlAvecpKRZxcBNqHvLL1oeQ"/>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="pt-24 pb-12 px-4 md:px-8 md:ml-64 max-w-[1600px] mx-auto">
+<!-- Welcome Section -->
+<section class="mb-10">
+<h2 class="text-3xl font-bold tracking-tight text-primary mb-2">Bonjour, Cina Burkina SA</h2>
+<p class="text-slate-500 text-lg">Voici l'état actuel de vos recrutements à Ouagadougou.</p>
+</section>
+<!-- Stats Bento Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+<!-- Widget 1 -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border-none transition-transform hover:scale-[1.02] duration-300">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-primary/10 rounded-xl text-primary">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+</div>
+<span class="text-xs font-bold text-primary bg-primary/5 px-2 py-1 rounded-lg">+12%</span>
+</div>
+<p class="text-slate-500 text-sm font-medium">Offres actives</p>
+<h3 class="text-3xl font-bold mt-1">24</h3>
+</div>
+<!-- Widget 2 -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border-none transition-transform hover:scale-[1.02] duration-300">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-secondary-fixed text-secondary">
+<span class="material-symbols-outlined" data-icon="group_add" data-weight="fill" style="font-variation-settings: 'FILL' 1;">group_add</span>
+</div>
+<span class="text-xs font-bold text-secondary bg-secondary/5 px-2 py-1 rounded-lg">+5</span>
+</div>
+<p class="text-slate-500 text-sm font-medium">Candidatures reçues</p>
+<h3 class="text-3xl font-bold mt-1">148</h3>
+</div>
+<!-- Widget 3 -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border-none transition-transform hover:scale-[1.02] duration-300">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-tertiary-fixed text-tertiary">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+</div>
+<span class="text-xs font-bold text-tertiary bg-tertiary/5 px-2 py-1 rounded-lg">Aujourd'hui</span>
+</div>
+<p class="text-slate-500 text-sm font-medium">Entretiens prévus</p>
+<h3 class="text-3xl font-bold mt-1">8</h3>
+</div>
+<!-- Widget 4 -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border-none transition-transform hover:scale-[1.02] duration-300">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-surface-container-highest text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="archive">archive</span>
+</div>
+</div>
+<p class="text-slate-500 text-sm font-medium">Offres archivées</p>
+<h3 class="text-3xl font-bold mt-1">56</h3>
+</div>
+</div>
+<!-- Main Dashboard Layout -->
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+<!-- Candidatures Récentes Section -->
+<div class="xl:col-span-2 space-y-6">
+<div class="flex items-center justify-between mb-2">
+<h3 class="text-xl font-bold text-on-surface">Candidatures Récentes</h3>
+<button class="text-sm font-semibold text-primary hover:underline">Voir tout</button>
+</div>
+<div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm">
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low border-none">
+<tr>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Candidat</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Poste</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Date</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Statut</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="Young professional African woman smiling softly, neutral studio lighting, high quality portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMdaQs9jDUAf3Mob27C2S78sKPEkKONJoNB2dHciWUs5ELxuhAh4urNyjb-k6ktzVVZGdMWzQZl42WNXSayw2c4xK4q-4StP_mN6dSreflose_YPN7_wEHrVePDCzfBAxFM8_bMWTOsdM8UWRFItuTZ1uVx1xki-odsB6_0evlmFP_pg7dwIyzmEbaVp3amtncE0YCg5Ij42uNjhJ_Q0CCpj1OfA2GsItfgciEKYWS84J_ZkZjKSu-hB0KCsVXC3RfHDJreoC6UXYy"/>
+<div>
+<p class="text-sm font-bold text-on-surface">Awa Ouédraogo</p>
+<p class="text-xs text-slate-500">Ouagadougou, BF</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<p class="text-sm text-slate-600 font-medium">Développeur Backend</p>
+</td>
+<td class="px-6 py-5">
+<p class="text-sm text-slate-500">Il y a 2h</p>
+</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-secondary-fixed text-on-secondary-fixed-variant">
+                                            Nouveau
+                                        </span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="Close-up portrait of a young African man with glasses, professional attire, clean background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBAWamYdotB-CXEtU_Qvswed_FhAkaoO8drPxQ1FAXcPIf8ERDHULMVCxlVABQOGGjmCYz4VAEd80KlD9N1ENCIZ-Z4fqFglGLaRp0ggue17Jor1K_lGsclZg3f2JqKk62Td0cV8xqMzV5fU5Xp7OkeheG14RG3AicaZNCDP6jotERF0x6_D6Lh8Wbjs4CwOpD69qS1ZmeVCDVpyvLZulzv6WZNXiVNWtgLHcMBySZPG0pJ0A7lfLioFaom5UBL-mHE86M0fCB5l2A"/>
+<div>
+<p class="text-sm font-bold text-on-surface">Moussa Traoré</p>
+<p class="text-xs text-slate-500">Bobo-Dioulasso, BF</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<p class="text-sm text-slate-600 font-medium">Design UX/UI</p>
+</td>
+<td class="px-6 py-5">
+<p class="text-sm text-slate-500">Hier</p>
+</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-tertiary-fixed text-on-tertiary-fixed-variant">
+                                            En revue
+                                        </span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="Serious young professional woman in a modern workspace, high resolution, professional lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBAYusWfLTe7HtY9FA-b2cXgYONYVFK5N7p1hhgFlR15BLI-Wm0XLSwo5EjG0_X6BSGV8Lf5rpWm3r20OuXjkzhKv4nSLXXE_pukI8n_VDNqsspsmgo-I1lFF7N8QTtizi1NPx_4ykxOmNN-J3Gjcrmlexi_pd8zNx9gLfp4DjDrS_rZWEnztd70exg1j6alYljM_lXwPs1R0pssXL-cZVXTtjTPcgHugnQtomtoIn6C2j1lH2pWffCYSFDWpGxWjtIpGvHkSPb9MM"/>
+<div>
+<p class="text-sm font-bold text-on-surface">Fatimata Sanogo</p>
+<p class="text-xs text-slate-500">Ouagadougou, BF</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<p class="text-sm text-slate-600 font-medium">Data Analyst</p>
+</td>
+<td class="px-6 py-5">
+<p class="text-sm text-slate-500">Il y a 3j</p>
+</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-primary-container text-white">
+                                            Entretien
+                                        </span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="Successful African executive in a white shirt, office background, professional headshot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCQ1TUsfHBBIitBUIS2wrWArKVKhXqccGoG1FB9RAlU_R1xTNUnjKc6KhmKTLK7Rv8sENNHfcirPmhnJms-0YLBNWCYxPS86l_4_SVtOsfTPPvaX-3E3NgjXborML0TPRZ2tdsAHgoICJo7JvAag0wpOkrxQSYglvzlWo5Qt2Wtakx1ysUVSGKBMkMAQ4e5g7MwCspALMornfifgfhDTCeXkUBtaLP-L-PJC1XcY4zmKrGWAZAYu9Rxf7jd0zaAhCh9j4JU0v53l1Z"/>
+<div>
+<p class="text-sm font-bold text-on-surface">Jean-Paul Sawadogo</p>
+<p class="text-xs text-slate-500">Koudougou, BF</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<p class="text-sm text-slate-600 font-medium">Chef de Projet IT</p>
+</td>
+<td class="px-6 py-5">
+<p class="text-sm text-slate-500">Il y a 1 sem</p>
+</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-secondary text-white">
+                                            Accepté
+                                        </span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Mes Offres Actives Section -->
+<div class="space-y-6">
+<div class="flex items-center justify-between mb-2">
+<h3 class="text-xl font-bold text-on-surface">Mes Offres Actives</h3>
+<button class="p-2 bg-primary/10 text-primary rounded-xl hover:bg-primary/20 transition-all">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+<div class="space-y-4">
+<!-- Offre Card 1 -->
+<div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border-none hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h4 class="font-bold text-on-surface">Développeur Backend (Node.js)</h4>
+<p class="text-xs text-slate-500 mt-1">Publié il y a 5 jours • Stage de 6 mois</p>
+</div>
+<span class="p-1.5 bg-secondary/5 text-secondary rounded-lg">
+<span class="material-symbols-outlined text-sm" data-icon="rocket">rocket</span>
+</span>
+</div>
+<div class="flex items-center gap-4 mb-4">
+<div class="flex -space-x-2">
+<img class="w-6 h-6 rounded-full border-2 border-white" data-alt="Portrait of a young professional" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8ZZIf7i7FBnR4n_wZoFQTfLojBJG8_uEsNdV-LTUdrAEwnFNWoRxgb8fIqM74o3amhfCJzDWr77c8FTqhAygqCuUaIxWwajRmks_LfJPZJ0F708qnWip9fKpHZ0uikqrIOdf6hR2i4beI_1KAVVZXlJCq_XZQjX44Y_mlyEQXsu3LV1g5LBQhNJ6zpPMN3PA7TX9OPtD50On442P6FF1MNrl_QxdZ-uR4DnhFJszP1r2p-uVl6kMVtFprWiF7cXrH9cTRAiJn_rZJ"/>
+<img class="w-6 h-6 rounded-full border-2 border-white" data-alt="Portrait of a young professional" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBL65T_Loqg8ZeyfT62d_6-H80msIG4wppIAL2iv4DBdvZcse_6IkphbgyY1DdXmNn81a7u4-6IYY0IV7dpl-DTQxqqK5LtOU9x6AxpuRQYtgbzXiBpIqGkkyqlAcamQVb07OZPY8vDWC4y0nugZ2IH6iM-z2KWzZbaLfB3gUYzyaZJuLGqRg2WbbAJ5kH3kwAZ7OfA6Icas0LUH-rI0kuB9-umEhAIX1oueSrHWKYHhs2QO1IPsQgansqDnV2GUB8X4ojQ-9xTIxN1"/>
+<div class="w-6 h-6 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">+12</div>
+</div>
+<span class="text-xs font-medium text-slate-600">15 candidatures</span>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 py-2 text-xs font-bold text-primary bg-primary/5 rounded-xl hover:bg-primary hover:text-white transition-all">Gérer</button>
+<button class="px-3 py-2 text-xs font-bold text-slate-400 hover:text-slate-600 transition-all">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+</button>
+</div>
+</div>
+<!-- Offre Card 2 -->
+<div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border-none hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h4 class="font-bold text-on-surface">Assistant Marketing Digital</h4>
+<p class="text-xs text-slate-500 mt-1">Publié il y a 10 jours • Stage de 3 mois</p>
+</div>
+<span class="p-1.5 bg-secondary/5 text-secondary rounded-lg">
+<span class="material-symbols-outlined text-sm" data-icon="rocket">rocket</span>
+</span>
+</div>
+<div class="flex items-center gap-4 mb-4">
+<div class="flex -space-x-2">
+<img class="w-6 h-6 rounded-full border-2 border-white" data-alt="Portrait of a young professional" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7Edy12oajXz-EEyONo6WuLYX6AA4lSMhqnyrmRgfJozKAG101A_5021-2DgpsBLVgvTQcqD4LkovGWfi0_4wfBV72K2EOEpySJjhfBgqnmYAzCLySqPwEWzeWh88Uga1ucvr0b6BEGH3yM6wcWPHDgJlFsCxDURHtIdF1wmMP14AP0Lg3GBg_W5rsfoqmRfCIhxioUeqyT-oYxUxUp3FGSgk10zZlvnSb-GHCyGbBacdPi-jEX1Z4NR68alZme2T4Kpmd1o4G8LOf"/>
+<div class="w-6 h-6 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">+8</div>
+</div>
+<span class="text-xs font-medium text-slate-600">9 candidatures</span>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 py-2 text-xs font-bold text-primary bg-primary/5 rounded-xl hover:bg-primary hover:text-white transition-all">Gérer</button>
+<button class="px-3 py-2 text-xs font-bold text-slate-400 hover:text-slate-600 transition-all">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+</button>
+</div>
+</div>
+<!-- CTA New Post -->
+<button class="w-full border-2 border-dashed border-slate-200 hover:border-primary/40 hover:bg-primary/5 rounded-2xl p-8 flex flex-col items-center justify-center gap-3 group transition-all">
+<div class="p-3 bg-slate-100 group-hover:bg-primary/10 rounded-full text-slate-400 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl" data-icon="post_add">post_add</span>
+</div>
+<p class="text-sm font-bold text-slate-500 group-hover:text-primary">Publier une nouvelle offre</p>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation for Mobile -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.05)] px-6 py-3 flex justify-between items-center z-50">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Bord</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined" data-icon="work">work</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Offres</span>
+</a>
+<div class="relative -top-6">
+<button class="w-14 h-14 bg-primary text-white rounded-2xl shadow-lg shadow-primary/30 flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl" data-icon="add">add</span>
+</button>
+</div>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Candidats</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Compte</span>
+</a>
+</nav>
+</body></html>

@@ -1,7 +1,9 @@
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { useNavigate } from 'react-router-dom';
 
 export default function AdvicePage() {
+  const navigate = useNavigate();
   const pillars = [
     {
       icon: 'description',
@@ -164,7 +166,10 @@ export default function AdvicePage() {
                 </p>
               </div>
               <div>
-                <button className="bg-white text-primary px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl hover:-translate-y-1 transition-all active:scale-95 whitespace-nowrap">
+                <button
+                  className="bg-white text-primary px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl hover:-translate-y-1 transition-all active:scale-95 whitespace-nowrap"
+                  onClick={() => navigate('/inscription')}
+                >
                   Créer mon profil
                 </button>
               </div>

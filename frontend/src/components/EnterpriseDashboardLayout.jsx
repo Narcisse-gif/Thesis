@@ -45,10 +45,10 @@ export default function EnterpriseDashboardLayout({ children }) {
         </nav>
         
         <div className="mt-auto pt-6 border-t border-slate-200">
-          <button className="w-full bg-primary hover:bg-blue-800 text-white py-3 px-4 rounded-2xl font-semibold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20">
+          <Link to="/entreprise/offres/nouvelle" className="w-full bg-primary hover:bg-blue-800 text-white py-3 px-4 rounded-2xl font-semibold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20">
             <span className="material-symbols-outlined !text-sm">add</span>
             Nouvelle Offre
-          </button>
+          </Link>
         </div>
       </aside>
 
@@ -71,9 +71,9 @@ export default function EnterpriseDashboardLayout({ children }) {
               <span className="material-symbols-outlined !text-[22px]">notifications</span>
               <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
             </button>
-            <button className="text-slate-600 hover:text-primary transition-colors hidden sm:block">
+            <Link to="/conseils" className="text-slate-600 hover:text-primary transition-colors hidden sm:block">
               <span className="material-symbols-outlined !text-[22px]">help</span>
-            </button>
+            </Link>
             <div className="flex items-center gap-3 pl-4 border-l border-slate-200 cursor-pointer group">
               <div className="text-right hidden sm:block">
                 <p className="text-[12px] font-bold text-slate-900 group-hover:text-primary transition-colors">Cina Burkina SA</p>
@@ -105,9 +105,9 @@ export default function EnterpriseDashboardLayout({ children }) {
           <span className="text-[10px] font-bold uppercase tracking-tighter">Offres</span>
         </Link>
         <div className="relative -top-6">
-          <button className="w-14 h-14 bg-primary text-white rounded-2xl shadow-lg shadow-primary/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-all">
+          <Link to="/entreprise/offres/nouvelle" className="w-14 h-14 bg-primary text-white rounded-2xl shadow-lg shadow-primary/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-all">
             <span className="material-symbols-outlined !text-3xl">add</span>
-          </button>
+          </Link>
         </div>
         <Link to="/entreprise/candidats" className={`flex flex-col items-center gap-1 ${isActive('/entreprise/candidats') ? 'text-primary' : 'text-slate-400'}`}>
           <span className="material-symbols-outlined !text-2xl" style={{ fontVariationSettings: isActive('/entreprise/candidats') ? "'FILL' 1" : "" }}>group</span>
