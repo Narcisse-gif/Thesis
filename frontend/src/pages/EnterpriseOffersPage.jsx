@@ -10,21 +10,11 @@ export default function EnterpriseOffersPage() {
           <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">Gestion des Offres</h2>
           <p className="text-slate-500 mt-2 font-medium text-[15px] sm:text-base">Visualisez et gérez vos opportunités de carrière actuelles.</p>
         </div>
-        <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
-          <button className="w-full sm:w-auto bg-white border border-slate-200 text-slate-700 px-6 py-3 rounded-2xl font-medium flex items-center justify-center gap-2 hover:bg-slate-50 transition-colors shadow-sm">
-            <span className="material-symbols-outlined !text-xl">file_download</span>
-            Exporter
-          </button>
-          <button className="w-full sm:w-auto bg-primary text-white px-8 py-3 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-blue-800 transition-all shadow-lg shadow-primary/20">
-            <span className="material-symbols-outlined !text-xl">post_add</span>
-            Nouvelle offre
-          </button>
-        </div>
       </div>
 
       {/* Filters & Stats Bento */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="col-span-1 md:col-span-3 bg-white border border-slate-100/50 shadow-sm rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+      <div className="grid grid-cols-1 gap-6 mb-8">
+        <div className="col-span-1 bg-white border border-slate-100/50 shadow-sm rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto">
             <div className="flex flex-col gap-1.5 flex-1 sm:flex-none">
               <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Statut</label>
@@ -57,23 +47,13 @@ export default function EnterpriseOffersPage() {
           </div>
         </div>
 
-        <div className="bg-primary rounded-2xl p-6 text-white flex flex-col justify-between relative overflow-hidden group shadow-xl shadow-primary/20">
-          <div className="absolute -right-4 -bottom-4 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-          <div className="relative z-10">
-            <p className="text-[10px] font-bold text-blue-200 uppercase tracking-widest">Performance</p>
-            <h3 className="text-xl font-bold mt-1.5">+12% ce mois</h3>
-          </div>
-          <div className="mt-4 relative z-10">
-            <span className="text-[13px] text-blue-100 leading-relaxed block">Taux de conversion élevé sur vos offres de stage.</span>
-          </div>
-          <span className="material-symbols-outlined absolute -bottom-4 -right-2 !text-[80px] text-white/10 group-hover:scale-110 transition-transform">trending_up</span>
-        </div>
+        
       </div>
 
       {/* Table Section */}
       <div className="bg-white rounded-3xl shadow-sm border border-slate-100/50 overflow-hidden mb-8">
-        <div className="overflow-x-auto min-w-full">
-          <table className="w-full text-left whitespace-nowrap">
+        <div className="min-w-full">
+          <table className="w-full text-left">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-100">
                 <th className="px-8 py-5 text-[11px] font-extrabold text-slate-500 uppercase tracking-widest">Titre de l'offre</th>
@@ -109,23 +89,23 @@ export default function EnterpriseOffersPage() {
                 </td>
                 <td className="px-6 py-5">
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                    <span className="text-[13px] font-semibold text-emerald-600">Active</span>
+                    <span className="w-2 h-2 rounded-full bg-blue-600"></span>
+                    <span className="text-[13px] font-semibold text-blue-700">Active</span>
                   </div>
                 </td>
-                <td className="px-8 py-5 text-right">
-                  <div className="flex items-center justify-end gap-1">
-                    <button className="p-2 rounded-xl text-slate-400 hover:text-primary hover:bg-blue-50/50 transition-all border border-transparent hover:border-slate-100" title="Voir">
-                      <span className="material-symbols-outlined !text-[20px]">visibility</span>
-                    </button>
-                    <button className="p-2 rounded-xl text-slate-400 hover:text-primary hover:bg-blue-50/50 transition-all border border-transparent hover:border-slate-100" title="Modifier">
-                      <span className="material-symbols-outlined !text-[20px]">edit</span>
-                    </button>
-                    <button className="p-2 rounded-xl text-slate-400 hover:text-primary hover:bg-blue-50/50 transition-all border border-transparent hover:border-slate-100" title="Options">
-                      <span className="material-symbols-outlined !text-[20px]">more_vert</span>
-                    </button>
-                  </div>
-                </td>
+                <td className="px-8 py-5 text-right relative border-l border-transparent">
+    <div className="group inline-block">
+      <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm shadow-transparent hover:shadow-slate-200/50 border border-transparent hover:border-slate-100 focus:outline-none">
+        <span className="material-symbols-outlined !text-[20px]">more_vert</span>
+      </button>
+      <div className="absolute right-10 top-10 w-40 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-slate-100 opacity-0 invisible group-focus-within:opacity-100 group-focus-within:visible transition-all z-10 flex flex-col py-1 overflow-hidden">
+        <button className="px-4 py-2.5 text-left text-[13px] font-bold text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">visibility</span> Voir</button>
+        <button className="px-4 py-2.5 text-left text-[13px] font-bold text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">edit</span> Modifier</button>
+        <div className="h-px bg-slate-100 my-1"></div>
+        <button className="px-4 py-2.5 text-left text-[13px] font-bold text-red-600 hover:bg-red-50 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">delete</span> Supprimer</button>
+      </div>
+    </div>
+  </td>
               </tr>
 
               {/* Row 2 */}
@@ -150,23 +130,23 @@ export default function EnterpriseOffersPage() {
                 </td>
                 <td className="px-6 py-5">
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                    <span className="text-[13px] font-semibold text-emerald-600">Active</span>
+                    <span className="w-2 h-2 rounded-full bg-blue-600"></span>
+                    <span className="text-[13px] font-semibold text-blue-700">Active</span>
                   </div>
                 </td>
-                <td className="px-8 py-5 text-right">
-                  <div className="flex items-center justify-end gap-1">
-                    <button className="p-2 rounded-xl text-slate-400 hover:text-primary hover:bg-blue-50/50 transition-all border border-transparent hover:border-slate-100" title="Voir">
-                      <span className="material-symbols-outlined !text-[20px]">visibility</span>
-                    </button>
-                    <button className="p-2 rounded-xl text-slate-400 hover:text-primary hover:bg-blue-50/50 transition-all border border-transparent hover:border-slate-100" title="Modifier">
-                      <span className="material-symbols-outlined !text-[20px]">edit</span>
-                    </button>
-                    <button className="p-2 rounded-xl text-slate-400 hover:text-primary hover:bg-blue-50/50 transition-all border border-transparent hover:border-slate-100" title="Options">
-                      <span className="material-symbols-outlined !text-[20px]">more_vert</span>
-                    </button>
-                  </div>
-                </td>
+                <td className="px-8 py-5 text-right relative border-l border-transparent">
+    <div className="group inline-block">
+      <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm shadow-transparent hover:shadow-slate-200/50 border border-transparent hover:border-slate-100 focus:outline-none">
+        <span className="material-symbols-outlined !text-[20px]">more_vert</span>
+      </button>
+      <div className="absolute right-10 top-10 w-40 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-slate-100 opacity-0 invisible group-focus-within:opacity-100 group-focus-within:visible transition-all z-10 flex flex-col py-1 overflow-hidden">
+        <button className="px-4 py-2.5 text-left text-[13px] font-bold text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">visibility</span> Voir</button>
+        <button className="px-4 py-2.5 text-left text-[13px] font-bold text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">edit</span> Modifier</button>
+        <div className="h-px bg-slate-100 my-1"></div>
+        <button className="px-4 py-2.5 text-left text-[13px] font-bold text-red-600 hover:bg-red-50 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">delete</span> Supprimer</button>
+      </div>
+    </div>
+  </td>
               </tr>
 
               {/* Row 3 */}
@@ -194,19 +174,19 @@ export default function EnterpriseOffersPage() {
                     <span className="text-[13px] font-semibold text-slate-500">Fermée</span>
                   </div>
                 </td>
-                <td className="px-8 py-5 text-right">
-                  <div className="flex items-center justify-end gap-1">
-                    <button className="p-2 rounded-xl text-slate-400 hover:text-primary hover:bg-blue-50/50 transition-all border border-transparent hover:border-slate-100" title="Voir">
-                      <span className="material-symbols-outlined !text-[20px]">visibility</span>
-                    </button>
-                    <button className="p-2 rounded-xl text-slate-400 hover:text-primary hover:bg-blue-50/50 transition-all border border-transparent hover:border-slate-100" title="Relancer">
-                      <span className="material-symbols-outlined !text-[20px]">restart_alt</span>
-                    </button>
-                    <button className="p-2 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50/50 transition-all border border-transparent hover:border-red-100" title="Supprimer">
-                      <span className="material-symbols-outlined !text-[20px]">delete</span>
-                    </button>
-                  </div>
-                </td>
+                <td className="px-8 py-5 text-right relative border-l border-transparent">
+    <div className="group inline-block">
+      <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm shadow-transparent hover:shadow-slate-200/50 border border-transparent hover:border-slate-100 focus:outline-none">
+        <span className="material-symbols-outlined !text-[20px]">more_vert</span>
+      </button>
+      <div className="absolute right-10 top-10 w-40 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-slate-100 opacity-0 invisible group-focus-within:opacity-100 group-focus-within:visible transition-all z-10 flex flex-col py-1 overflow-hidden">
+        <button className="px-4 py-2.5 text-left text-[13px] font-bold text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">visibility</span> Voir</button>
+        <button className="px-4 py-2.5 text-left text-[13px] font-bold text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">edit</span> Modifier</button>
+        <div className="h-px bg-slate-100 my-1"></div>
+        <button className="px-4 py-2.5 text-left text-[13px] font-bold text-red-600 hover:bg-red-50 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">delete</span> Supprimer</button>
+      </div>
+    </div>
+  </td>
               </tr>
 
               {/* Row 4 */}
@@ -262,52 +242,6 @@ export default function EnterpriseOffersPage() {
         </div>
       </div>
 
-      {/* Featured Insight Card */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        
-        <div className="bg-gradient-to-br from-primary to-blue-900 rounded-3xl p-8 text-white flex flex-col sm:flex-row items-start sm:items-center gap-8 shadow-xl shadow-primary/20 relative overflow-hidden">
-          <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
-          <div className="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center flex-shrink-0 border border-white/10 relative z-10">
-            <span className="material-symbols-outlined !text-[40px]">rocket_launch</span>
-          </div>
-          <div className="relative z-10">
-            <h3 className="text-xl font-bold mb-2">Boostez votre visibilité</h3>
-            <p className="text-[13px] text-blue-100 leading-relaxed max-w-sm">Les entreprises qui publient au moins 3 offres par mois reçoivent 40% de candidatures qualifiées en plus.</p>
-            <button className="mt-5 text-[11px] font-bold uppercase tracking-widest bg-white text-primary px-6 py-3 rounded-xl hover:bg-blue-50 transition-colors shadow-sm">
-              En savoir plus
-            </button>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-3xl p-8 flex flex-col sm:flex-row items-center gap-8 shadow-sm border border-slate-100/50 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-full blur-3xl -z-10 group-hover:bg-blue-50/50 transition-colors"></div>
-          <div className="flex-1 w-full text-center sm:text-left">
-            <h3 className="text-lg font-bold text-slate-900 mb-1">Qualité des Candidats</h3>
-            <div className="flex items-end justify-center sm:justify-start gap-2 mb-4">
-              <span className="text-4xl font-black text-primary">8.4</span>
-              <span className="text-slate-400 text-sm font-medium mb-1">/ 10 score moyen</span>
-            </div>
-            <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-              <div className="bg-blue-500 h-full rounded-full relative overflow-hidden" style={{ width: '84%' }}>
-                <div className="absolute inset-0 bg-white/20 animate-[shimmer_2s_infinite] -translate-x-full"></div>
-              </div>
-            </div>
-            <p className="text-[10px] text-slate-500 font-bold uppercase mt-5 tracking-widest">Top Compétence : <span className="text-primary">Développement Mobile</span></p>
-          </div>
-          <div className="w-32 h-32 relative flex-shrink-0 mx-auto sm:mx-0">
-            <svg className="w-full h-full transform -rotate-90 drop-shadow-sm" viewBox="0 0 100 100">
-              <circle className="text-slate-100" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" strokeWidth="8"></circle>
-              <circle className="text-primary transition-all duration-1000 ease-out" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" strokeDasharray="251.2" strokeDashoffset="40" strokeWidth="8" strokeLinecap="round"></circle>
-            </svg>
-            <div className="absolute inset-0 flex items-center justify-center flex-col">
-              <span className="text-[15px] font-black text-slate-900">Stage</span>
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Top type</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-    </EnterpriseDashboardLayout>
+      </EnterpriseDashboardLayout>
   );
 }

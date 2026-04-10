@@ -1,16 +1,16 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bookmark, BookmarkX, Building2, MapPin, Clock, ArrowRight, Search } from 'lucide-react';
 import Layout from '../components/student-dashboard/Layout';
 import { useDarkMode } from '../components/student-dashboard/DarkModeContext';
 
 const INIT_FAVS = [
-  { id: 1, title: 'Développeur React.js (Stage)', company: 'FasoTech', city: 'Ouagadougou', type: 'Stage', contract: 'Présentiel', daysLeft: 5, logo: 'FT', color: 'from-blue-400 to-indigo-500' },
+  { id: 1, title: 'DÃ©veloppeur React.js (Stage)', company: 'FasoTech', city: 'Ouagadougou', type: 'Stage', contract: 'PrÃ©sentiel', daysLeft: 5, logo: 'FT', color: 'from-blue-400 to-indigo-500' },
   { id: 2, title: 'Assistant Marketing Digital', company: 'Canal+', city: 'Ouagadougou', type: 'CDD', contract: 'Hybride', daysLeft: 12, logo: 'C+', color: 'from-rose-400 to-pink-500' },
   { id: 3, title: 'Data Analyst Junior', company: 'Ecobank BF', city: 'Remote', type: 'CDI', contract: 'Remote', daysLeft: 20, logo: 'EB', color: 'from-cyan-400 to-sky-500' },
-  { id: 4, title: 'UX/UI Designer', company: 'Digital Hub BF', city: 'Bobo-Dioulasso', type: 'Stage', contract: 'Présentiel', daysLeft: 3, logo: 'DH', color: 'from-purple-400 to-violet-500' },
-  { id: 5, title: 'Chef de Projet Digital', company: 'ONATEL', city: 'Ouagadougou', type: 'CDI', contract: 'Présentiel', daysLeft: 30, logo: 'ON', color: 'from-emerald-400 to-teal-500' },
-  { id: 6, title: 'Technicien Réseau', company: 'ARCEP Burkina', city: 'Ouagadougou', type: 'Stage', contract: 'Présentiel', daysLeft: 7, logo: 'AR', color: 'from-amber-400 to-orange-500' },
+  { id: 4, title: 'UX/UI Designer', company: 'Digital Hub BF', city: 'Bobo-Dioulasso', type: 'Stage', contract: 'PrÃ©sentiel', daysLeft: 3, logo: 'DH', color: 'from-purple-400 to-violet-500' },
+  { id: 5, title: 'Chef de Projet Digital', company: 'ONATEL', city: 'Ouagadougou', type: 'CDI', contract: 'PrÃ©sentiel', daysLeft: 30, logo: 'ON', color: 'from-blue-400 to-blue-500' },
+  { id: 6, title: 'Technicien RÃ©seau', company: 'ARCEP Burkina', city: 'Ouagadougou', type: 'Stage', contract: 'PrÃ©sentiel', daysLeft: 7, logo: 'AR', color: 'from-amber-400 to-orange-500' },
 ];
 
 export default function StudentFavoritesPage() {
@@ -33,7 +33,7 @@ export default function StudentFavoritesPage() {
   );
 
   return (
-    <Layout pageTitle="Offres sauvegardées" pageSubtitle="Favoris">
+    <Layout pageTitle="Offres sauvegardÃ©es" pageSubtitle="Favoris">
       <div className="space-y-6">
         {/* Header */}
         <div className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-3xl px-6 py-5 border ${dark ? 'bg-slate-800/80 border-slate-700/60' : 'bg-white/80 border-white backdrop-blur-xl'} shadow-sm`}>
@@ -43,7 +43,7 @@ export default function StudentFavoritesPage() {
             </div>
             <div>
               <h2 className={`text-xl font-black tracking-tight ${dark ? 'text-white' : 'text-slate-900'}`}>Mes favoris</h2>
-              <p className={`text-sm ${dark ? 'text-slate-400' : 'text-slate-500'}`}>{favs.length} offres sauvegardées</p>
+              <p className={`text-sm ${dark ? 'text-slate-400' : 'text-slate-500'}`}>{favs.length} offres sauvegardÃ©es</p>
             </div>
           </div>
           {/* Search */}
@@ -132,10 +132,10 @@ export default function StudentFavoritesPage() {
               <Bookmark className="h-9 w-9 text-slate-300" />
             </div>
             <p className={`text-lg font-black ${dark ? 'text-white' : 'text-slate-900'}`}>
-              {search ? 'Aucun favori trouvé' : 'Aucune offre sauvegardée'}
+              {search ? 'Aucun favori trouvÃ©' : 'Aucune offre sauvegardÃ©e'}
             </p>
             <p className={`mt-1.5 text-sm ${dark ? 'text-slate-400' : 'text-slate-500'}`}>
-              {search ? 'Essayez un autre mot-clé.' : 'Explorez les offres et cliquez sur ♥ pour sauvegarder.'}
+              {search ? 'Essayez un autre mot-clÃ©.' : 'Explorez les offres et cliquez sur â™¥ pour sauvegarder.'}
             </p>
           </motion.div>
         )}
@@ -143,3 +143,4 @@ export default function StudentFavoritesPage() {
     </Layout>
   );
 }
+

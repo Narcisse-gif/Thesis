@@ -3,11 +3,7 @@
 export default function EnterpriseDashboardPage() {
   return (
     <EnterpriseDashboardLayout>
-      {/* Welcome Section */}
-      <section className="mb-10 text-center sm:text-left">
-        <h2 className="text-3xl font-bold tracking-tight text-primary mb-2">Bonjour, Cina Burkina SA</h2>
-        <p className="text-slate-500 text-[16px] sm:text-lg">Voici l'├®tat actuel de vos recrutements ├á Ouagadougou.</p>
-      </section>
+      
 
       {/* Stats Bento Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
@@ -18,9 +14,9 @@ export default function EnterpriseDashboardPage() {
             <div className="p-3 bg-blue-50 rounded-xl text-primary">
               <span className="material-symbols-outlined !text-[24px]">assignment</span>
             </div>
-            <span className="text-[12px] font-bold text-primary bg-primary/5 px-2.5 py-1 rounded-lg">+12%</span>
+            
           </div>
-          <p className="text-slate-500 text-sm font-medium">Offres actives</p>
+          <p className="text-slate-500 text-sm font-medium">Offres</p>
           <h3 className="text-3xl font-bold text-slate-900 mt-1.5">24</h3>
         </div>
 
@@ -30,7 +26,7 @@ export default function EnterpriseDashboardPage() {
             <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
               <span className="material-symbols-outlined !text-[24px]" style={{ fontVariationSettings: "'FILL' 1" }}>group_add</span>
             </div>
-            <span className="text-[12px] font-bold text-blue-600 bg-blue-50 border border-blue-100/50 px-2.5 py-1 rounded-lg">+5</span>
+            
           </div>
           <p className="text-slate-500 text-sm font-medium">Candidatures re├ºues</p>
           <h3 className="text-3xl font-bold text-slate-900 mt-1.5">148</h3>
@@ -42,9 +38,9 @@ export default function EnterpriseDashboardPage() {
             <div className="p-3 bg-slate-50 text-slate-700 rounded-xl">
               <span className="material-symbols-outlined !text-[24px]">calendar_today</span>
             </div>
-            <span className="text-[12px] font-bold text-slate-700 bg-slate-50 border border-slate-200/50 px-2.5 py-1 rounded-lg">Aujourd'hui</span>
+            
           </div>
-          <p className="text-slate-500 text-sm font-medium">Entretiens pr├®vus</p>
+          <p className="text-slate-500 text-sm font-medium">Acceptée</p>
           <h3 className="text-3xl font-bold text-slate-900 mt-1.5">8</h3>
         </div>
 
@@ -55,7 +51,7 @@ export default function EnterpriseDashboardPage() {
               <span className="material-symbols-outlined !text-[24px]">archive</span>
             </div>
           </div>
-          <p className="text-slate-500 text-sm font-medium">Offres archiv├®es</p>
+          <p className="text-slate-500 text-sm font-medium">Rejetée</p>
           <h3 className="text-3xl font-bold text-slate-900 mt-1.5">56</h3>
         </div>
 
@@ -100,10 +96,17 @@ export default function EnterpriseDashboardPage() {
                     <td className="px-6 py-5">
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-100/50 uppercase tracking-wider">Nouveau</span>
                     </td>
-                    <td className="px-6 py-5 text-right">
-                      <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm shadow-transparent hover:shadow-slate-200/50 border border-transparent hover:border-slate-100">
-                        <span className="material-symbols-outlined !text-[20px]">more_vert</span>
-                      </button>
+                    <td className="px-6 py-5 text-right relative">
+                      <div className="group inline-block">
+                        <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm shadow-transparent hover:shadow-slate-200/50 border border-transparent hover:border-slate-100 focus:outline-none">
+                          <span className="material-symbols-outlined !text-[20px]">more_vert</span>
+                        </button>
+                        <div className="absolute right-6 top-10 w-32 bg-white rounded-xl shadow-lg border border-slate-100 opacity-0 invisible group-focus-within:opacity-100 group-focus-within:visible  transition-all z-10 flex flex-col py-1">
+                          <button className="px-4 py-2 text-left text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors">Voir</button>
+                          <button className="px-4 py-2 text-left text-[13px] font-medium text-green-600 hover:bg-green-50 transition-colors">Accepter</button>
+                          <button className="px-4 py-2 text-left text-[13px] font-medium text-red-600 hover:bg-red-50 transition-colors">Rejeter</button>
+                        </div>
+                      </div>
                     </td>
                   </tr>
 
@@ -120,12 +123,19 @@ export default function EnterpriseDashboardPage() {
                     <td className="px-6 py-5 text-[14px] text-slate-600 font-medium">Design UX/UI</td>
                     <td className="px-6 py-5 text-[14px] text-slate-500">Hier</td>
                     <td className="px-6 py-5">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-100/50 uppercase tracking-wider">En revue</span>
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-100/50 uppercase tracking-wider">Nouveau</span>
                     </td>
-                    <td className="px-6 py-5 text-right">
-                      <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm shadow-transparent hover:shadow-slate-200/50 border border-transparent hover:border-slate-100">
-                        <span className="material-symbols-outlined !text-[20px]">more_vert</span>
-                      </button>
+                    <td className="px-6 py-5 text-right relative">
+                      <div className="group inline-block">
+                        <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm shadow-transparent hover:shadow-slate-200/50 border border-transparent hover:border-slate-100 focus:outline-none">
+                          <span className="material-symbols-outlined !text-[20px]">more_vert</span>
+                        </button>
+                        <div className="absolute right-6 top-10 w-32 bg-white rounded-xl shadow-lg border border-slate-100 opacity-0 invisible group-focus-within:opacity-100 group-focus-within:visible  transition-all z-10 flex flex-col py-1">
+                          <button className="px-4 py-2 text-left text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors">Voir</button>
+                          <button className="px-4 py-2 text-left text-[13px] font-medium text-green-600 hover:bg-green-50 transition-colors">Accepter</button>
+                          <button className="px-4 py-2 text-left text-[13px] font-medium text-red-600 hover:bg-red-50 transition-colors">Rejeter</button>
+                        </div>
+                      </div>
                     </td>
                   </tr>
 
@@ -142,12 +152,19 @@ export default function EnterpriseDashboardPage() {
                     <td className="px-6 py-5 text-[14px] text-slate-600 font-medium">Data Analyst</td>
                     <td className="px-6 py-5 text-[14px] text-slate-500">Il y a 3j</td>
                     <td className="px-6 py-5">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-primary text-white uppercase tracking-wider">Entretien</span>
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-100/50 uppercase tracking-wider">Nouveau</span>
                     </td>
-                    <td className="px-6 py-5 text-right">
-                      <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm shadow-transparent hover:shadow-slate-200/50 border border-transparent hover:border-slate-100">
-                        <span className="material-symbols-outlined !text-[20px]">more_vert</span>
-                      </button>
+                    <td className="px-6 py-5 text-right relative">
+                      <div className="group inline-block">
+                        <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm shadow-transparent hover:shadow-slate-200/50 border border-transparent hover:border-slate-100 focus:outline-none">
+                          <span className="material-symbols-outlined !text-[20px]">more_vert</span>
+                        </button>
+                        <div className="absolute right-6 top-10 w-32 bg-white rounded-xl shadow-lg border border-slate-100 opacity-0 invisible group-focus-within:opacity-100 group-focus-within:visible  transition-all z-10 flex flex-col py-1">
+                          <button className="px-4 py-2 text-left text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors">Voir</button>
+                          <button className="px-4 py-2 text-left text-[13px] font-medium text-green-600 hover:bg-green-50 transition-colors">Accepter</button>
+                          <button className="px-4 py-2 text-left text-[13px] font-medium text-red-600 hover:bg-red-50 transition-colors">Rejeter</button>
+                        </div>
+                      </div>
                     </td>
                   </tr>
 
@@ -164,12 +181,19 @@ export default function EnterpriseDashboardPage() {
                     <td className="px-6 py-5 text-[14px] text-slate-600 font-medium">Chef de Projet IT</td>
                     <td className="px-6 py-5 text-[14px] text-slate-500">Il y a 1 sem</td>
                     <td className="px-6 py-5">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-500 text-white uppercase tracking-wider">Accept├®</span>
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-100/50 uppercase tracking-wider">Nouveau</span>
                     </td>
-                    <td className="px-6 py-5 text-right">
-                      <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm shadow-transparent hover:shadow-slate-200/50 border border-transparent hover:border-slate-100">
-                        <span className="material-symbols-outlined !text-[20px]">more_vert</span>
-                      </button>
+                    <td className="px-6 py-5 text-right relative">
+                      <div className="group inline-block">
+                        <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm shadow-transparent hover:shadow-slate-200/50 border border-transparent hover:border-slate-100 focus:outline-none">
+                          <span className="material-symbols-outlined !text-[20px]">more_vert</span>
+                        </button>
+                        <div className="absolute right-6 top-10 w-32 bg-white rounded-xl shadow-lg border border-slate-100 opacity-0 invisible group-focus-within:opacity-100 group-focus-within:visible  transition-all z-10 flex flex-col py-1">
+                          <button className="px-4 py-2 text-left text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors">Voir</button>
+                          <button className="px-4 py-2 text-left text-[13px] font-medium text-green-600 hover:bg-green-50 transition-colors">Accepter</button>
+                          <button className="px-4 py-2 text-left text-[13px] font-medium text-red-600 hover:bg-red-50 transition-colors">Rejeter</button>
+                        </div>
+                      </div>
                     </td>
                   </tr>
 
@@ -183,9 +207,7 @@ export default function EnterpriseDashboardPage() {
         <div className="space-y-6">
           <div className="flex items-center justify-between px-2">
             <h3 className="text-[20px] font-bold text-slate-900">Mes Offres Actives</h3>
-            <button className="p-2.5 flex items-center justify-center bg-primary/10 text-primary rounded-xl hover:bg-primary/20 transition-all">
-              <span className="material-symbols-outlined !text-[20px]">add</span>
-            </button>
+            
           </div>
           
           <div className="space-y-4">
@@ -197,9 +219,7 @@ export default function EnterpriseDashboardPage() {
                   <h4 className="font-bold text-slate-900 text-[16px] group-hover:text-primary transition-colors">D├®veloppeur Backend (Node.js)</h4>
                   <p className="text-[12px] text-slate-500 mt-1">Publi├® il y a 5 jours ÔÇó Stage de 6 mois</p>
                 </div>
-                <span className="p-2 flex items-center justify-center bg-blue-50 text-blue-600 rounded-xl">
-                  <span className="material-symbols-outlined !text-[18px]">rocket</span>
-                </span>
+                
               </div>
               <div className="flex items-center gap-4 mb-5">
                 <div className="flex -space-x-2">
@@ -211,9 +231,7 @@ export default function EnterpriseDashboardPage() {
               </div>
               <div className="flex gap-3">
                 <button className="flex-1 py-2.5 text-[13px] font-bold text-primary bg-primary/5 rounded-xl hover:bg-primary hover:text-white transition-all">G├®rer l'offre</button>
-                <button className="px-3.5 py-2.5 flex items-center justify-center rounded-xl bg-slate-50 text-[13px] font-bold border border-slate-100 text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-all">
-                  <span className="material-symbols-outlined !text-[18px]">share</span>
-                </button>
+                
               </div>
             </div>
 
@@ -224,9 +242,7 @@ export default function EnterpriseDashboardPage() {
                   <h4 className="font-bold text-slate-900 text-[16px] group-hover:text-primary transition-colors">Assistant Marketing Digital</h4>
                   <p className="text-[12px] text-slate-500 mt-1">Publi├® il y a 10 jours ÔÇó Stage de 3 mois</p>
                 </div>
-                <span className="p-2 flex items-center justify-center bg-blue-50 text-blue-600 rounded-xl">
-                  <span className="material-symbols-outlined !text-[18px]">rocket</span>
-                </span>
+                
               </div>
               <div className="flex items-center gap-4 mb-5">
                 <div className="flex -space-x-2">
@@ -237,19 +253,11 @@ export default function EnterpriseDashboardPage() {
               </div>
               <div className="flex gap-3">
                 <button className="flex-1 py-2.5 text-[13px] font-bold text-primary bg-primary/5 rounded-xl hover:bg-primary hover:text-white transition-all">G├®rer l'offre</button>
-                <button className="px-3.5 py-2.5 flex items-center justify-center rounded-xl bg-slate-50 text-[13px] font-bold border border-slate-100 text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-all">
-                  <span className="material-symbols-outlined !text-[18px]">share</span>
-                </button>
+                
               </div>
             </div>
 
-            {/* CTA New Post */}
-            <button className="w-full border-2 border-dashed border-slate-200 hover:border-primary/40 hover:bg-primary/5 rounded-2xl p-8 flex flex-col items-center justify-center gap-3 group transition-all">
-              <div className="p-4 bg-slate-50 border border-slate-100 group-hover:bg-white group-hover:shadow-sm rounded-full text-slate-400 group-hover:text-primary transition-all">
-                <span className="material-symbols-outlined !text-3xl">post_add</span>
-              </div>
-              <p className="text-[14px] font-bold text-slate-500 group-hover:text-primary">Publier une nouvelle offre</p>
-            </button>
+            
 
           </div>
         </div>

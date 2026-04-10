@@ -1,13 +1,20 @@
-﻿import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+﻿import EnterpriseDashboardLayout from '../components/EnterpriseDashboardLayout';
 
-export default function EnterpriseDetailPage() {
+export default function EnterpriseDashboardProfilePage() {
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-900">
-      <Navbar />
+    <EnterpriseDashboardLayout>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 bg-white p-6 rounded-2xl shadow-sm border border-slate-100/50">
+          <div>
+            <h2 className="text-2xl font-bold text-slate-900 mb-1">Profil Entreprise</h2>
+            <p className="text-slate-500 text-sm font-medium">Aperçu public de votre entreprise tel que vu par les talents.</p>
+          </div>
+          <button className="px-6 py-3 bg-primary text-white rounded-xl font-bold shadow-lg shadow-primary/25 hover:bg-blue-800 transition-all flex items-center gap-2 shrink-0">
+            <span className="material-symbols-outlined !text-[18px]">edit</span>
+            Modifier le profil
+          </button>
+        </div>
 
-      <main className="flex-grow py-8 sm:py-12 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto space-y-12">
+        <div className="max-w-5xl mx-auto space-y-10">
           
           {/* Main Company Card */}
           <article className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
@@ -41,14 +48,7 @@ export default function EnterpriseDetailPage() {
                 </div>
                 
                 <div className="flex w-full md:w-auto gap-3 pt-4 md:pt-0">
-                  <button className="flex-1 md:flex-none px-5 py-3 border border-slate-200 rounded-xl text-slate-600 font-bold text-[13px] hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
-                    <span className="material-symbols-outlined !text-[18px]">notifications_active</span>
-                    Alerte
-                  </button>
-                  <button className="flex-1 md:flex-none px-8 py-3 bg-primary text-white rounded-xl font-bold text-[13px] hover:bg-blue-800 transition-all shadow-md shadow-primary/20 flex items-center justify-center gap-2">
-                    <span className="material-symbols-outlined !text-[18px]">add</span>
-                    Suivre
-                  </button>
+                  {/* Buttons Removed for the dashboard view */}
                 </div>
               </header>
 
@@ -120,33 +120,7 @@ export default function EnterpriseDetailPage() {
                     </div>
                   </div>
                 </section>
-
-                <section className="space-y-6">
-                  <h2 className="text-[12px] font-black uppercase tracking-widest text-primary">Suivez-nous</h2>
-                  <div className="flex gap-4">
-                    <a className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm" href="#">
-                      <span className="material-symbols-outlined">share</span>
-                    </a>
-                    <a className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm" href="#">
-                      <span className="material-symbols-outlined">hub</span>
-                    </a>
-                  </div>
-                </section>
               </div>
-
-              {/* Join Us CTA */}
-              <section className="pt-6">
-                <div className="bg-gradient-to-br from-primary to-blue-900 p-8 sm:p-10 rounded-3xl text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-xl shadow-primary/20 relative overflow-hidden group">
-                  <div className="absolute right-0 top-0 w-32 h-32 bg-white/10 rounded-full blur-2xl transform translate-x-1/2 -translate-y-1/2"></div>
-                  <div className="text-center md:text-left relative z-10">
-                    <h3 className="text-2xl font-bold mb-2">PrÃªt Ã  nous rejoindre ?</h3>
-                    <p className="text-blue-100 text-[15px] font-medium">DÃ©couvrez comment propulser votre carriÃ¨re avec nous.</p>
-                  </div>
-                  <button className="w-full md:w-auto bg-white text-primary px-10 py-4 rounded-2xl font-bold hover:bg-slate-50 transition-all hover:-translate-y-1 shadow-lg relative z-10 whitespace-nowrap">
-                    Voir les carriÃ¨res
-                  </button>
-                </div>
-              </section>
             </div>
           </article>
 
@@ -198,10 +172,7 @@ export default function EnterpriseDetailPage() {
             </div>
           </section>
         </div>
-      </main>
-
-      <Footer />
-    </div>
+    </EnterpriseDashboardLayout>
   );
 }
 

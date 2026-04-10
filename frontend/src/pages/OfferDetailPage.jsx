@@ -1,4 +1,4 @@
-import Navbar from '../components/Navbar';
+﻿import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -24,9 +24,9 @@ export default function OfferDetailPage() {
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-5">
-                  <span className="px-3 py-1 rounded-md bg-emerald-100/80 text-emerald-700 text-[11px] font-black uppercase tracking-widest border border-emerald-200/50">Active</span>
+                  <span className="px-3 py-1 rounded-md bg-blue-100/80 text-blue-700 text-[11px] font-black uppercase tracking-widest border border-blue-200/50">Active</span>
                 </div>
-                <h1 className="text-3xl sm:text-4xl font-black text-slate-900 leading-tight uppercase tracking-tight mb-5">Développeur Fullstack Senior</h1>
+                <h1 className="text-3xl sm:text-4xl font-black text-slate-900 leading-tight uppercase tracking-tight mb-5">DÃ©veloppeur Fullstack Senior</h1>
                 
                 <div className="flex flex-wrap items-center gap-5 sm:gap-8 text-slate-600">
                   <div className="flex items-center gap-3">
@@ -71,20 +71,20 @@ export default function OfferDetailPage() {
                   Description du poste
                 </h3>
                 <div className="text-slate-600 leading-relaxed space-y-4 text-[15px]">
-                  <p>En tant que Développeur Fullstack chez <strong className="text-slate-800">Coris Tech Solutions</strong> à Ouagadougou, vous ferez partie d'une équipe agile et passionnée par l'innovation. Votre mission principale sera de concevoir, développer et maintenir des solutions de paiement robustes et scalables.</p>
-                  <p>Nous recherchons un profil capable de s'adapter rapidement aux nouveaux défis technologiques et de proposer des architectures modernes répondant aux exigences du marché Ouest-Africain.</p>
+                  <p>En tant que DÃ©veloppeur Fullstack chez <strong className="text-slate-800">Coris Tech Solutions</strong> Ã  Ouagadougou, vous ferez partie d'une Ã©quipe agile et passionnÃ©e par l'innovation. Votre mission principale sera de concevoir, dÃ©velopper et maintenir des solutions de paiement robustes et scalables.</p>
+                  <p>Nous recherchons un profil capable de s'adapter rapidement aux nouveaux dÃ©fis technologiques et de proposer des architectures modernes rÃ©pondant aux exigences du marchÃ© Ouest-Africain.</p>
                 </div>
               </section>
 
               <section>
                 <h3 className="text-xl font-bold text-slate-900 mb-5 border-b border-slate-100 pb-3 flex items-center gap-2">
                   <span className="material-symbols-outlined text-primary">target</span>
-                  Missions et Responsabilités
+                  Missions et ResponsabilitÃ©s
                 </h3>
                 <ul className="space-y-4">
                   <li className="flex items-start gap-4 text-[15px] text-slate-700 font-medium">
                     <span className="material-symbols-outlined text-blue-500 mt-0.5 !text-[18px]">check_circle</span>
-                    <span>Développement d'APIs REST performantes en Node.js / TypeScript.</span>
+                    <span>DÃ©veloppement d'APIs REST performantes en Node.js / TypeScript.</span>
                   </li>
                   <li className="flex items-start gap-4 text-[15px] text-slate-700 font-medium">
                     <span className="material-symbols-outlined text-blue-500 mt-0.5 !text-[18px]">check_circle</span>
@@ -92,11 +92,11 @@ export default function OfferDetailPage() {
                   </li>
                   <li className="flex items-start gap-4 text-[15px] text-slate-700 font-medium">
                     <span className="material-symbols-outlined text-blue-500 mt-0.5 !text-[18px]">check_circle</span>
-                    <span>Optimisation des requêtes SQL et gestion des bases de données PostgreSQL.</span>
+                    <span>Optimisation des requÃªtes SQL et gestion des bases de donnÃ©es PostgreSQL.</span>
                   </li>
                   <li className="flex items-start gap-4 text-[15px] text-slate-700 font-medium">
                     <span className="material-symbols-outlined text-blue-500 mt-0.5 !text-[18px]">check_circle</span>
-                    <span>Participation active aux cérémonies SCRUM et aux code reviews.</span>
+                    <span>Participation active aux cÃ©rÃ©monies SCRUM et aux code reviews.</span>
                   </li>
                 </ul>
               </section>
@@ -104,21 +104,21 @@ export default function OfferDetailPage() {
               <section>
                 <h3 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-3 flex items-center gap-2">
                   <span className="material-symbols-outlined text-primary">school</span>
-                  Profil recherché &amp; Qualifications
+                  Profil recherchÃ© &amp; Qualifications
                 </h3>
                 <div className="space-y-6">
                   <div className="bg-slate-50 p-5 rounded-xl border border-slate-100">
                     <h4 className="font-extrabold text-slate-900 text-[14px] mb-2 uppercase tracking-wide flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Formation
                     </h4>
-                    <p className="text-slate-600 text-[15px] ml-3.5">Bac + 5 en Informatique, Génie Logiciel ou tout autre diplôme équivalent.</p>
+                    <p className="text-slate-600 text-[15px] ml-3.5">Bac + 5 en Informatique, GÃ©nie Logiciel ou tout autre diplÃ´me Ã©quivalent.</p>
                   </div>
                   
                   <div className="bg-slate-50 p-5 rounded-xl border border-slate-100">
                     <h4 className="font-extrabold text-slate-900 text-[14px] mb-2 uppercase tracking-wide flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Expérience
+                      <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span> ExpÃ©rience
                     </h4>
-                    <p className="text-slate-600 text-[15px] ml-3.5">Minimum 3 à 5 ans d'expérience significative dans le développement d'applications web complexes.</p>
+                    <p className="text-slate-600 text-[15px] ml-3.5">Minimum 3 Ã  5 ans d'expÃ©rience significative dans le dÃ©veloppement d'applications web complexes.</p>
                   </div>
                   
                   <div className="bg-slate-50 p-5 rounded-xl border border-slate-100">
@@ -126,10 +126,10 @@ export default function OfferDetailPage() {
                       <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Exigences
                     </h4>
                     <ul className="space-y-2.5 text-[15px] text-slate-600 ml-3.5 list-disc pl-4 marker:text-slate-300">
-                      <li>Maîtrise parfaite de JavaScript (ES6+), TypeScript, Node.js et React.</li>
-                      <li>Excellente compréhension des architectures microservices et des conteneurs (Docker).</li>
-                      <li>Capacité à travailler en équipe dans un environnement agile.</li>
-                      <li>Rigueur dans la qualité du code et les tests automatisés.</li>
+                      <li>MaÃ®trise parfaite de JavaScript (ES6+), TypeScript, Node.js et React.</li>
+                      <li>Excellente comprÃ©hension des architectures microservices et des conteneurs (Docker).</li>
+                      <li>CapacitÃ© Ã  travailler en Ã©quipe dans un environnement agile.</li>
+                      <li>Rigueur dans la qualitÃ© du code et les tests automatisÃ©s.</li>
                     </ul>
                   </div>
                 </div>
@@ -141,7 +141,7 @@ export default function OfferDetailPage() {
                   onClick={() => navigate('/postuler/1')}
                 >
                   <span className="material-symbols-outlined">send</span>
-                  Postuler à cette offre
+                  Postuler Ã  cette offre
                 </button>
               </div>
             </div>
@@ -152,7 +152,7 @@ export default function OfferDetailPage() {
               <div>
                 <div className="bg-slate-900 px-6 py-2.5 -mx-6 sm:-mx-10 -mt-6 sm:-mt-10 mb-8 flex items-center justify-center gap-2">
                   <span className="material-symbols-outlined text-white !text-[18px]">corporate_fare</span>
-                  <span className="text-white font-bold text-[12px] uppercase tracking-widest">À propos de l'entreprise</span>
+                  <span className="text-white font-bold text-[12px] uppercase tracking-widest">Ã€ propos de l'entreprise</span>
                 </div>
                 
                 <div className="flex flex-col items-center text-center">
@@ -163,7 +163,7 @@ export default function OfferDetailPage() {
                   <p className="text-[13px] font-bold text-slate-400 mt-1">Groupe Coris Bank Int.</p>
                   
                   <p className="mt-5 text-[14px] text-slate-600 leading-relaxed font-medium">
-                    Coris Tech Solutions est l'entité technologique du Groupe Coris, dédiée à l'innovation financière et digitale dans la zone UEMOA.
+                    Coris Tech Solutions est l'entitÃ© technologique du Groupe Coris, dÃ©diÃ©e Ã  l'innovation financiÃ¨re et digitale dans la zone UEMOA.
                   </p>
                   
                   <div className="w-full mt-8 bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-4 text-left">
@@ -197,19 +197,19 @@ export default function OfferDetailPage() {
                     <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-primary">
                       <span className="material-symbols-outlined !text-[18px]">health_and_safety</span>
                     </div>
-                    <span className="text-[14px] font-bold text-slate-700">Assurance Santé 100%</span>
+                    <span className="text-[14px] font-bold text-slate-700">Assurance SantÃ© 100%</span>
                   </div>
                   <div className="flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 shadow-sm hover:border-primary/30 transition-colors cursor-default">
                     <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-primary">
                       <span className="material-symbols-outlined !text-[18px]">laptop</span>
                     </div>
-                    <span className="text-[14px] font-bold text-slate-700">Matériel de pointe</span>
+                    <span className="text-[14px] font-bold text-slate-700">MatÃ©riel de pointe</span>
                   </div>
                   <div className="flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 shadow-sm hover:border-primary/30 transition-colors cursor-default">
                     <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-primary">
                       <span className="material-symbols-outlined !text-[18px]">restaurant</span>
                     </div>
-                    <span className="text-[14px] font-bold text-slate-700">Prise en charge déjeuner</span>
+                    <span className="text-[14px] font-bold text-slate-700">Prise en charge dÃ©jeuner</span>
                   </div>
                 </div>
               </div>
@@ -265,7 +265,7 @@ export default function OfferDetailPage() {
                 </div>
                 <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 bg-slate-100 text-slate-600 border border-slate-200 rounded-md">Freelance</span>
               </div>
-              <h4 className="font-bold text-[16px] text-slate-900 group-hover:text-primary transition-colors line-clamp-1">Expert Cybersécurité</h4>
+              <h4 className="font-bold text-[16px] text-slate-900 group-hover:text-primary transition-colors line-clamp-1">Expert CybersÃ©curitÃ©</h4>
               <p className="text-[13px] font-medium text-slate-500 mt-1 mb-5">Moov Africa BF</p>
               <div className="flex items-center justify-between text-[11px] font-bold text-slate-400 border-t border-slate-100 pt-4">
                 <span className="flex items-center gap-1.5"><span className="material-symbols-outlined !text-[14px]">location_on</span> Bobo-Dioulasso</span>
@@ -279,13 +279,13 @@ export default function OfferDetailPage() {
                 <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center p-2">
                   <img alt="Sonabel" className="object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsDyneC4_VQjcoPN3GH8HFw6_LWKLiJy8mgUZ981Xh6tcSsbmoqT7gK7upewIO0H8VVIVSqvfYvFkvub6DdAioB-69-mU66S7t946NizdQkRB8FLAEg3bwfq8uNCcUGLKXGmIA7GTSI63yrIcwmUiwLs5_DdS1RdrP66uUgCk083B7nORK707inw5-1NCN3mqYrUnIA0O2nDUJndHCY6QmNt23zuOTueWecjI0b_m6BIKwjHnTSOOMkh2KbtD6c6UHdpT-GBuQJam7" />
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 bg-emerald-50 text-emerald-600 border border-emerald-200/50 rounded-md">Stage</span>
+                <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 bg-blue-50 text-blue-600 border border-blue-200/50 rounded-md">Stage</span>
               </div>
-              <h4 className="font-bold text-[16px] text-slate-900 group-hover:text-primary transition-colors line-clamp-1">Développeur Mobile</h4>
+              <h4 className="font-bold text-[16px] text-slate-900 group-hover:text-primary transition-colors line-clamp-1">DÃ©veloppeur Mobile</h4>
               <p className="text-[13px] font-medium text-slate-500 mt-1 mb-5">Digital Innovators Hub</p>
               <div className="flex items-center justify-between text-[11px] font-bold text-slate-400 border-t border-slate-100 pt-4">
                 <span className="flex items-center gap-1.5"><span className="material-symbols-outlined !text-[14px]">location_on</span> Koudougou</span>
-                <span className="text-primary">À l'instant</span>
+                <span className="text-primary">Ã€ l'instant</span>
               </div>
             </div>
 
@@ -298,3 +298,4 @@ export default function OfferDetailPage() {
     </div>
   );
 }
+

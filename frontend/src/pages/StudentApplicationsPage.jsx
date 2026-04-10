@@ -1,9 +1,9 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import StudentDashboardLayout from '../components/StudentDashboardLayout';
 
 const applications = [
-  { id: 1, offer: 'Développeur Fullstack Junior', company: 'Orange Burkina Faso', initials: 'OR', logo: 'https://logo.clearbit.com/orange.com', city: 'Ouagadougou', type: 'Stage', date: '12/10/2023', status: 'Acceptee' },
-  { id: 2, offer: 'Analyste Cybersécurité', company: 'Coris Bank International', initials: 'CB', logo: 'https://logo.clearbit.com/corisbankinternational.com', city: 'Bobo-Dioulasso', type: 'Stage', date: '15/10/2023', status: 'En attente' },
+  { id: 1, offer: 'DÃ©veloppeur Fullstack Junior', company: 'Orange Burkina Faso', initials: 'OR', logo: 'https://logo.clearbit.com/orange.com', city: 'Ouagadougou', type: 'Stage', date: '12/10/2023', status: 'Acceptee' },
+  { id: 2, offer: 'Analyste CybersÃ©curitÃ©', company: 'Coris Bank International', initials: 'CB', logo: 'https://logo.clearbit.com/corisbankinternational.com', city: 'Bobo-Dioulasso', type: 'Stage', date: '15/10/2023', status: 'En attente' },
   { id: 3, offer: 'Assistant Marketing Digital', company: 'Moov Africa', initials: 'MV', logo: 'https://logo.clearbit.com/moov-africa.com', city: 'Ouagadougou', type: 'Emploi', date: '08/10/2023', status: 'Rejetee' },
   { id: 4, offer: 'Data Analyst Junior', company: 'UBA Burkina', initials: 'UBA', logo: 'https://logo.clearbit.com/ubagroup.com', city: 'Ouagadougou', type: 'Stage', date: '05/10/2023', status: 'En attente' },
   { id: 5, offer: 'Support IT', company: 'SONABEL', initials: 'SNB', logo: 'https://logo.clearbit.com/sonabel.bf', city: 'Koudougou', type: 'Emploi', date: '28/09/2023', status: 'En attente' },
@@ -11,7 +11,7 @@ const applications = [
 ];
 
 const statusStyle = {
-  Acceptee: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  Acceptee: 'bg-green-50 text-green-700 border-green-200',
   'En attente': 'bg-blue-50 text-blue-700 border-blue-200',
   Rejetee: 'bg-red-50 text-red-700 border-red-200'
 };
@@ -120,3 +120,4 @@ export default function StudentApplicationsPage() {
     </StudentDashboardLayout>
   );
 }
+

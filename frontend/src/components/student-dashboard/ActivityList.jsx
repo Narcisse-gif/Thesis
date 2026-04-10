@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+﻿import { motion } from 'framer-motion';
 import { Ghost } from 'lucide-react';
 
 export default function ActivityList({ activities }) {
@@ -8,8 +8,8 @@ export default function ActivityList({ activities }) {
         <div className="rounded-full bg-slate-100 p-4 mb-4">
             <Ghost className="h-8 w-8 text-slate-300" />
         </div>
-        <p className="text-sm font-bold text-slate-700">Aucune activité récente.</p>
-        <p className="mt-1.5 text-xs font-medium text-slate-500">Commencez à explorer les offres pour générer de l'activité.</p>
+        <p className="text-sm font-bold text-slate-700">Aucune activitÃ© rÃ©cente.</p>
+        <p className="mt-1.5 text-xs font-medium text-slate-500">Commencez Ã  explorer les offres pour gÃ©nÃ©rer de l'activitÃ©.</p>
       </div>
     );
   }
@@ -19,7 +19,7 @@ export default function ActivityList({ activities }) {
       case 'match': return 'text-amber-500 bg-amber-50 border-amber-200';
       case 'update': return 'text-blue-500 bg-blue-50 border-blue-200';
       case 'action': return 'text-purple-500 bg-purple-50 border-purple-200';
-      case 'success': return 'text-emerald-500 bg-emerald-50 border-emerald-200';
+      case 'success': return 'text-blue-500 bg-blue-50 border-blue-200';
       default: return 'text-slate-500 bg-slate-100 border-slate-200';
     }
   };
@@ -40,7 +40,7 @@ export default function ActivityList({ activities }) {
                 transition={{ delay: idx * 0.1, duration: 0.5, type: 'spring' }}
                 className="group relative flex items-start gap-4"
             >
-                {/* L'icône (point sur la timeline) */}
+                {/* L'icÃ´ne (point sur la timeline) */}
                 <div className={`relative z-10 flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full border ${getIconColor(item.type)} shadow-sm bg-white ring-4 ring-white/50 transition-transform duration-300 group-hover:scale-110`}>
                 {Icon && <Icon className="h-4 w-4" strokeWidth={2.5} />}
                 </div>
@@ -60,3 +60,4 @@ export default function ActivityList({ activities }) {
     </div>
   );
 }
+

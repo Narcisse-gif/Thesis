@@ -9,7 +9,7 @@ export default function StudentSettingsPage() {
       <section className="space-y-8">
         <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
           <h2 className="text-2xl font-bold text-slate-900 mb-2">Paramètres</h2>
-          <p className="text-slate-500 text-sm">Gérez vos informations de connexion, la sécurité et les préférences du compte.</p>
+          <p className="text-slate-500 text-sm">Gérez vos informations de connexion et la sécurité de votre compte.</p>
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
@@ -38,40 +38,13 @@ export default function StudentSettingsPage() {
                 <input className="rounded-xl border border-slate-200 px-4 py-3 text-sm" placeholder="Nouveau mot de passe" type="password" />
               </div>
               <input className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm" placeholder="Confirmer le nouveau mot de passe" type="password" />
-              <button className="px-6 py-3 rounded-xl bg-slate-900 text-white text-sm font-bold hover:bg-slate-800 transition-all">
+              <button className="px-6 py-3 rounded-xl bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 transition-all">
                 Modifier mon mot de passe
               </button>
-            </div>
-
-            <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm space-y-4">
-              <h3 className="text-lg font-bold text-slate-900">Préférences</h3>
-              <div className="flex items-center justify-between rounded-xl border border-slate-200 px-4 py-3">
-                <span className="text-sm font-semibold text-slate-700">Notifications email</span>
-                <input type="checkbox" defaultChecked className="h-5 w-5" />
-              </div>
-              <div className="flex items-center justify-between rounded-xl border border-slate-200 px-4 py-3">
-                <span className="text-sm font-semibold text-slate-700">Notifications SMS</span>
-                <input type="checkbox" className="h-5 w-5" />
-              </div>
-              <div className="flex items-center justify-between rounded-xl border border-slate-200 px-4 py-3">
-                <span className="text-sm font-semibold text-slate-700">Rendre mon profil visible aux recruteurs</span>
-                <input type="checkbox" defaultChecked className="h-5 w-5" />
-              </div>
             </div>
           </div>
 
           <div className="space-y-6">
-            <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
-              <h3 className="text-lg font-bold text-slate-900">Support</h3>
-              <p className="text-sm text-slate-500 mt-2">Besoin d'aide ? Consultez les conseils et guides de la plateforme.</p>
-              <button
-                className="mt-4 w-full px-4 py-3 rounded-xl border border-primary text-primary text-sm font-bold hover:bg-primary/5 transition-all"
-                onClick={() => navigate('/conseils')}
-              >
-                Aller vers les conseils
-              </button>
-            </div>
-
             <div className="bg-white rounded-2xl border border-red-100 p-6 shadow-sm">
               <h3 className="text-lg font-bold text-slate-900">Session</h3>
               <p className="text-sm text-slate-500 mt-2">Vous pouvez vous déconnecter de votre compte à tout moment.</p>

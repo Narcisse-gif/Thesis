@@ -30,7 +30,7 @@ export default function StudentDashboardPage() {
             <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em]">Acceptées</p>
             <h3 className="text-4xl font-extrabold text-slate-900">02</h3>
           </div>
-          <div className="h-14 w-14 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 transition-all duration-300">
+          <div className="h-14 w-14 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 transition-all duration-300">
             <span className="material-symbols-outlined !text-2xl" style={{ fontVariationSettings: "'wght' 300, 'FILL' 1" }}>verified</span>
           </div>
         </div>
@@ -213,3 +213,4 @@ export default function StudentDashboardPage() {
     </StudentDashboardLayout>
   );
 }
+

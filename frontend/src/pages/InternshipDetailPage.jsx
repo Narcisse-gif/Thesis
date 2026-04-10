@@ -1,4 +1,4 @@
-import Navbar from '../components/Navbar';
+﻿import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -23,7 +23,7 @@ export default function InternshipDetailPage() {
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-5">
-                  <span className="px-3 py-1 rounded-md bg-emerald-100/80 text-emerald-700 text-[11px] font-black uppercase tracking-widest border border-emerald-200/50">Stage ouvert</span>
+                  <span className="px-3 py-1 rounded-md bg-blue-100/80 text-blue-700 text-[11px] font-black uppercase tracking-widest border border-blue-200/50">Stage ouvert</span>
                 </div>
                 <h1 className="text-3xl sm:text-4xl font-black text-slate-900 leading-tight tracking-tight mb-5">Stagiaire Analyste Credit</h1>
 
@@ -262,7 +262,7 @@ export default function InternshipDetailPage() {
                 <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center p-2">
                   <img alt="Orange" className="object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7RupCWQGvQElZ7Epn43Xc3o2K10bz9-Ph1DS9Dx_CbPSuN-HntJhnpOx0-nkTl4cyDSFFej17w89SJ5VfprjzjJtIwT6Ues3bgsgYoZ9nfmkq5Cbq30aSCWiRQkgCXr_gyDKPUKRY0cBTh2Bzcp0ZolUmxVDJjB-e77oI-VRSKMWWO4kBWHj9yzLGH6dsTFfvkrh7W5QZBJ4gtXNX_5hzbtGRV2NQadqf5MFu4-K_AlN7lOrfGJX6uPf6HAuIdaqyVqO44lTDPHgT" />
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 bg-emerald-50 text-emerald-600 border border-emerald-200/50 rounded-md">Stage</span>
+                <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 bg-blue-50 text-blue-600 border border-blue-200/50 rounded-md">Stage</span>
               </div>
               <h4 className="font-bold text-[16px] text-slate-900 group-hover:text-primary transition-colors line-clamp-1">Assistant Data Analyst</h4>
               <p className="text-[13px] font-medium text-slate-500 mt-1 mb-5">Orange Burkina Faso</p>
@@ -309,3 +309,4 @@ export default function InternshipDetailPage() {
     </div>
   );
 }
+

@@ -10,19 +10,13 @@ export default function EnterpriseCandidatesPage() {
           <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">Candidatures reçues</h2>
           <p className="text-slate-500 mt-2 text-[15px] sm:text-base">Analysez et gérez les profils postulants pour vos offres en cours.</p>
         </div>
-        <div className="flex justify-center sm:justify-end items-center gap-3">
-          <div className="bg-white p-1.5 rounded-2xl flex shadow-sm border border-slate-100/50">
-            <button className="px-6 py-2.5 bg-primary text-white rounded-xl text-[13px] font-bold shadow-md shadow-primary/20">Liste</button>
-            <button className="px-6 py-2.5 text-slate-500 text-[13px] font-bold hover:text-primary transition-colors">Pipeline</button>
-          </div>
-        </div>
+        
       </div>
 
       {/* Filters Section */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-8">
-        
+      <div className="mb-8">
         {/* Filter: Offres */}
-        <div className="md:col-span-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-100/50">
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100/50">
           <label className="text-[10px] font-bold uppercase text-slate-400 block mb-3">Filtrer par Offre</label>
           <div className="relative">
             <select className="w-full bg-slate-50 border-none rounded-xl text-[13px] font-semibold focus:ring-2 focus:ring-primary/20 appearance-none py-3 px-4 text-slate-700 cursor-pointer outline-none">
@@ -35,39 +29,20 @@ export default function EnterpriseCandidatesPage() {
           </div>
         </div>
 
-        {/* Filter: Statut */}
-        <div className="md:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-slate-100/50">
-          <label className="text-[10px] font-bold uppercase text-slate-400 block mb-3">Statut du Processus</label>
-          <div className="flex flex-wrap gap-2">
-            <button className="px-4 py-2 bg-blue-50 text-blue-700 rounded-full text-[12px] font-bold border border-blue-100/50">Tous</button>
-            <button className="px-4 py-2 bg-slate-50 text-slate-600 rounded-full text-[12px] font-bold hover:bg-slate-100 border border-transparent hover:border-slate-200 transition-all">Nouveau</button>
-            <button className="px-4 py-2 bg-slate-50 text-slate-600 rounded-full text-[12px] font-bold hover:bg-slate-100 border border-transparent hover:border-slate-200 transition-all">En cours</button>
-            <button className="px-4 py-2 bg-slate-50 text-slate-600 rounded-full text-[12px] font-bold hover:bg-slate-100 border border-transparent hover:border-slate-200 transition-all">Accepté</button>
-            <button className="px-4 py-2 bg-slate-50 text-slate-600 rounded-full text-[12px] font-bold hover:bg-slate-100 border border-transparent hover:border-slate-200 transition-all">Refusé</button>
-          </div>
-        </div>
-
-        {/* Filter: Score Range */}
-        <div className="md:col-span-3 bg-white p-6 rounded-2xl shadow-sm border border-slate-100/50">
-          <label className="text-[10px] font-bold uppercase text-slate-400 block mb-3">Score de Match (Min %)</label>
-          <div className="flex items-center gap-4 h-[40px]">
-            <input className="w-full accent-primary h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer" max="100" min="0" type="range" defaultValue="75" />
-            <span className="text-[14px] font-bold text-primary w-10 text-right">75%</span>
-          </div>
-        </div>
+        
       </div>
 
       {/* Candidates Table Container */}
       <div className="bg-white rounded-3xl shadow-sm border border-slate-100/50 overflow-hidden mb-12">
-        <div className="overflow-x-auto min-w-full">
-          <table className="w-full text-left whitespace-nowrap">
+        <div className="min-w-full">
+          <table className="w-full text-left">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-100">
                 <th className="px-6 py-5 text-[11px] font-extrabold text-slate-500 uppercase tracking-widest">Candidat</th>
                 <th className="px-6 py-5 text-[11px] font-extrabold text-slate-500 uppercase tracking-widest">Université</th>
                 <th className="px-6 py-5 text-[11px] font-extrabold text-slate-500 uppercase tracking-widest">Offre</th>
                 <th className="px-6 py-5 text-[11px] font-extrabold text-slate-500 uppercase tracking-widest">Date</th>
-                <th className="px-6 py-5 text-[11px] font-extrabold text-slate-500 uppercase tracking-widest">Match Score</th>
+                <th className="px-6 py-5 text-[11px] font-extrabold text-slate-500 uppercase tracking-widest">Statut</th>
                 <th className="px-6 py-5 text-[11px] font-extrabold text-slate-500 uppercase tracking-widest text-right">Actions</th>
               </tr>
             </thead>
@@ -95,24 +70,19 @@ export default function EnterpriseCandidatesPage() {
                   <p className="text-[13px] text-slate-600 font-medium">12 Oct. 2023</p>
                 </td>
                 <td className="px-6 py-5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-20 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-primary" style={{ width: '92%' }}></div>
-                    </div>
-                    <span className="text-[13px] font-bold text-primary">92%</span>
-                  </div>
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-100/50 uppercase tracking-wider">En attente</span>
                 </td>
-                <td className="px-6 py-5 text-right">
-                  <div className="flex items-center justify-end gap-1 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
-                    <button className="p-2 text-slate-400 hover:text-primary hover:bg-blue-50 rounded-xl transition-all border border-transparent hover:border-blue-100/50" title="Voir CV">
-                      <span className="material-symbols-outlined !text-[20px]">description</span>
-                    </button>
-                    <button className="p-2 text-slate-400 hover:text-primary hover:bg-blue-50 rounded-xl transition-all border border-transparent hover:border-blue-100/50" title="Envoyer Message">
-                      <span className="material-symbols-outlined !text-[20px]">chat_bubble</span>
-                    </button>
-                    <button className="p-2 text-slate-400 hover:text-primary hover:bg-blue-50 rounded-xl transition-all border border-transparent hover:border-blue-100/50" title="Changer Statut">
+                <td className="px-6 py-5 text-right relative">
+                  <div className="group/action inline-block">
+                    <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm border border-transparent hover:border-slate-100 focus:outline-none">
                       <span className="material-symbols-outlined !text-[20px]">more_vert</span>
                     </button>
+                    <div className="absolute right-10 top-2 w-48 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-slate-100 opacity-0 invisible group-focus-within/action:opacity-100 group-focus-within/action:visible z-50 flex flex-col py-1 overflow-hidden text-left">
+                      <button className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">person</span> Voir le profil</button>
+                      <button className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">rule</span> Changer le statut</button>
+                      <div className="h-px bg-slate-100 my-1"></div>
+                      <button className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">chat_bubble</span> Texter</button>
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -139,24 +109,19 @@ export default function EnterpriseCandidatesPage() {
                   <p className="text-[13px] text-slate-600 font-medium">10 Oct. 2023</p>
                 </td>
                 <td className="px-6 py-5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-20 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-blue-500" style={{ width: '85%' }}></div>
-                    </div>
-                    <span className="text-[13px] font-bold text-blue-600">85%</span>
-                  </div>
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-green-50 text-green-700 border border-green-100/50 uppercase tracking-wider">Acceptée</span>
                 </td>
-                <td className="px-6 py-5 text-right">
-                  <div className="flex items-center justify-end gap-1 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
-                    <button className="p-2 text-slate-400 hover:text-primary hover:bg-blue-50 rounded-xl transition-all border border-transparent hover:border-blue-100/50">
-                      <span className="material-symbols-outlined !text-[20px]">description</span>
-                    </button>
-                    <button className="p-2 text-slate-400 hover:text-primary hover:bg-blue-50 rounded-xl transition-all border border-transparent hover:border-blue-100/50">
-                      <span className="material-symbols-outlined !text-[20px]">chat_bubble</span>
-                    </button>
-                    <button className="p-2 text-slate-400 hover:text-primary hover:bg-blue-50 rounded-xl transition-all border border-transparent hover:border-blue-100/50">
+                <td className="px-6 py-5 text-right relative">
+                  <div className="group/action inline-block">
+                    <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm border border-transparent hover:border-slate-100 focus:outline-none">
                       <span className="material-symbols-outlined !text-[20px]">more_vert</span>
                     </button>
+                    <div className="absolute right-10 top-2 w-48 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-slate-100 opacity-0 invisible group-focus-within/action:opacity-100 group-focus-within/action:visible z-50 flex flex-col py-1 overflow-hidden text-left">
+                      <button className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">person</span> Voir le profil</button>
+                      <button className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">rule</span> Changer le statut</button>
+                      <div className="h-px bg-slate-100 my-1"></div>
+                      <button className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">chat_bubble</span> Texter</button>
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -183,24 +148,19 @@ export default function EnterpriseCandidatesPage() {
                   <p className="text-[13px] text-slate-600 font-medium">09 Oct. 2023</p>
                 </td>
                 <td className="px-6 py-5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-20 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-emerald-500" style={{ width: '78%' }}></div>
-                    </div>
-                    <span className="text-[13px] font-bold text-emerald-600">78%</span>
-                  </div>
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-red-50 text-red-700 border border-red-100/50 uppercase tracking-wider">Rejetée</span>
                 </td>
-                <td className="px-6 py-5 text-right">
-                  <div className="flex items-center justify-end gap-1 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
-                    <button className="p-2 text-slate-400 hover:text-primary hover:bg-blue-50 rounded-xl transition-all border border-transparent hover:border-blue-100/50">
-                      <span className="material-symbols-outlined !text-[20px]">description</span>
-                    </button>
-                    <button className="p-2 text-slate-400 hover:text-primary hover:bg-blue-50 rounded-xl transition-all border border-transparent hover:border-blue-100/50">
-                      <span className="material-symbols-outlined !text-[20px]">chat_bubble</span>
-                    </button>
-                    <button className="p-2 text-slate-400 hover:text-primary hover:bg-blue-50 rounded-xl transition-all border border-transparent hover:border-blue-100/50">
+                <td className="px-6 py-5 text-right relative">
+                  <div className="group/action inline-block">
+                    <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm border border-transparent hover:border-slate-100 focus:outline-none">
                       <span className="material-symbols-outlined !text-[20px]">more_vert</span>
                     </button>
+                    <div className="absolute right-10 top-2 w-48 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-slate-100 opacity-0 invisible group-focus-within/action:opacity-100 group-focus-within/action:visible z-50 flex flex-col py-1 overflow-hidden text-left">
+                      <button className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">person</span> Voir le profil</button>
+                      <button className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">rule</span> Changer le statut</button>
+                      <div className="h-px bg-slate-100 my-1"></div>
+                      <button className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">chat_bubble</span> Texter</button>
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -227,24 +187,19 @@ export default function EnterpriseCandidatesPage() {
                   <p className="text-[13px] text-slate-600 font-medium">08 Oct. 2023</p>
                 </td>
                 <td className="px-6 py-5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-20 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-amber-500" style={{ width: '65%' }}></div>
-                    </div>
-                    <span className="text-[13px] font-bold text-amber-600">65%</span>
-                  </div>
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-100/50 uppercase tracking-wider">En attente</span>
                 </td>
-                <td className="px-6 py-5 text-right">
-                  <div className="flex items-center justify-end gap-1 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
-                    <button className="p-2 text-slate-400 hover:text-primary hover:bg-blue-50 rounded-xl transition-all border border-transparent hover:border-blue-100/50">
-                      <span className="material-symbols-outlined !text-[20px]">description</span>
-                    </button>
-                    <button className="p-2 text-slate-400 hover:text-primary hover:bg-blue-50 rounded-xl transition-all border border-transparent hover:border-blue-100/50">
-                      <span className="material-symbols-outlined !text-[20px]">chat_bubble</span>
-                    </button>
-                    <button className="p-2 text-slate-400 hover:text-primary hover:bg-blue-50 rounded-xl transition-all border border-transparent hover:border-blue-100/50">
+                <td className="px-6 py-5 text-right relative">
+                  <div className="group/action inline-block">
+                    <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm border border-transparent hover:border-slate-100 focus:outline-none">
                       <span className="material-symbols-outlined !text-[20px]">more_vert</span>
                     </button>
+                    <div className="absolute right-10 top-2 w-48 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-slate-100 opacity-0 invisible group-focus-within/action:opacity-100 group-focus-within/action:visible z-50 flex flex-col py-1 overflow-hidden text-left">
+                      <button className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">person</span> Voir le profil</button>
+                      <button className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">rule</span> Changer le statut</button>
+                      <div className="h-px bg-slate-100 my-1"></div>
+                      <button className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">chat_bubble</span> Texter</button>
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -269,47 +224,6 @@ export default function EnterpriseCandidatesPage() {
         </div>
       </div>
 
-      {/* Premium Feature Upsell & Analytics */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        <div className="lg:col-span-2 bg-gradient-to-br from-primary to-blue-900 p-8 rounded-3xl relative overflow-hidden flex flex-col justify-center min-h-[240px] shadow-xl shadow-primary/20">
-          <div className="absolute right-0 top-0 w-2/3 h-full opacity-10 pointer-events-none">
-            <svg className="w-full h-full scale-150 transform translate-x-20" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-              <path d="M44.7,-76.4C58.2,-69.2,70.1,-58.5,78.2,-45.5C86.3,-32.5,90.6,-17.2,89.5,-2.2C88.4,12.8,81.9,27.5,72.9,40.3C63.8,53.1,52.3,64,39.1,71.5C25.9,79.1,10.9,83.3,-4.1,80.3C-19.1,77.3,-34,67.1,-46.7,56.1C59.4,45.1,-69.9,33.2,-75.7,19.3C-81.5,5.4,-82.7,-10.5,-77.9,-25.1C-73.1,-39.7,-62.4,-52.9,-49.5,-60.6C-36.6,-68.3,-21.5,-70.5,-6.3,-72.2C8.9,-73.9,23.1,-75.1,44.7,-76.4Z" fill="#FFFFFF" transform="translate(100 100)"></path>
-            </svg>
-          </div>
-          
-          <div className="relative z-10">
-            <h3 className="text-2xl font-bold text-white mb-3">Accélérez vos recrutements</h3>
-            <p className="text-blue-100 max-w-md mb-8 text-[14px] leading-relaxed">Utilisez l'Intelligence Artificielle de StageLink pour trier automatiquement les meilleurs CV selon vos critères de compétences.</p>
-            <button className="px-6 py-3.5 bg-white text-primary font-bold rounded-2xl shadow-xl hover:bg-slate-50 transition-transform hover:-translate-y-0.5 flex items-center gap-2 w-fit text-[14px]">
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
-              Activer le Tri IA
-            </button>
-          </div>
-        </div>
-
-        <div className="bg-white p-8 rounded-3xl flex flex-col items-center justify-center text-center shadow-sm border border-slate-100/50 relative overflow-hidden group">
-          <div className="absolute inset-0 bg-blue-50/50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          <div className="relative z-10 w-full flex flex-col items-center">
-            <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mb-5 border border-blue-100 group-hover:bg-white group-hover:shadow-sm transition-all">
-              <span className="material-symbols-outlined !text-[32px]">insights</span>
-            </div>
-            <h4 className="text-[18px] font-bold text-slate-900 mb-6 w-full border-b border-slate-100 pb-4">Statistiques</h4>
-            <div className="space-y-5 w-full">
-              <div className="flex justify-between items-center text-[14px]">
-                <span className="text-slate-500 font-medium">Taux de réponse</span>
-                <span className="font-bold text-primary">82%</span>
-              </div>
-              <div className="flex justify-between items-center text-[14px]">
-                <span className="text-slate-500 font-medium">Délai moyen</span>
-                <span className="font-bold text-primary">3.2 jours</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </EnterpriseDashboardLayout>
+      </EnterpriseDashboardLayout>
   );
 }

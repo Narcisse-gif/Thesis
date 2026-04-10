@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
+import logo from '../assets/logo.png';
 
 export default function EnterpriseDashboardLayout({ children }) {
   const location = useLocation();
@@ -10,52 +11,83 @@ export default function EnterpriseDashboardLayout({ children }) {
     <div className="bg-[#fafbfc] text-[#0f172a] min-h-screen flex selection:bg-primary/10 selection:text-primary font-display">
       
       {/* Sidebar */}
-      <aside className="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 py-6 px-4 bg-slate-50 border-r border-slate-100 z-50">
-        <div className="mb-10 px-2 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
-            <span className="material-symbols-outlined !text-2xl">rocket_launch</span>
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-blue-900 tracking-tight">StageLink</h1>
-            <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Burkina Faso</p>
-          </div>
-        </div>
-        
-        <nav className="flex-1 space-y-1">
-          <Link to="/entreprise/dashboard" className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all ${isActive('/entreprise/dashboard') ? 'font-semibold text-blue-700 border-r-4 border-blue-700 bg-blue-50/50' : 'font-medium text-slate-500 hover:text-blue-600 hover:bg-slate-100'}`}>
-            <span className="material-symbols-outlined !text-xl">dashboard</span>
-            Tableau de bord
-          </Link>
-          <Link to="/entreprise/offres" className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all ${isActive('/entreprise/offres') ? 'font-semibold text-blue-700 border-r-4 border-blue-700 bg-blue-50/50' : 'font-medium text-slate-500 hover:text-blue-600 hover:bg-slate-100'}`}>
-            <span className="material-symbols-outlined !text-xl">work</span>
-            Offres
-          </Link>
-          <Link to="/entreprise/candidats" className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all ${isActive('/entreprise/candidats') ? 'font-semibold text-blue-700 border-r-4 border-blue-700 bg-blue-50/50' : 'font-medium text-slate-500 hover:text-blue-600 hover:bg-slate-100'}`}>
-            <span className="material-symbols-outlined !text-xl">group</span>
-            Candidatures
-          </Link>
-          <Link to="/entreprise/messages" className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all ${isActive('/entreprise/messages') ? 'font-semibold text-blue-700 border-r-4 border-blue-700 bg-blue-50/50' : 'font-medium text-slate-500 hover:text-blue-600 hover:bg-slate-100'}`}>
-            <span className="material-symbols-outlined !text-xl">mail</span>
-            Messages
-          </Link>
-          <Link to="/entreprise/parametres" className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all ${isActive('/entreprise/parametres') ? 'font-semibold text-blue-700 border-r-4 border-blue-700 bg-blue-50/50' : 'font-medium text-slate-500 hover:text-blue-600 hover:bg-slate-100'}`}>
-            <span className="material-symbols-outlined !text-xl">settings</span>
-            Paramètres
-          </Link>
-        </nav>
-        
-        <div className="mt-auto pt-6 border-t border-slate-200">
-          <Link to="/entreprise/offres/nouvelle" className="w-full bg-primary hover:bg-blue-800 text-white py-3 px-4 rounded-2xl font-semibold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20">
-            <span className="material-symbols-outlined !text-sm">add</span>
-            Nouvelle Offre
+      <aside className="hidden md:flex flex-col h-screen w-72 bg-white fixed left-0 top-0 py-12 px-8 z-50 border-r border-slate-100/60 shadow-sm">
+        <div className="mb-16">
+          <Link to="/entreprise/dashboard" className="flex items-center gap-3">
+            <img alt="StageLink Burkina Logo" className="h-10 w-auto object-contain" src={logo} />
+            <div>
+              <p className="text-xl font-bold tracking-tight text-slate-900">StageLink</p>
+              <p className="text-[10px] font-bold tracking-[0.2em] text-primary uppercase mt-1">BURKINA FASO</p>
+            </div>
           </Link>
         </div>
+        
+        <nav className="flex-1 space-y-2 overflow-y-auto px-1 pb-4 scrollbar-hide">
+  <Link to="/entreprise/dashboard" className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-all group ${isActive('/entreprise/dashboard') ? 'text-primary bg-primary/[0.03] nav-active font-semibold' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 font-medium'}`}>
+    <span className={`material-symbols-outlined text-xl ${isActive('/entreprise/dashboard') ? '' : 'text-slate-400 group-hover:text-slate-600'}`}>grid_view</span>
+    <span className="text-[14px]">Tableau de bord</span>
+    {isActive('/entreprise/dashboard') && <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[3px] h-[14px] bg-primary rounded-l-md"></div>}
+  </Link>
+  
+  <Link to="/entreprise/offres" className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-all group ${isActive('/entreprise/offres') ? 'text-primary bg-primary/[0.03] nav-active font-semibold' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 font-medium'}`}>
+    <span className={`material-symbols-outlined text-xl ${isActive('/entreprise/offres') ? '' : 'text-slate-400 group-hover:text-slate-600'}`}>work</span>
+    <span className="text-[14px]">Gestion des offres</span>
+    {isActive('/entreprise/offres') && <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[3px] h-[14px] bg-primary rounded-l-md"></div>}
+  </Link>
+
+  <Link to="/entreprise/candidats" className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-all group ${isActive('/entreprise/candidats') ? 'text-primary bg-primary/[0.03] nav-active font-semibold' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 font-medium'}`}>
+    <span className={`material-symbols-outlined text-xl ${isActive('/entreprise/candidats') ? '' : 'text-slate-400 group-hover:text-slate-600'}`}>groups</span>
+    <span className="text-[14px]">Candidatures</span>
+    {isActive('/entreprise/candidats') && <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[3px] h-[14px] bg-primary rounded-l-md"></div>}
+  </Link>
+
+  <Link to="/entreprise/offres/nouvelle" className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-all group ${isActive('/entreprise/offres/nouvelle') ? 'text-primary bg-primary/[0.03] nav-active font-semibold' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 font-medium'}`}>
+    <span className={`material-symbols-outlined text-xl ${isActive('/entreprise/offres/nouvelle') ? '' : 'text-slate-400 group-hover:text-slate-600'}`}>post_add</span>
+    <span className="text-[14px]">Nouvelle Offre</span>
+    {isActive('/entreprise/offres/nouvelle') && <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[3px] h-[14px] bg-primary rounded-l-md"></div>}
+  </Link>
+
+  <Link to="/entreprise/messages" className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-all group ${isActive('/entreprise/messages') ? 'text-primary bg-primary/[0.03] nav-active font-semibold' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 font-medium'}`}>
+    <span className={`material-symbols-outlined text-xl ${isActive('/entreprise/messages') ? '' : 'text-slate-400 group-hover:text-slate-600'}`}>mail</span>
+    <span className="text-[14px]">Messagerie</span>
+    {isActive('/entreprise/messages') && <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[3px] h-[14px] bg-primary rounded-l-md"></div>}
+  </Link>
+  
+  
+
+  <div className="pt-4 mt-4 border-t border-slate-100">
+      <Link to="/entreprise/profil" className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-all group ${isActive('/entreprise/profil') ? 'text-primary bg-primary/[0.03] nav-active font-semibold' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 font-medium'}`}>
+        <span className={`material-symbols-outlined text-xl ${isActive('/entreprise/profil') ? '' : 'text-slate-400 group-hover:text-slate-600'}`}>apartment</span>
+        <span className="text-[14px]">Profil entreprise</span>
+        {isActive('/entreprise/profil') && <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[3px] h-[14px] bg-primary rounded-l-md"></div>}
+    </Link>
+
+    <Link to="/entreprise/parametres" className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-all group ${isActive('/entreprise/parametres') ? 'text-primary bg-primary/[0.03] nav-active font-semibold' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 font-medium'}`}>
+      <span className={`material-symbols-outlined text-xl ${isActive('/entreprise/parametres') ? '' : 'text-slate-400 group-hover:text-slate-600'}`}>settings</span>
+      <span className="text-[14px]">Paramètres</span>
+      {isActive('/entreprise/parametres') && <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[3px] h-[14px] bg-primary rounded-l-md"></div>}
+    </Link>
+  </div>
+</nav>
+        
+        <div className="mt-auto pt-8 border-t border-slate-50">
+  
+  <Link to="/conseils" className="bg-slate-50 rounded-2xl p-4 flex items-center gap-3 hover:bg-blue-50 transition-colors group">
+    <div className="h-10 w-10 rounded-xl bg-white flex items-center justify-center text-slate-400 shadow-sm group-hover:text-primary transition-colors">
+      <span className="material-symbols-outlined !text-xl">help_outline</span>
+    </div>
+    <div>
+      <p className="text-[12px] font-semibold text-slate-700 group-hover:text-primary transition-colors">Aide & Support</p>
+      <p className="text-[10px] text-slate-400">Centre d'aide</p>
+    </div>
+  </Link>
+</div>
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 md:ml-64 min-h-screen relative w-full">
+      <main className="flex-1 md:ml-72 min-h-screen relative w-full">
         {/* Header */}
-        <header className="fixed top-0 right-0 w-full md:w-[calc(100%-16rem)] h-16 bg-white/70 backdrop-blur-xl border-b border-primary/5 z-40 flex items-center justify-between px-4 sm:px-8">
+        <header className="fixed top-0 right-0 w-full md:w-[calc(100%-18rem)] z-40 bg-[#fafbfc]/80 backdrop-blur-xl h-24 px-10 flex justify-between items-center border-b border-slate-100/50">
           <div className="flex items-center gap-4 flex-1">
             <div className="relative w-full max-w-md hidden sm:block">
               <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 !text-lg">search</span>
@@ -67,10 +99,7 @@ export default function EnterpriseDashboardLayout({ children }) {
             </div>
           </div>
           <div className="flex items-center gap-4 sm:gap-6 ml-auto">
-            <button className="relative text-slate-600 hover:text-primary transition-colors">
-              <span className="material-symbols-outlined !text-[22px]">notifications</span>
-              <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-            </button>
+            
             <Link to="/conseils" className="text-slate-600 hover:text-primary transition-colors hidden sm:block">
               <span className="material-symbols-outlined !text-[22px]">help</span>
             </Link>
@@ -95,29 +124,25 @@ export default function EnterpriseDashboardLayout({ children }) {
       </main>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.05)] px-6 py-3 flex justify-between items-center z-50">
-        <Link to="/entreprise/dashboard" className={`flex flex-col items-center gap-1 ${isActive('/entreprise/dashboard') ? 'text-primary' : 'text-slate-400'}`}>
-          <span className="material-symbols-outlined !text-2xl" style={{ fontVariationSettings: isActive('/entreprise/dashboard') ? "'FILL' 1" : "" }}>dashboard</span>
-          <span className="text-[10px] font-bold uppercase tracking-tighter">Bord</span>
-        </Link>
-        <Link to="/entreprise/offres" className={`flex flex-col items-center gap-1 ${isActive('/entreprise/offres') ? 'text-primary' : 'text-slate-400'}`}>
-          <span className="material-symbols-outlined !text-2xl" style={{ fontVariationSettings: isActive('/entreprise/offres') ? "'FILL' 1" : "" }}>work</span>
-          <span className="text-[10px] font-bold uppercase tracking-tighter">Offres</span>
-        </Link>
-        <div className="relative -top-6">
-          <Link to="/entreprise/offres/nouvelle" className="w-14 h-14 bg-primary text-white rounded-2xl shadow-lg shadow-primary/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-all">
-            <span className="material-symbols-outlined !text-3xl">add</span>
-          </Link>
-        </div>
-        <Link to="/entreprise/candidats" className={`flex flex-col items-center gap-1 ${isActive('/entreprise/candidats') ? 'text-primary' : 'text-slate-400'}`}>
-          <span className="material-symbols-outlined !text-2xl" style={{ fontVariationSettings: isActive('/entreprise/candidats') ? "'FILL' 1" : "" }}>group</span>
-          <span className="text-[10px] font-bold uppercase tracking-tighter">Candidats</span>
-        </Link>
-        <Link to="/entreprise/parametres" className={`flex flex-col items-center gap-1 ${isActive('/entreprise/parametres') ? 'text-primary' : 'text-slate-400'}`}>
-          <span className="material-symbols-outlined !text-2xl" style={{ fontVariationSettings: isActive('/entreprise/parametres') ? "'FILL' 1" : "" }}>person</span>
-          <span className="text-[10px] font-bold uppercase tracking-tighter">Compte</span>
-        </Link>
-      </nav>
+      <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.05)] px-4 py-3 flex justify-between items-center z-50 overflow-x-auto">
+    <Link to="/entreprise/dashboard" className={`flex flex-col items-center gap-1 px-3 ${isActive('/entreprise/dashboard') ? 'text-primary' : 'text-slate-400'}`}>
+      <span className="material-symbols-outlined !text-2xl" style={{ fontVariationSettings: isActive('/entreprise/dashboard') ? "'FILL' 1" : "" }}>grid_view</span>
+      <span className="text-[10px] font-bold uppercase tracking-tighter">Bord</span>
+    </Link>
+    <Link to="/entreprise/offres" className={`flex flex-col items-center gap-1 px-3 ${isActive('/entreprise/offres') ? 'text-primary' : 'text-slate-400'}`}>
+      <span className="material-symbols-outlined !text-2xl" style={{ fontVariationSettings: isActive('/entreprise/offres') ? "'FILL' 1" : "" }}>work</span>
+      <span className="text-[10px] font-bold uppercase tracking-tighter">Offres</span>
+    </Link>
+    
+    <Link to="/entreprise/candidats" className={`flex flex-col items-center gap-1 px-3 ${isActive('/entreprise/candidats') ? 'text-primary' : 'text-slate-400'}`}>
+      <span className="material-symbols-outlined !text-2xl" style={{ fontVariationSettings: isActive('/entreprise/candidats') ? "'FILL' 1" : "" }}>groups</span>
+      <span className="text-[10px] font-bold uppercase tracking-tighter">Candidats</span>
+    </Link>
+    <Link to="/entreprise/offres/nouvelle" className={`flex flex-col items-center gap-1 px-3 ${isActive('/entreprise/offres/nouvelle') ? 'text-primary' : 'text-slate-400'}`}>
+      <span className="material-symbols-outlined !text-2xl" style={{ fontVariationSettings: isActive('/entreprise/offres/nouvelle') ? "'FILL' 1" : "" }}>post_add</span>
+      <span className="text-[10px] font-bold uppercase tracking-tighter">Créer Offre</span>
+    </Link>
+</nav>
     </div>
   );
 }

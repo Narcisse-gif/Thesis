@@ -10,8 +10,8 @@ export default function StudentDashboardLayout({ children }) {
   return (
     <div className="bg-[#fafbfc] text-[#0f172a] min-h-screen flex selection:bg-primary/10 selection:text-primary font-display">
       {/* Sidebar */}
-      <aside className="hidden md:flex flex-col h-screen w-72 bg-white fixed left-0 top-0 py-12 px-8 z-50 border-r border-slate-100/60 shadow-sm">
-        <div className="mb-16">
+      <aside className="hidden md:flex flex-col h-screen w-72 bg-white fixed left-0 top-0 py-6 px-6 z-50 border-r border-slate-100/60 shadow-sm">
+        <div className="mb-8 pl-2">
           <Link to="/etudiant/dashboard" className="flex items-center gap-3">
             <img alt="StageLink Burkina Logo" className="h-10 w-auto object-contain" src={logo} />
             <div>
@@ -21,7 +21,7 @@ export default function StudentDashboardLayout({ children }) {
           </Link>
         </div>
         
-        <nav className="flex-1 space-y-2">
+        <nav className="flex-1 space-y-1.5 overflow-y-auto pr-2 pb-2">
           <Link to="/etudiant/dashboard" className={`relative flex items-center gap-4 px-4 py-3 rounded-xl font-semibold transition-all group ${isActive('/etudiant/dashboard') ? 'text-primary bg-primary/[0.03] nav-active' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}>
             <span className={`material-symbols-outlined text-xl ${isActive('/etudiant/dashboard') ? '' : 'text-slate-400 group-hover:text-slate-600'}`}>grid_view</span>
             <span className="text-[14px]">Tableau de bord</span>
@@ -52,6 +52,12 @@ export default function StudentDashboardLayout({ children }) {
             {isActive('/etudiant/profil') && <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[3px] h-[14px] bg-primary rounded-l-md"></div>}
           </Link>
 
+          
+          <Link to="/etudiant/messages" className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-all group ${isActive('/etudiant/messages') ? 'text-primary bg-primary/[0.03] nav-active font-semibold' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 font-medium'}`}>
+            <span className={`material-symbols-outlined text-xl ${isActive('/etudiant/messages') ? '' : 'text-slate-400 group-hover:text-slate-600'}`}>mail</span>
+            <span className="text-[14px]">Messages</span>
+            {isActive('/etudiant/messages') && <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[3px] h-[14px] bg-primary rounded-l-md"></div>}
+          </Link>
           <Link to="/etudiant/parametres" className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-all group ${isActive('/etudiant/parametres') ? 'text-primary bg-primary/[0.03] nav-active font-semibold' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 font-medium'}`}>
             <span className={`material-symbols-outlined text-xl ${isActive('/etudiant/parametres') ? '' : 'text-slate-400 group-hover:text-slate-600'}`}>settings</span>
             <span className="text-[14px]">Paramètres</span>
@@ -59,14 +65,14 @@ export default function StudentDashboardLayout({ children }) {
           </Link>
         </nav>
         
-        <div className="mt-auto pt-8 border-t border-slate-50">
-          <Link to="/conseils" className="bg-slate-50 rounded-2xl p-4 flex items-center gap-3 hover:bg-blue-50 transition-colors">
-            <div className="h-10 w-10 rounded-xl bg-white flex items-center justify-center text-slate-400 shadow-sm">
-              <span className="material-symbols-outlined !text-xl">help_outline</span>
+        <div className="mt-auto pt-6 border-t border-slate-50 relative bottom-0">
+          <Link to="/conseils" className="bg-primary/5 border border-primary/20 rounded-2xl p-4 flex items-center gap-3 hover:bg-primary/10 transition-all group shadow-sm mx-2">
+            <div className="h-10 w-10 rounded-xl bg-white flex items-center justify-center text-primary shadow-sm group-hover:scale-110 transition-transform">
+              <span className="material-symbols-outlined !text-xl">help_center</span>
             </div>
             <div>
-              <p className="text-[12px] font-semibold text-slate-700">Aide & Support</p>
-              <p className="text-[10px] text-slate-400">Aller vers les conseils</p>
+              <p className="text-[13px] font-bold text-primary">Aide & Support</p>
+              <p className="text-[11px] font-medium text-primary/70 mt-0.5">Consulter les guides</p>
             </div>
           </Link>
         </div>
@@ -135,6 +141,10 @@ export default function StudentDashboardLayout({ children }) {
         </Link>
         <Link to="/etudiant/profil" className="text-slate-400 hover:text-primary">
           <span className="material-symbols-outlined !text-2xl" style={{ fontVariationSettings: isActive('/etudiant/profil') ? "'FILL' 1" : "" }}>person</span>
+        </Link>
+        
+        <Link to="/etudiant/messages" className="text-slate-400 hover:text-primary">
+          <span className="material-symbols-outlined !text-2xl" style={{ fontVariationSettings: isActive('/etudiant/messages') ? "'FILL' 1" : "" }}>mail</span>
         </Link>
         <Link to="/etudiant/parametres" className="text-slate-400 hover:text-primary">
           <span className="material-symbols-outlined !text-2xl" style={{ fontVariationSettings: isActive('/etudiant/parametres') ? "'FILL' 1" : "" }}>settings</span>

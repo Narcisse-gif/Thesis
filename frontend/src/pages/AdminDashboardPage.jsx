@@ -4,25 +4,22 @@ export default function AdminDashboardPage() {
   return (
     <AdminDashboardLayout>
       {/* Dashboard Header Section */}
-      <div className="mb-10 flex flex-col md:flex-row md:justify-between md:items-end gap-6">
+      <div className="mb-10 flex flex-col md:flex-row md:justify-between md:items-end gap-6 w-full">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900">System Overview</h2>
-          <p className="text-slate-500 mt-1.5 text-[15px]">Platform performance and activity metrics for <span className="text-primary font-bold">StageLink Burkina</span>.</p>
+          <h2 className="text-3xl font-bold tracking-tight text-slate-900">Vue d'ensemble</h2>
+          
         </div>
         <div className="flex flex-wrap gap-3">
           <button className="px-4 py-2 bg-white text-slate-700 text-[13px] border border-slate-200 font-bold rounded-xl flex items-center gap-2 hover:bg-slate-50 transition-colors shadow-sm">
             <span className="material-symbols-outlined !text-[18px]">calendar_today</span>
-            Last 30 Days
+            30 derniers jours
           </button>
-          <button className="px-4 py-2 bg-primary text-white text-[13px] font-bold rounded-xl flex items-center gap-2 shadow-sm shadow-primary/20 hover:bg-blue-800 transition-colors">
-            <span className="material-symbols-outlined !text-[18px]">download</span>
-            Export Report
-          </button>
+          
         </div>
       </div>
 
       {/* Metrics Bento Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 w-full">
         
         <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-md transition-shadow">
           <div>
@@ -30,9 +27,9 @@ export default function AdminDashboardPage() {
               <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center border border-blue-100">
                 <span className="material-symbols-outlined">person</span>
               </div>
-              <span className="text-[11px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100/50">+12.5%</span>
+              
             </div>
-            <p className="text-slate-400 text-[11px] font-extrabold uppercase tracking-widest mb-1.5">Total Users</p>
+            <p className="text-slate-400 text-[11px] font-extrabold uppercase tracking-widest mb-1.5">�tudiants</p>
             <h3 className="text-[28px] leading-none font-bold text-slate-900">12,482</h3>
           </div>
         </div>
@@ -40,12 +37,12 @@ export default function AdminDashboardPage() {
         <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-md transition-shadow">
           <div>
             <div className="flex justify-between items-start mb-5">
-              <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center border border-emerald-100">
+              <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center border border-blue-100">
                 <span className="material-symbols-outlined">apartment</span>
               </div>
-              <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100/50">+8.2%</span>
+              
             </div>
-            <p className="text-slate-400 text-[11px] font-extrabold uppercase tracking-widest mb-1.5">Companies</p>
+            <p className="text-slate-400 text-[11px] font-extrabold uppercase tracking-widest mb-1.5">Entreprises</p>
             <h3 className="text-[28px] leading-none font-bold text-slate-900">846</h3>
           </div>
         </div>
@@ -56,9 +53,9 @@ export default function AdminDashboardPage() {
               <div className="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center border border-amber-100">
                 <span className="material-symbols-outlined">rocket_launch</span>
               </div>
-              <span className="text-[11px] font-bold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-100/50">+24.1%</span>
+              
             </div>
-            <p className="text-slate-400 text-[11px] font-extrabold uppercase tracking-widest mb-1.5">Active Offers</p>
+            <p className="text-slate-400 text-[11px] font-extrabold uppercase tracking-widest mb-1.5">Offres de stage</p>
             <h3 className="text-[28px] leading-none font-bold text-slate-900">2,194</h3>
           </div>
         </div>
@@ -69,29 +66,29 @@ export default function AdminDashboardPage() {
               <div className="w-10 h-10 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center border border-purple-100">
                 <span className="material-symbols-outlined">trending_up</span>
               </div>
-              <span className="text-[11px] font-bold text-purple-600 bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-100/50">+4.3%</span>
+              
             </div>
-            <p className="text-slate-400 text-[11px] font-extrabold uppercase tracking-widest mb-1.5">Growth Rate</p>
-            <h3 className="text-[28px] leading-none font-bold text-slate-900">18.7%</h3>
+            <p className="text-slate-400 text-[11px] font-extrabold uppercase tracking-widest mb-1.5">Offres d'emploi</p>
+            <h3 className="text-[28px] leading-none font-bold text-slate-900">145</h3>
           </div>
         </div>
 
       </div>
 
       {/* Charts and Main Visuals */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 w-full">
         
         {/* Main Chart Area */}
         <div className="lg:col-span-2 bg-white p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col">
           <div className="flex justify-between items-center mb-8 border-b border-slate-100 pb-4">
             <div>
-              <h4 className="text-[18px] font-bold text-slate-900">User &amp; Offer Growth</h4>
+              <h4 className="text-[18px] font-bold text-slate-900">Évolution Utilisateurs &amp; Offres</h4>
               <p className="text-[13px] font-medium text-slate-500 mt-1">Monthly trend analysis for the current year</p>
             </div>
             <div className="flex gap-5">
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-primary shadow-sm"></span>
-                <span className="text-[12px] font-bold text-slate-600">Users</span>
+                <span className="text-[12px] font-bold text-slate-600">Étudiants</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-blue-300 shadow-sm"></span>
@@ -127,11 +124,11 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Recent Activity Section */}
+        {/* Activité Récente Section */}
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 overflow-hidden flex flex-col max-h-[450px]">
           <h4 className="text-[18px] font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4 flex items-center gap-2">
             <span className="material-symbols-outlined text-slate-400">history</span>
-            Recent Activity
+            Activité Récente
           </h4>
           <div className="space-y-6 flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
             
@@ -154,7 +151,7 @@ export default function AdminDashboardPage() {
               </div>
               <div>
                 <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">Moussa Traor├®</p>
-                <p className="text-[13px] text-slate-500 font-medium leading-tight mt-1">Verified their student account via University ID.</p>
+                <p className="text-[13px] text-slate-500 font-medium leading-tight mt-1">A vérifié son compte étudiant avec sa carte universitaire.</p>
                 <span className="text-[10px] font-bold tracking-widest text-slate-400 bg-slate-50 border border-slate-100 px-2 py-0.5 rounded-md mt-2 inline-block uppercase">2 Hours Ago</span>
               </div>
             </div>
@@ -189,14 +186,14 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Tables & Health Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="flex flex-col gap-6 w-full">
         
         {/* Data Table Section */}
-        <div className="lg:col-span-3 bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+        <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden w-full">
           <div className="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
             <h4 className="text-[18px] font-bold text-slate-900 flex items-center gap-2">
               <span className="material-symbols-outlined text-slate-400">admin_panel_settings</span>
-              Pending Moderation
+              En attente de modération
             </h4>
             <span className="px-3 py-1 bg-amber-50 border border-amber-200/50 text-amber-700 text-[10px] font-black tracking-widest rounded-lg flex items-center gap-1.5 shadow-sm shadow-amber-100/50">
                 <span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></span>
@@ -209,7 +206,7 @@ export default function AdminDashboardPage() {
                 <tr>
                   <th className="px-8 py-5">Title / Name</th>
                   <th className="px-8 py-5">Category</th>
-                  <th className="px-8 py-5">Submitted Date</th>
+                  <th className="px-8 py-5">Date de soumission</th>
                   <th className="px-8 py-5">Risk Level</th>
                   <th className="px-8 py-5 text-right">Actions</th>
                 </tr>
@@ -231,8 +228,8 @@ export default function AdminDashboardPage() {
                   <td className="px-8 py-4 text-[13px] font-semibold text-slate-600">IT &amp; Engineering</td>
                   <td className="px-8 py-4 text-[13px] font-medium text-slate-500">Oct 24, 2023</td>
                   <td className="px-8 py-4">
-                    <span className="inline-flex items-center gap-2 text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-100/50">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    <span className="inline-flex items-center gap-2 text-[11px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100/50">
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
                       LOW
                     </span>
                   </td>
@@ -256,8 +253,8 @@ export default function AdminDashboardPage() {
                   <td className="px-8 py-4 text-[13px] font-semibold text-slate-600">Business</td>
                   <td className="px-8 py-4 text-[13px] font-medium text-slate-500">Oct 23, 2023</td>
                   <td className="px-8 py-4">
-                    <span className="inline-flex items-center gap-2 text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-100/50">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    <span className="inline-flex items-center gap-2 text-[11px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100/50">
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
                       LOW
                     </span>
                   </td>
@@ -278,7 +275,7 @@ export default function AdminDashboardPage() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-8 py-4 text-[13px] font-semibold text-slate-600">User Identity</td>
+                  <td className="px-8 py-4 text-[13px] font-semibold text-slate-600">Identité Utilisateur</td>
                   <td className="px-8 py-4 text-[13px] font-medium text-slate-500">Oct 22, 2023</td>
                   <td className="px-8 py-4">
                     <span className="inline-flex items-center gap-2 text-[11px] font-bold text-rose-600 bg-rose-50 px-2.5 py-1 rounded-md border border-rose-100/50">
@@ -296,55 +293,9 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* System Health Card */}
-        <div className="bg-gradient-to-br from-slate-900 to-indigo-950 p-8 rounded-3xl shadow-xl shadow-slate-900/30 flex flex-col justify-between text-white relative overflow-hidden group">
-          <div className="absolute right-0 top-0 w-48 h-48 bg-blue-500/20 rounded-full filter blur-3xl -translate-y-1/2 translate-x-1/3"></div>
-          <div className="absolute left-0 bottom-0 w-32 h-32 bg-primary/30 rounded-full filter blur-3xl translate-y-1/3 -translate-x-1/4"></div>
-
-          <div className="relative z-10">
-            <h4 className="text-[18px] font-bold mb-2 flex items-center gap-2">
-              <span className="material-symbols-outlined !text-[20px] text-emerald-400">check_circle</span>
-              System Health
-            </h4>
-            <p className="text-slate-400 text-[13px] font-medium leading-relaxed mb-8">All core systems are operational across regional nodes.</p>
-            
-            <div className="space-y-6">
-              <div>
-                <div className="flex justify-between items-center text-[13px] mb-2 font-medium">
-                  <span className="text-slate-300">Server Load</span>
-                  <span className="font-bold text-white">24%</span>
-                </div>
-                <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden border border-slate-700/50">
-                  <div className="bg-emerald-400 h-full w-[24%] rounded-full shadow-[0_0_10px_rgba(52,211,153,0.5)]"></div>
-                </div>
               </div>
-              
-              <div>
-                <div className="flex justify-between items-center text-[13px] mb-2 font-medium">
-                  <span className="text-slate-300">API Uptime</span>
-                  <span className="font-bold text-white">99.98%</span>
-                </div>
-                <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden border border-slate-700/50">
-                  <div className="bg-emerald-400 h-full w-[99%] rounded-full shadow-[0_0_10px_rgba(52,211,153,0.5)]"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="relative z-10 mt-10 pt-6 border-t border-slate-700/50 flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <div className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-              </div>
-              <span className="text-[10px] font-black tracking-widest uppercase text-slate-300">Live Cloud Sync</span>
-            </div>
-            <span className="text-[10px] font-mono text-slate-500">V.1.2.4</span>
-          </div>
-        </div>
-
-      </div>
-
     </AdminDashboardLayout>
   );
 }
+
+

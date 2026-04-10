@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+﻿import { motion } from 'framer-motion';
 import { TrendingUp, Minus } from 'lucide-react';
 
 export default function KpiCards({ items }) {
@@ -25,7 +25,7 @@ export default function KpiCards({ items }) {
                 <div className="mt-4 flex flex-col gap-1.5">
                   <div className="flex items-center gap-1.5">
                       {item.trend === 'up' && (
-                        <span className="flex items-center gap-1 rounded-lg bg-emerald-500/10 px-2 py-1 text-[10px] font-black text-emerald-600">
+                        <span className="flex items-center gap-1 rounded-lg bg-blue-500/10 px-2 py-1 text-[10px] font-black text-blue-600">
                           <TrendingUp className="h-3 w-3" strokeWidth={3} />
                           +{idx + 2}%
                         </span>
@@ -50,3 +50,4 @@ export default function KpiCards({ items }) {
     </section>
   );
 }
+

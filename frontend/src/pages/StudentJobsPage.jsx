@@ -1,8 +1,8 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Layout from '../components/student-dashboard/Layout';
 
-/* ─── Données de la maquette Stitch ──────────────────────── */
+/* â”€â”€â”€ DonnÃ©es de la maquette Stitch â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const JOBS = [
   {
     id: 1,
@@ -11,7 +11,7 @@ const JOBS = [
     location: 'Ouagadougou',
     type: 'Full-time',
     level: 'Senior',
-    salary: 'FCFA 400,000–600,000/month',
+    salary: 'FCFA 400,000â€“600,000/month',
     posted: '1 day ago',
     deadline: '30 Oct 2024',
     logo: 'TF',
@@ -28,7 +28,7 @@ const JOBS = [
     location: 'Ouagadougou',
     type: 'Internship',
     level: 'Entry',
-    salary: 'FCFA 80,000–120,000/month',
+    salary: 'FCFA 80,000â€“120,000/month',
     posted: '3 days ago',
     deadline: '15 Nov 2024',
     logo: 'CH',
@@ -45,11 +45,11 @@ const JOBS = [
     location: 'Bobo-Dioulasso',
     type: 'Full-time',
     level: 'Mid',
-    salary: 'FCFA 300,000–450,000/month',
+    salary: 'FCFA 300,000â€“450,000/month',
     posted: '5 days ago',
     deadline: '20 Nov 2024',
     logo: 'FS',
-    color: 'bg-green-100 text-green-700',
+    color: 'bg-blue-100 text-blue-700',
     tags: ['Project Management', 'Agri-Tech', 'French'],
     desc: 'Managing innovative agricultural technology projects across the Sahel region.',
     saved: false,
@@ -62,7 +62,7 @@ const JOBS = [
     location: 'Ouagadougou',
     type: 'Full-time',
     level: 'Mid',
-    salary: 'FCFA 350,000–500,000/month',
+    salary: 'FCFA 350,000â€“500,000/month',
     posted: '1 week ago',
     deadline: '25 Nov 2024',
     logo: 'SN',
@@ -79,7 +79,7 @@ const JOBS = [
     location: 'Remote',
     type: 'CDD',
     level: 'Mid',
-    salary: 'FCFA 280,000–380,000/month',
+    salary: 'FCFA 280,000â€“380,000/month',
     posted: '2 weeks ago',
     deadline: '1 Dec 2024',
     logo: 'OB',
@@ -119,7 +119,7 @@ export default function StudentJobsPage() {
   };
 
   const typeBadge = t => {
-    const map = { 'Full-time': 'bg-blue-50 text-blue-700', 'Internship': 'bg-purple-50 text-purple-700', 'CDD': 'bg-amber-50 text-amber-700', 'Remote': 'bg-green-50 text-green-700' };
+    const map = { 'Full-time': 'bg-blue-50 text-blue-700', 'Internship': 'bg-purple-50 text-purple-700', 'CDD': 'bg-amber-50 text-amber-700', 'Remote': 'bg-blue-50 text-blue-700' };
     return map[t] || 'bg-gray-100 text-gray-600';
   };
 
@@ -127,7 +127,7 @@ export default function StudentJobsPage() {
     <Layout pageTitle="Search Jobs">
       <div className="space-y-4">
 
-        {/* ── Search + Filters bar ─────────────────────────── */}
+        {/* â”€â”€ Search + Filters bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <div className="flex flex-wrap items-center gap-3">
           {/* Search */}
           <div className="flex flex-1 min-w-56 items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2.5 shadow-sm">
@@ -164,15 +164,15 @@ export default function StudentJobsPage() {
           </select>
         </div>
 
-        {/* ── Result count ───────────────────────────────── */}
+        {/* â”€â”€ Result count â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <p className="text-[13px] text-gray-500">
           Showing <span className="font-semibold text-gray-900">{filtered.length}</span> available jobs
         </p>
 
-        {/* ── Split view: List + Detail ─────────────────── */}
+        {/* â”€â”€ Split view: List + Detail â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
 
-          {/* ─ Job list ──────────────────────────────────── */}
+          {/* â”€ Job list â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
           <div className="lg:col-span-5 xl:col-span-4 space-y-3">
             <AnimatePresence mode="popLayout">
               {filtered.map((job, idx) => (
@@ -210,7 +210,7 @@ export default function StudentJobsPage() {
                           </span>
                         </button>
                       </div>
-                      <p className="text-[12px] text-gray-500 mt-0.5">{job.company} · {job.location}</p>
+                      <p className="text-[12px] text-gray-500 mt-0.5">{job.company} Â· {job.location}</p>
                       <div className="flex items-center gap-2 mt-2">
                         <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${typeBadge(job.type)}`}>{job.type}</span>
                         <span className="text-[11px] text-gray-400 ml-auto">{job.posted}</span>
@@ -233,7 +233,7 @@ export default function StudentJobsPage() {
             )}
           </div>
 
-          {/* ─ Job detail ────────────────────────────────── */}
+          {/* â”€ Job detail â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
           <div className="lg:col-span-7 xl:col-span-8">
             <AnimatePresence mode="wait">
               {selected && (
@@ -253,7 +253,7 @@ export default function StudentJobsPage() {
                       </div>
                       <div className="flex-1">
                         <h2 className="text-[18px] font-bold text-gray-900">{selected.title}</h2>
-                        <p className="text-[14px] text-gray-500 mt-0.5">{selected.company} · {selected.location}</p>
+                        <p className="text-[14px] text-gray-500 mt-0.5">{selected.company} Â· {selected.location}</p>
                         <div className="flex flex-wrap items-center gap-2 mt-2">
                           <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${typeBadge(selected.type)}`}>{selected.type}</span>
                           <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-medium text-gray-600">{selected.level} level</span>
@@ -353,3 +353,4 @@ export default function StudentJobsPage() {
     </Layout>
   );
 }
+

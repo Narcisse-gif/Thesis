@@ -9,15 +9,15 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#2e7f33',
-          dark: '#1f5c24',
-          light: '#4caf52',
-          50:  '#f0fdf1',
-          100: '#dcfce0',
-          200: '#bbf7c1',
-          500: '#2e7f33',
-          600: '#25682a',
-          700: '#1f5c24',
+          DEFAULT: '#2563eb', /* blue-600 */
+          dark: '#1d4ed8',    /* blue-700 */
+          light: '#60a5fa',   /* blue-400 */
+          50:  '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
         },
         background: {
           light: '#f6f6f8',

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ListFilter, ArrowUpDown, Eye, X, Send, Clock, CheckCircle2, XCircle, SearchX, ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -16,9 +16,9 @@ const STATUS_STYLES = {
     icon: Clock
   },
   Accepte: { 
-    bg: 'bg-emerald-50/80', 
-    text: 'text-emerald-700', 
-    border: 'border-emerald-200/50',
+    bg: 'bg-blue-50/80', 
+    text: 'text-blue-700', 
+    border: 'border-blue-200/50',
     icon: CheckCircle2
   },
   Refuse: { 
@@ -96,8 +96,8 @@ export default function CandidaturesTable({ rows, showWithdraw = false, title = 
              <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-[24px] bg-slate-50 border border-slate-100 shadow-inner">
                 <SearchX className="h-8 w-8 text-slate-300" />
              </div>
-             <p className="text-base font-bold text-slate-900">Aucune candidature trouvée</p>
-             <p className="mt-1 text-sm font-medium text-slate-500">Ajustez vos filtres pour voir plus de résultats.</p>
+             <p className="text-base font-bold text-slate-900">Aucune candidature trouvÃ©e</p>
+             <p className="mt-1 text-sm font-medium text-slate-500">Ajustez vos filtres pour voir plus de rÃ©sultats.</p>
         </div>
       ) : (
         <div className="overflow-x-auto">
@@ -202,3 +202,4 @@ export default function CandidaturesTable({ rows, showWithdraw = false, title = 
     </section>
   );
 }
+

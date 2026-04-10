@@ -192,7 +192,7 @@ export default function StudentOffersSearchPage({ offerType = 'stage' }) {
             <p className="text-blue-100 mt-2">Même contenu que les pages publiques, intégré directement dans votre dashboard.</p>
 
             <div className="mt-8 flex flex-col lg:flex-row gap-3 p-3 rounded-2xl bg-white/95 shadow-2xl">
-              <div className="flex items-center flex-[1.5] px-3 py-2 border-r border-slate-200">
+              <div className="flex items-center w-full px-3 py-2">
                 <span className="material-symbols-outlined text-slate-400 mr-2">search</span>
                 <input
                   className="w-full bg-transparent border-none text-slate-900 placeholder:text-slate-400 outline-none"
@@ -201,10 +201,6 @@ export default function StudentOffersSearchPage({ offerType = 'stage' }) {
                   value={keyword}
                   onChange={(event) => setKeyword(event.target.value)}
                 />
-              </div>
-              <div className="flex items-center flex-1 px-3 py-2 text-slate-600 text-sm font-semibold">
-                <span className="material-symbols-outlined text-blue-600 mr-2">dashboard_customize</span>
-                Filtrez avec les menus ci-dessous
               </div>
             </div>
           </div>
