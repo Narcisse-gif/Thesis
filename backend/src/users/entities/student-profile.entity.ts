@@ -19,6 +19,9 @@ export class StudentProfile {
   studyLevel: string;
 
   @Column({ nullable: true })
+  university: string;
+
+  @Column({ nullable: true })
   phoneNumber: string;
 
   @Column({ nullable: true })

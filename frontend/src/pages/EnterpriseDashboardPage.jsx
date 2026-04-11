@@ -1,6 +1,35 @@
-﻿import EnterpriseDashboardLayout from '../components/EnterpriseDashboardLayout';
+﻿import { useState, useEffect } from 'react';
+import api from '../services/api';
+import { useNavigate } from 'react-router-dom';
+import EnterpriseDashboardLayout from '../components/EnterpriseDashboardLayout';
 
 export default function EnterpriseDashboardPage() {
+  const navigate = useNavigate();
+  const [stats, setStats] = useState({ totalApplicants: 0, pending: 0, accepted: 0, rejected: 0, offersCount: 0 });
+  const [recentApps, setRecentApps] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const appsRes = await api.get('/applications/enterprise');
+        const apps = appsRes.data;
+        setRecentApps(apps.slice(0, 4));
+
+        const offersRes = await api.get('/offers'); // need to map to my offers but let's count apps for now
+        const myOffers = offersRes.data.filter(o => apps.some(a => a.offer.id === o.id) || o.enterprise?.companyName); // simplify
+
+        setStats({
+          totalApplicants: apps.length,
+          pending: apps.filter(a => a.status === 'PENDING').length,
+          accepted: apps.filter(a => a.status === 'ACCEPTED').length,
+          rejected: apps.filter(a => a.status === 'REJECTED').length,
+          offersCount: new Set(apps.map(a => a.offer.id)).size, // count unique offers with apps
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    })();
+  }, []);
   return (
     <EnterpriseDashboardLayout>
       
@@ -80,124 +109,31 @@ export default function EnterpriseDashboardPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
-                  
-                  <tr className="hover:bg-slate-50 transition-colors group">
-                    <td className="px-6 py-5">
-                      <div className="flex items-center gap-4">
-                        <img className="w-10 h-10 rounded-full object-cover" alt="Awa Ou├®draogo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMdaQs9jDUAf3Mob27C2S78sKPEkKONJoNB2dHciWUs5ELxuhAh4urNyjb-k6ktzVVZGdMWzQZl42WNXSayw2c4xK4q-4StP_mN6dSreflose_YPN7_wEHrVePDCzfBAxFM8_bMWTOsdM8UWRFItuTZ1uVx1xki-odsB6_0evlmFP_pg7dwIyzmEbaVp3amtncE0YCg5Ij42uNjhJ_Q0CCpj1OfA2GsItfgciEKYWS84J_ZkZjKSu-hB0KCsVXC3RfHDJreoC6UXYy" />
-                        <div>
-                          <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">Awa Ou├®draogo</p>
-                          <p className="text-[12px] text-slate-500">Ouagadougou, BF</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-5 text-[14px] text-slate-600 font-medium">D├®veloppeur Backend</td>
-                    <td className="px-6 py-5 text-[14px] text-slate-500">Il y a 2h</td>
-                    <td className="px-6 py-5">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-100/50 uppercase tracking-wider">Nouveau</span>
-                    </td>
-                    <td className="px-6 py-5 text-right relative">
-                      <div className="group inline-block">
-                        <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm shadow-transparent hover:shadow-slate-200/50 border border-transparent hover:border-slate-100 focus:outline-none">
-                          <span className="material-symbols-outlined !text-[20px]">more_vert</span>
-                        </button>
-                        <div className="absolute right-6 top-10 w-32 bg-white rounded-xl shadow-lg border border-slate-100 opacity-0 invisible group-focus-within:opacity-100 group-focus-within:visible  transition-all z-10 flex flex-col py-1">
-                          <button className="px-4 py-2 text-left text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors">Voir</button>
-                          <button className="px-4 py-2 text-left text-[13px] font-medium text-green-600 hover:bg-green-50 transition-colors">Accepter</button>
-                          <button className="px-4 py-2 text-left text-[13px] font-medium text-red-600 hover:bg-red-50 transition-colors">Rejeter</button>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-
-                  <tr className="hover:bg-slate-50 transition-colors group">
-                    <td className="px-6 py-5">
-                      <div className="flex items-center gap-4">
-                        <img className="w-10 h-10 rounded-full object-cover" alt="Moussa Traor├®" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBAWamYdotB-CXEtU_Qvswed_FhAkaoO8drPxQ1FAXcPIf8ERDHULMVCxlVABQOGGjmCYz4VAEd80KlD9N1ENCIZ-Z4fqFglGLaRp0ggue17Jor1K_lGsclZg3f2JqKk62Td0cV8xqMzV5fU5Xp7OkeheG14RG3AicaZNCDP6jotERF0x6_D6Lh8Wbjs4CwOpD69qS1ZmeVCDVpyvLZulzv6WZNXiVNWtgLHcMBySZPG0pJ0A7lfLioFaom5UBL-mHE86M0fCB5l2A" />
-                        <div>
-                          <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">Moussa Traor├®</p>
-                          <p className="text-[12px] text-slate-500">Bobo-Dioulasso, BF</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-5 text-[14px] text-slate-600 font-medium">Design UX/UI</td>
-                    <td className="px-6 py-5 text-[14px] text-slate-500">Hier</td>
-                    <td className="px-6 py-5">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-100/50 uppercase tracking-wider">Nouveau</span>
-                    </td>
-                    <td className="px-6 py-5 text-right relative">
-                      <div className="group inline-block">
-                        <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm shadow-transparent hover:shadow-slate-200/50 border border-transparent hover:border-slate-100 focus:outline-none">
-                          <span className="material-symbols-outlined !text-[20px]">more_vert</span>
-                        </button>
-                        <div className="absolute right-6 top-10 w-32 bg-white rounded-xl shadow-lg border border-slate-100 opacity-0 invisible group-focus-within:opacity-100 group-focus-within:visible  transition-all z-10 flex flex-col py-1">
-                          <button className="px-4 py-2 text-left text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors">Voir</button>
-                          <button className="px-4 py-2 text-left text-[13px] font-medium text-green-600 hover:bg-green-50 transition-colors">Accepter</button>
-                          <button className="px-4 py-2 text-left text-[13px] font-medium text-red-600 hover:bg-red-50 transition-colors">Rejeter</button>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-
-                  <tr className="hover:bg-slate-50 transition-colors group">
-                    <td className="px-6 py-5">
-                      <div className="flex items-center gap-4">
-                        <img className="w-10 h-10 rounded-full object-cover" alt="Fatimata Sanogo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBAYusWfLTe7HtY9FA-b2cXgYONYVFK5N7p1hhgFlR15BLI-Wm0XLSwo5EjG0_X6BSGV8Lf5rpWm3r20OuXjkzhKv4nSLXXE_pukI8n_VDNqsspsmgo-I1lFF7N8QTtizi1NPx_4ykxOmNN-J3Gjcrmlexi_pd8zNx9gLfp4DjDrS_rZWEnztd70exg1j6alYljM_lXwPs1R0pssXL-cZVXTtjTPcgHugnQtomtoIn6C2j1lH2pWffCYSFDWpGxWjtIpGvHkSPb9MM" />
-                        <div>
-                          <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">Fatimata Sanogo</p>
-                          <p className="text-[12px] text-slate-500">Ouagadougou, BF</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-5 text-[14px] text-slate-600 font-medium">Data Analyst</td>
-                    <td className="px-6 py-5 text-[14px] text-slate-500">Il y a 3j</td>
-                    <td className="px-6 py-5">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-100/50 uppercase tracking-wider">Nouveau</span>
-                    </td>
-                    <td className="px-6 py-5 text-right relative">
-                      <div className="group inline-block">
-                        <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm shadow-transparent hover:shadow-slate-200/50 border border-transparent hover:border-slate-100 focus:outline-none">
-                          <span className="material-symbols-outlined !text-[20px]">more_vert</span>
-                        </button>
-                        <div className="absolute right-6 top-10 w-32 bg-white rounded-xl shadow-lg border border-slate-100 opacity-0 invisible group-focus-within:opacity-100 group-focus-within:visible  transition-all z-10 flex flex-col py-1">
-                          <button className="px-4 py-2 text-left text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors">Voir</button>
-                          <button className="px-4 py-2 text-left text-[13px] font-medium text-green-600 hover:bg-green-50 transition-colors">Accepter</button>
-                          <button className="px-4 py-2 text-left text-[13px] font-medium text-red-600 hover:bg-red-50 transition-colors">Rejeter</button>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-
-                  <tr className="hover:bg-slate-50 transition-colors group">
-                    <td className="px-6 py-5">
-                      <div className="flex items-center gap-4">
-                        <img className="w-10 h-10 rounded-full object-cover" alt="Jean-Paul Sawadogo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCQ1TUsfHBBIitBUIS2wrWArKVKhXqccGoG1FB9RAlU_R1xTNUnjKc6KhmKTLK7Rv8sENNHfcirPmhnJms-0YLBNWCYxPS86l_4_SVtOsfTPPvaX-3E3NgjXborML0TPRZ2tdsAHgoICJo7JvAag0wpOkrxQSYglvzlWo5Qt2Wtakx1ysUVSGKBMkMAQ4e5g7MwCspALMornfifgfhDTCeXkUBtaLP-L-PJC1XcY4zmKrGWAZAYu9Rxf7jd0zaAhCh9j4JU0v53l1Z" />
-                        <div>
-                          <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">Jean-Paul Sawadogo</p>
-                          <p className="text-[12px] text-slate-500">Koudougou, BF</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-5 text-[14px] text-slate-600 font-medium">Chef de Projet IT</td>
-                    <td className="px-6 py-5 text-[14px] text-slate-500">Il y a 1 sem</td>
-                    <td className="px-6 py-5">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-100/50 uppercase tracking-wider">Nouveau</span>
-                    </td>
-                    <td className="px-6 py-5 text-right relative">
-                      <div className="group inline-block">
-                        <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm shadow-transparent hover:shadow-slate-200/50 border border-transparent hover:border-slate-100 focus:outline-none">
-                          <span className="material-symbols-outlined !text-[20px]">more_vert</span>
-                        </button>
-                        <div className="absolute right-6 top-10 w-32 bg-white rounded-xl shadow-lg border border-slate-100 opacity-0 invisible group-focus-within:opacity-100 group-focus-within:visible  transition-all z-10 flex flex-col py-1">
-                          <button className="px-4 py-2 text-left text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors">Voir</button>
-                          <button className="px-4 py-2 text-left text-[13px] font-medium text-green-600 hover:bg-green-50 transition-colors">Accepter</button>
-                          <button className="px-4 py-2 text-left text-[13px] font-medium text-red-600 hover:bg-red-50 transition-colors">Rejeter</button>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-
-                </tbody>
+    {recentApps.length === 0 ? <tr><td colSpan="5" className="text-center py-4 text-slate-500">Aucune candidature</td></tr> : recentApps.map(app => (
+      <tr key={app.id} className="hover:bg-slate-50/50 transition-colors group cursor-pointer" onClick={() => navigate('/entreprise/candidats')}>
+        <td className="px-6 py-4">
+          <div className="flex items-center gap-3">
+            <img alt="User" className="w-8 h-8 rounded-full object-cover border border-slate-100" src={"https://ui-avatars.com/api/?name=" + encodeURIComponent(app.student?.user?.firstName || 'C')} />
+            <p className="text-[13px] font-bold text-slate-900">{app.student?.user?.firstName} {app.student?.user?.lastName}</p>
+          </div>
+        </td>
+        <td className="px-6 py-4">
+          <span className="text-[12px] font-semibold text-slate-600 bg-slate-100 px-3 py-1 rounded-full">{app.offer?.title}</span>
+        </td>
+        <td className="px-6 py-4">
+          <p className="text-[12px] font-medium text-slate-500">{new Date(app.appliedAt).toLocaleDateString('fr-FR')}</p>
+        </td>
+        <td className="px-6 py-4">
+          <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${app.status === 'PENDING' ? 'bg-amber-50 text-amber-700 border border-amber-100/50' : app.status === 'ACCEPTED' ? 'bg-green-50 text-green-700 border border-green-100/50' : 'bg-red-50 text-red-700 border border-red-100/50'}`}>
+             {app.status === 'PENDING' ? 'En attente' : app.status === 'ACCEPTED' ? 'Acceptée' : 'Rejetée'}
+          </span>
+        </td>
+        <td className="px-6 py-4 text-right">
+          <span className="material-symbols-outlined text-[18px] text-slate-300 group-hover:text-primary transition-colors">chevron_right</span>
+        </td>
+      </tr>
+    ))}
+  </tbody>
               </table>
             </div>
           </div>

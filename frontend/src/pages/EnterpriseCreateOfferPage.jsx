@@ -1,11 +1,60 @@
 import EnterpriseDashboardLayout from '../components/EnterpriseDashboardLayout';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import api from '../services/api';
 
 export default function EnterpriseCreateOfferPage() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [contractType, setContractType] = useState('CDI');
+  
+  const [formData, setFormData] = useState({
+    title: '',
+    salaryOrStipend: '',
+    location: '',
+    durationMonths: '',
+    possibleHiring: 'À définir',
+    minExperience: 'Débutant (0 - 1 an)',
+    description: '',
+    candidateProfile: '',
+    benefits: '',
+    requiredSkills: '',
+    applicationDeadline: ''
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSkillsChange = (e) => {
+    setFormData({ ...formData, requiredSkills: e.target.value });
+  };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const payload = {
+        ...formData,
+        contractType,
+        salaryOrStipend: formData.salaryOrStipend ? parseInt(formData.salaryOrStipend, 10) : null,
+        requiredSkills: formData.requiredSkills ? formData.requiredSkills.split(',').map(s => s.trim()) : [],
+        requiredDocuments: ['CV'], // Mock for now, can be updated later
+        applicationDeadline: formData.applicationDeadline ? new Date(formData.applicationDeadline).toISOString() : null,
+      };
+      
+      await api.post('/offers', payload);
+      navigate('/entreprise/offres');
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || 'Erreur lors de la création de l\'offre');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <EnterpriseDashboardLayout>
@@ -262,9 +311,9 @@ export default function EnterpriseCreateOfferPage() {
                   <span className="material-symbols-outlined !text-[18px]">arrow_forward</span>
                 </button>
               ) : (
-                <button className="w-full sm:w-auto px-10 py-3.5 bg-emerald-600 text-white rounded-2xl font-bold shadow-lg shadow-emerald-600/25 hover:bg-emerald-700 transition-all flex items-center justify-center gap-2" onClick={() => navigate('/entreprise/offres')}>
-                  <span className="material-symbols-outlined !text-[18px]">check_circle</span>
-                  Publier l'offre
+                <button disabled={loading} className="w-full sm:w-auto px-10 py-3.5 bg-emerald-600 text-white rounded-2xl font-bold shadow-lg shadow-emerald-600/25 hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 disabled:opacity-70" onClick={handleSubmit}>
+                  <span className="material-symbols-outlined !text-[18px]">{loading ? 'sync' : 'check_circle'}</span>
+                  {loading ? 'Publication...' : "Publier l'offre"}
                 </button>
               )}
             </div>

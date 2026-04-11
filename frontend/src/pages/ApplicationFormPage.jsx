@@ -1,14 +1,53 @@
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import api from '../services/api';
 
 export default function ApplicationFormPage() {
   const navigate = useNavigate();
-  
-  const handleSubmit = (e) => {
+  const { id } = useParams();
+  const [offer, setOffer] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [formData, setFormData] = useState({ fullName: '', email: '', phone: '', cvUrl: '', coverLetterText: '', portfolioUrl: '' });
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('user_role');
+    
+    // Si non connectÃ© ou pas Ã©tudiant => on force l'inscription
+    if (!token || role !== 'STUDENT') {
+      alert("Vous devez Ãªtre inscrit en tant qu'Ã©tudiant pour postuler Ã  une offre.");
+      navigate('/inscription/etudiant');
+      return;
+    }
+
+    if (id) {
+      api.get(`/offers/${id}`).then(res => {
+        setOffer(res.data);
+        setLoading(false);
+      }).catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+    } else { setLoading(false); }
+  }, [id]);
+
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate('/etudiant/candidatures');
+    try {
+      await api.post(`/applications/${id}`, formData);
+      navigate('/etudiant/candidatures');
+    } catch (err) {
+      alert('Erreur lors de la candidature: ' + (err.response?.data?.message || err.message));
+    }
   };
+
+  if (loading) return <div className="text-center py-20 text-slate-500 font-bold">Chargement...</div>;
+  if (!offer) return <div className="text-center py-20 text-red-500 font-bold">Offre introuvable</div>;
+
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-900">
       <Navbar />
@@ -30,7 +69,7 @@ export default function ApplicationFormPage() {
           <div className="bg-white rounded-3xl p-8 lg:p-12 shadow-sm border border-slate-200">
             <header className="mb-10 text-center">
               <h1 className="text-3xl font-black text-slate-900 mb-3 tracking-tight">Postuler à cette offre</h1>
-              <p className="text-slate-500 max-w-lg mx-auto font-medium">Complétez les informations ci-dessous pour soumettre votre candidature au poste de <strong className="text-slate-700">Développeur Fullstack Senior</strong> chez <strong className="text-primary">Coris Tech Solutions</strong>.</p>
+              <p className="text-slate-500 max-w-lg mx-auto font-medium">Complétez les informations ci-dessous pour soumettre votre candidature au poste de <strong className="text-slate-700">{offer.title}</strong> chez <strong className="text-primary">{offer.enterprise?.companyName || 'L\'entreprise'}</strong>.</p>
             </header>
 
             <form className="space-y-12" onSubmit={handleSubmit}>
@@ -46,7 +85,7 @@ export default function ApplicationFormPage() {
                     <label className="text-[13px] font-bold text-slate-600 ml-1">Nom Complet <span className="text-red-500">*</span></label>
                     <input 
                       type="text" 
-                      placeholder="Jean-Baptiste Kaboré" 
+                      name="fullName" value={formData.fullName} onChange={handleChange} placeholder="Jean-Baptiste Kaboré" 
                       className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-[15px] font-medium placeholder:text-slate-400"
                       required
                     />
@@ -55,7 +94,7 @@ export default function ApplicationFormPage() {
                   <div className="space-y-2">
                     <label className="text-[13px] font-bold text-slate-600 ml-1">Adresse E-mail <span className="text-red-500">*</span></label>
                     <input 
-                      type="email" 
+                      name="email" value={formData.email} onChange={handleChange} type="email" 
                       placeholder="jean.k@domain.bf" 
                       className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-[15px] font-medium placeholder:text-slate-400"
                       required
@@ -65,7 +104,7 @@ export default function ApplicationFormPage() {
                   <div className="md:col-span-2 space-y-2">
                     <label className="text-[13px] font-bold text-slate-600 ml-1">Numéro de Téléphone <span className="text-red-500">*</span></label>
                     <input 
-                      type="tel" 
+                      name="phone" value={formData.phone} onChange={handleChange} type="tel" 
                       placeholder="+226 -- -- -- --" 
                       className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-[15px] font-medium placeholder:text-slate-400"
                       required

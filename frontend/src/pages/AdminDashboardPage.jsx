@@ -1,6 +1,22 @@
-﻿import AdminDashboardLayout from '../components/AdminDashboardLayout';
+﻿import { useState, useEffect } from 'react';
+import api from '../services/api';
+import AdminDashboardLayout from '../components/AdminDashboardLayout';
 
 export default function AdminDashboardPage() {
+  const [stats, setStats] = useState({ users: 0, offers: 0, candidatures: 0, flags: 5 });
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const usersReq = api.get('/users/all').catch(() => ({ data: [] }));
+        const offersReq = api.get('/offers').catch(() => ({ data: [] }));
+        const [uRes, oRes] = await Promise.all([usersReq, offersReq]);
+        setStats(s => ({ ...s, users: uRes.data?.length || 0, offers: oRes.data?.length || 0 }));
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  }, []);
   return (
     <AdminDashboardLayout>
       {/* Dashboard Header Section */}

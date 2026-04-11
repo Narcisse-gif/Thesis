@@ -1,9 +1,42 @@
+import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useNavigate } from 'react-router-dom';
+import api from '../services/api';
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const [featuredOffers, setFeaturedOffers] = useState([]);
+  const [loadingOffers, setLoadingOffers] = useState(true);
+
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      try {
+        const response = await api.get('/offers');
+        const mapped = response.data
+          .filter((offer) => offer.status === 'ACTIVE')
+          .slice(0, 3)
+          .map((offer) => ({
+            id: offer.id,
+            title: offer.title,
+            company: offer.enterprise?.companyName || 'Confidentiel',
+            location: offer.location || offer.enterprise?.location || 'Non specifie',
+            contractType: offer.contractType || 'Offre',
+            salaryOrStipend: offer.salaryOrStipend,
+            durationMonths: offer.durationMonths,
+            initials: (offer.enterprise?.companyName || offer.title || 'OF').slice(0, 2).toUpperCase(),
+          }));
+        setFeaturedOffers(mapped);
+      } catch (error) {
+        console.error('Failed to load offers:', error);
+        setFeaturedOffers([]);
+      } finally {
+        setLoadingOffers(false);
+      }
+    };
+
+    fetchFeatured();
+  }, []);
 
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
@@ -57,54 +90,39 @@ export default function LandingPage() {
               </button>
             </div>
             <div className="grid md:grid-cols-3 gap-8 items-stretch">
-              {/* Card 1 */}
-              <div className="glass-card p-8 rounded-3xl shadow-xl hover-card-effect relative group flex flex-col h-full cursor-pointer" onClick={() => navigate('/emplois/1')}>
-                <div className="flex justify-between items-start mb-6">
-                  <div className="w-14 h-14 rounded-xl bg-blue-100 flex items-center justify-center font-bold text-primary text-lg">CB</div>
-                  <span className="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-full">CDI / Stage</span>
-                </div>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Analyste Financier Junior</h3>
-                <p className="text-slate-500 text-sm mb-6">Coris Bank International</p>
-                <div className="flex items-center gap-4 text-slate-400 text-sm mb-8">
-                  <span className="flex items-center gap-1"><span className="material-symbols-outlined text-base">location_on</span> Ouagadougou</span>
-                  <span className="flex items-center gap-1"><span className="material-symbols-outlined text-base">payments</span> Indemnité</span>
-                </div>
-                <button className="w-full py-4 bg-primary text-white rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all mt-auto" onClick={(e) => { e.stopPropagation(); navigate('/postuler/1'); }}>
-                  Postuler maintenant
-                </button>
-              </div>
-              {/* Card 2 */}
-              <div className="glass-card p-8 rounded-3xl shadow-xl hover-card-effect relative group flex flex-col h-full cursor-pointer" onClick={() => navigate('/emplois/2')}>
-                <div className="flex justify-between items-start mb-6">
-                  <div className="w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center font-bold text-primary text-lg">SNB</div>
-                  <span className="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-full">Professionnel</span>
-                </div>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Technicien Réseaux</h3>
-                <p className="text-slate-500 text-sm mb-6">SONABEL</p>
-                <div className="flex items-center gap-4 text-slate-400 text-sm mb-8">
-                  <span className="flex items-center gap-1"><span className="material-symbols-outlined text-base">location_on</span> Bobo-Dioulasso</span>
-                  <span className="flex items-center gap-1"><span className="material-symbols-outlined text-base">schedule</span> 6 mois</span>
-                </div>
-                <button className="w-full py-4 bg-primary text-white rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all mt-auto" onClick={(e) => { e.stopPropagation(); navigate('/postuler/2'); }}>
-                  Postuler maintenant
-                </button>
-              </div>
-              {/* Card 3 */}
-              <div className="glass-card p-8 rounded-3xl shadow-xl hover-card-effect relative group flex flex-col h-full cursor-pointer" onClick={() => navigate('/emplois/3')}>
-                <div className="flex justify-between items-start mb-6">
-                  <div className="w-14 h-14 rounded-xl bg-indigo-50 flex items-center justify-center font-bold text-primary text-lg">TEL</div>
-                  <span className="px-3 py-1 bg-indigo-50 text-indigo-600 text-xs font-bold rounded-full">CDD</span>
-                </div>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Chargé de Clientèle</h3>
-                <p className="text-slate-500 text-sm mb-6">Onatel-Burkina</p>
-                <div className="flex items-center gap-4 text-slate-400 text-sm mb-8">
-                  <span className="flex items-center gap-1"><span className="material-symbols-outlined text-base">location_on</span> Ouaga</span>
-                  <span className="flex items-center gap-1"><span className="material-symbols-outlined text-base">groups</span> Équipe</span>
-                </div>
-                <button className="w-full py-4 bg-primary text-white rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all mt-auto" onClick={(e) => { e.stopPropagation(); navigate('/postuler/3'); }}>
-                  Postuler maintenant
-                </button>
-              </div>
+              {loadingOffers ? (
+                <div className="col-span-full text-center text-slate-500">Chargement des offres...</div>
+              ) : featuredOffers.length === 0 ? (
+                <div className="col-span-full text-center text-slate-500">Aucune offre disponible.</div>
+              ) : (
+                featuredOffers.map((offer) => {
+                  const detailPath = offer.contractType === 'STAGE' ? `/stages/${offer.id}` : `/emplois/${offer.id}`;
+                  const badgeColor = offer.contractType === 'CDD' ? 'bg-indigo-50 text-indigo-600' : 'bg-blue-50 text-blue-600';
+                  const secondaryInfo = offer.salaryOrStipend
+                    ? `${offer.salaryOrStipend} FCFA`
+                    : offer.durationMonths
+                      ? `${offer.durationMonths} mois`
+                      : 'Non specifie';
+
+                  return (
+                    <div key={offer.id} className="glass-card p-8 rounded-3xl shadow-xl hover-card-effect relative group flex flex-col h-full cursor-pointer" onClick={() => navigate(detailPath)}>
+                      <div className="flex justify-between items-start mb-6">
+                        <div className="w-14 h-14 rounded-xl bg-blue-100 flex items-center justify-center font-bold text-primary text-lg">{offer.initials}</div>
+                        <span className={`px-3 py-1 text-xs font-bold rounded-full ${badgeColor}`}>{offer.contractType}</span>
+                      </div>
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">{offer.title}</h3>
+                      <p className="text-slate-500 text-sm mb-6">{offer.company}</p>
+                      <div className="flex items-center gap-4 text-slate-400 text-sm mb-8">
+                        <span className="flex items-center gap-1"><span className="material-symbols-outlined text-base">location_on</span> {offer.location}</span>
+                        <span className="flex items-center gap-1"><span className="material-symbols-outlined text-base">payments</span> {secondaryInfo}</span>
+                      </div>
+                      <button className="w-full py-4 bg-primary text-white rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all mt-auto" onClick={(event) => { event.stopPropagation(); navigate(`/postuler/${offer.id}`); }}>
+                        Postuler maintenant
+                      </button>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
           {/* Process Section */}

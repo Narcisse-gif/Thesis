@@ -1,16 +1,39 @@
 ﻿import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import api from '../services/api';
 
 export default function OfferDetailPage() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const companyProfileByOfferId = {
-    '1': '1',
-    '2': '2',
-    '3': '3'
+  const [offer, setOffer] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.get(`/offers/${id}`).then(res => {
+      setOffer(res.data);
+      setLoading(false);
+    }).catch(err => {
+      console.error(err);
+      setLoading(false);
+    });
+  }, [id]);
+
+  const handleApplyClick = () => {
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('user_role');
+    if (!token || role !== 'STUDENT') {
+      alert("Vous devez Ãªtre inscrit en tant qu'Ã©tudiant pour postuler Ã  une offre.");
+      navigate('/inscription/etudiant');
+    } else {
+      navigate(`/postuler/${id}`);
+    }
   };
-  const companyProfileId = companyProfileByOfferId[id] || '1';
+
+  if (loading) return <div className="text-center py-20 font-bold">Chargement...</div>;
+  if (!offer) return <div className="text-center py-20 font-bold text-red-500">Offre introuvable</div>;
+
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-900">
       <Navbar />
@@ -26,14 +49,14 @@ export default function OfferDetailPage() {
                 <div className="flex items-center gap-2 mb-5">
                   <span className="px-3 py-1 rounded-md bg-blue-100/80 text-blue-700 text-[11px] font-black uppercase tracking-widest border border-blue-200/50">Active</span>
                 </div>
-                <h1 className="text-3xl sm:text-4xl font-black text-slate-900 leading-tight uppercase tracking-tight mb-5">DÃ©veloppeur Fullstack Senior</h1>
+                <h1 className="text-3xl sm:text-4xl font-black text-slate-900 leading-tight uppercase tracking-tight mb-5">{offer.title}</h1>
                 
                 <div className="flex flex-wrap items-center gap-5 sm:gap-8 text-slate-600">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-xl border border-slate-200 p-1.5 bg-white flex items-center justify-center overflow-hidden shadow-sm">
                       <img alt="Coris Logo" className="object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRHT2NNrWpuk-W6HWlT2RV5lUqNvZTetTbdIC6Xt_sRVD3GIrgbnIIHmN-fC2w54ekeM6tukChqOZ7N18XrLhhob0ox1-rvEHhtPWYw_FLms0NyIN0kXrj4xRhjDszvTmXDXQrnyQ_6-IS5wRPAg7i3WU3mv7dLJr_0rwgsbBObQLCcCo8aBiFvOjWLX_UpO_PKFcjPTrnHqDUNbBcK5TFgu9ACydC15AUbEAakZkequxD0s8IH0kpEQ2_SkbW6quWTOjnxeRXKmvP" />
                     </div>
-                    <span className="font-extrabold text-primary uppercase text-[15px] tracking-wide">Coris Tech Solutions</span>
+                    <span className="font-extrabold text-primary uppercase text-[15px] tracking-wide">{offer.enterprise?.companyName || 'L\'entreprise'}</span>
                   </div>
                   
                   <div className="flex items-center gap-2 text-[14px] font-medium border-l border-slate-300 pl-5 sm:pl-8">
@@ -71,7 +94,7 @@ export default function OfferDetailPage() {
                   Description du poste
                 </h3>
                 <div className="text-slate-600 leading-relaxed space-y-4 text-[15px]">
-                  <p>En tant que DÃ©veloppeur Fullstack chez <strong className="text-slate-800">Coris Tech Solutions</strong> Ã  Ouagadougou, vous ferez partie d'une Ã©quipe agile et passionnÃ©e par l'innovation. Votre mission principale sera de concevoir, dÃ©velopper et maintenir des solutions de paiement robustes et scalables.</p>
+                  <p>En tant que DÃ©veloppeur Fullstack chez <strong className="text-slate-800">{offer.enterprise?.companyName || 'L\'entreprise'}</strong> Ã  Ouagadougou, vous ferez partie d'une Ã©quipe agile et passionnÃ©e par l'innovation. Votre mission principale sera de concevoir, dÃ©velopper et maintenir des solutions de paiement robustes et scalables.</p>
                   <p>Nous recherchons un profil capable de s'adapter rapidement aux nouveaux dÃ©fis technologiques et de proposer des architectures modernes rÃ©pondant aux exigences du marchÃ© Ouest-Africain.</p>
                 </div>
               </section>
@@ -82,23 +105,13 @@ export default function OfferDetailPage() {
                   Missions et ResponsabilitÃ©s
                 </h3>
                 <ul className="space-y-4">
-                  <li className="flex items-start gap-4 text-[15px] text-slate-700 font-medium">
-                    <span className="material-symbols-outlined text-blue-500 mt-0.5 !text-[18px]">check_circle</span>
-                    <span>DÃ©veloppement d'APIs REST performantes en Node.js / TypeScript.</span>
-                  </li>
-                  <li className="flex items-start gap-4 text-[15px] text-slate-700 font-medium">
-                    <span className="material-symbols-outlined text-blue-500 mt-0.5 !text-[18px]">check_circle</span>
-                    <span>Conception d'interfaces utilisateurs intuitives avec React.js.</span>
-                  </li>
-                  <li className="flex items-start gap-4 text-[15px] text-slate-700 font-medium">
-                    <span className="material-symbols-outlined text-blue-500 mt-0.5 !text-[18px]">check_circle</span>
-                    <span>Optimisation des requÃªtes SQL et gestion des bases de donnÃ©es PostgreSQL.</span>
-                  </li>
-                  <li className="flex items-start gap-4 text-[15px] text-slate-700 font-medium">
-                    <span className="material-symbols-outlined text-blue-500 mt-0.5 !text-[18px]">check_circle</span>
-                    <span>Participation active aux cÃ©rÃ©monies SCRUM et aux code reviews.</span>
-                  </li>
-                </ul>
+  {offer.requiredSkills ? offer.requiredSkills.map((skill, index) => (
+    <li key={index} className="flex gap-4">
+      <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0 mt-2.5"></div>
+      <span className="text-slate-700 font-medium">{skill}</span>
+    </li>
+  )) : <li className="text-slate-500">Non spÃ©cifiÃ©</li>}
+</ul>
               </section>
 
               <section>
@@ -138,7 +151,7 @@ export default function OfferDetailPage() {
               <div className="pt-8 border-t border-slate-100">
                 <button 
                   className="w-full md:w-auto px-12 py-4 bg-primary text-white font-bold rounded-xl hover:bg-blue-800 transition-all flex items-center justify-center gap-3 shadow-lg shadow-primary/20 hover:-translate-y-0.5"
-                  onClick={() => navigate('/postuler/1')}
+                  onClick={handleApplyClick}
                 >
                   <span className="material-symbols-outlined">send</span>
                   Postuler Ã  cette offre
@@ -159,17 +172,17 @@ export default function OfferDetailPage() {
                   <div className="w-24 h-24 rounded-2xl border border-slate-200 p-3 bg-white flex items-center justify-center overflow-hidden mb-5 shadow-sm">
                     <img alt="Coris Logo" className="object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRHT2NNrWpuk-W6HWlT2RV5lUqNvZTetTbdIC6Xt_sRVD3GIrgbnIIHmN-fC2w54ekeM6tukChqOZ7N18XrLhhob0ox1-rvEHhtPWYw_FLms0NyIN0kXrj4xRhjDszvTmXDXQrnyQ_6-IS5wRPAg7i3WU3mv7dLJr_0rwgsbBObQLCcCo8aBiFvOjWLX_UpO_PKFcjPTrnHqDUNbBcK5TFgu9ACydC15AUbEAakZkequxD0s8IH0kpEQ2_SkbW6quWTOjnxeRXKmvP" />
                   </div>
-                  <h4 className="font-black text-slate-900 text-lg uppercase tracking-tight">Coris Tech Solutions</h4>
+                  <h4 className="font-black text-slate-900 text-lg uppercase tracking-tight">{offer.enterprise?.companyName || 'L\'entreprise'}</h4>
                   <p className="text-[13px] font-bold text-slate-400 mt-1">Groupe Coris Bank Int.</p>
                   
                   <p className="mt-5 text-[14px] text-slate-600 leading-relaxed font-medium">
-                    Coris Tech Solutions est l'entitÃ© technologique du Groupe Coris, dÃ©diÃ©e Ã  l'innovation financiÃ¨re et digitale dans la zone UEMOA.
+                    {offer.enterprise?.companyName || 'L\'entreprise'} est l'entitÃ© technologique du Groupe Coris, dÃ©diÃ©e Ã  l'innovation financiÃ¨re et digitale dans la zone UEMOA.
                   </p>
                   
                   <div className="w-full mt-8 bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-4 text-left">
                     <div className="flex items-center gap-3 text-[13px] font-semibold text-slate-700">
                       <span className="material-symbols-outlined text-primary !text-[18px]">location_on</span>
-                      <span>Ouagadougou, Burkina Faso</span>
+                      <span>{offer.location}</span>
                     </div>
                     <div className="flex items-center gap-3 text-[13px] font-semibold text-slate-700">
                       <span className="material-symbols-outlined text-primary !text-[18px]">business_center</span>
@@ -179,7 +192,7 @@ export default function OfferDetailPage() {
                   
                   <button
                     className="w-full mt-8 py-3 bg-white border-2 border-primary text-primary text-[13px] font-bold rounded-xl hover:bg-primary hover:text-white transition-all flex items-center justify-center gap-2"
-                    onClick={() => navigate(`/entreprises/${companyProfileId}`)}
+                    onClick={() => navigate(`/entreprises/${offer.enterprise?.id}`)}
                   >
                     <span className="material-symbols-outlined !text-[18px]">visibility</span>
                     Voir le profil complet

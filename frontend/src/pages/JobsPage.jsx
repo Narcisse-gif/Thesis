@@ -1,59 +1,44 @@
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import api from '../services/api';
 
 export default function JobsPage() {
   const navigate = useNavigate();
-  const offers = [
-    {
-      initials: 'CB',
-      company: 'Coris Bank International',
-      title: 'Analyste Financier Senior',
-      location: 'Ouagadougou',
-      workType: 'Temps plein',
-      compensation: 'Salaire attractif',
-      badge: 'CDI',
-      badgeColors: 'bg-blue-50 text-primary',
-      posted: 'Publié il y a 1 jour',
-      applicants: '12 candidatures'
-    },
-    {
-      initials: 'OR',
-      company: 'Orange Burkina Faso',
-      title: 'Chef de Projet IT',
-      location: 'Ouagadougou',
-      workType: 'CDI',
-      compensation: 'Expérience 3+ ans',
-      badge: 'Urgent',
-      badgeColors: 'bg-red-50 text-red-600',
-      posted: 'Publié il y a 3 jours',
-      applicants: '24 candidatures'
-    },
-    {
-      initials: 'MV',
-      company: 'Moov Africa Burkina',
-      title: 'Développeur Senior Java',
-      location: 'Ouagadougou',
-      workType: 'Temps plein',
-      compensation: 'Remote possible',
-      badge: 'CDD',
-      badgeColors: 'bg-slate-100 dark:bg-slate-800 text-slate-500',
-      posted: 'Publié il y a 5 jours',
-      applicants: '15 candidatures'
-    },
-    {
-      initials: 'SNB',
-      company: 'SONABEL',
-      title: 'Responsable Maintenance',
-      location: 'Bobo-Dioulasso',
-      workType: 'Temps plein',
-      compensation: 'Technique',
-      badge: 'CDI',
-      badgeColors: 'bg-blue-50 text-primary',
-      posted: 'Publié il y a 1 semaine',
-      applicants: '8 candidatures'
-    }
-  ];
+  const [offers, setOffers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchOffers = async () => {
+      try {
+        const response = await api.get('/offers');
+        const dbOffers = response.data
+          .filter((offer) => offer.contractType !== 'STAGE')
+          .map((offer) => ({
+            id: offer.id,
+            initials: (offer.enterprise?.companyName || offer.title || 'OF').slice(0, 2).toUpperCase(),
+            company: offer.enterprise?.companyName || 'Confidentiel',
+            title: offer.title,
+            location: offer.location || offer.enterprise?.location || 'Non specifie',
+            workType: offer.contractType || 'Non specifie',
+            compensation: offer.salaryOrStipend ? `${offer.salaryOrStipend} FCFA` : 'Non specifie',
+            badge: offer.contractType || 'Offre',
+            badgeColors: 'bg-blue-50 text-primary',
+            posted: offer.createdAt ? `Publie le ${new Date(offer.createdAt).toLocaleDateString('fr-FR')}` : 'Date inconnue',
+            applicants: 'Non disponible',
+          }));
+        setOffers(dbOffers);
+      } catch (error) {
+        console.error('Failed to load offers:', error);
+        setOffers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOffers();
+  }, []);
 
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
@@ -152,7 +137,7 @@ export default function JobsPage() {
               {/* Results Grid */}
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-8">
-                  <p className="text-slate-500 dark:text-slate-400 text-sm">Nous avons trouvé <span className="font-bold text-slate-900 dark:text-white">28 offres</span> d'emplois</p>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm">Nous avons trouvé <span className="font-bold text-slate-900 dark:text-white">{offers.length} offres</span> d'emplois</p>
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-slate-500">Trier par:</span>
                     <select className="bg-transparent border-none outline-none focus:ring-0 text-sm font-bold py-1 cursor-pointer">
@@ -162,41 +147,47 @@ export default function JobsPage() {
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {offers.map((offer, i) => (
-                    <div key={i} className="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm hover-card-effect group flex flex-col h-full">
-                      <div className="flex justify-between items-start mb-6">
-                        <div className="w-14 h-14 rounded-full bg-blue-50 dark:bg-slate-800 flex items-center justify-center font-bold text-primary text-lg border border-slate-100 dark:border-slate-700">{offer.initials}</div>
-                        <span className={`${offer.badgeColors} text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full`}>{offer.badge}</span>
+                  {loading ? (
+                    <div className="col-span-full text-center text-slate-500">Chargement des offres...</div>
+                  ) : offers.length === 0 ? (
+                    <div className="col-span-full text-center text-slate-500">Aucune offre disponible.</div>
+                  ) : (
+                    offers.map((offer) => (
+                      <div key={offer.id} className="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm hover-card-effect group flex flex-col h-full">
+                        <div className="flex justify-between items-start mb-6">
+                          <div className="w-14 h-14 rounded-full bg-blue-50 dark:bg-slate-800 flex items-center justify-center font-bold text-primary text-lg border border-slate-100 dark:border-slate-700">{offer.initials}</div>
+                          <span className={`${offer.badgeColors} text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full`}>{offer.badge}</span>
+                        </div>
+                        <h3 className="text-xl font-bold mb-1 text-primary group-hover:text-blue-700 transition-colors">{offer.title}</h3>
+                        <p className="text-slate-500 text-sm font-medium mb-6">{offer.company}</p>
+                        <div className="flex flex-wrap gap-x-6 gap-y-3 text-slate-400 text-sm mb-8">
+                          <div className="flex items-center gap-1.5"><span className="material-symbols-outlined !text-lg opacity-70">location_on</span> {offer.location}</div>
+                          <div className="flex items-center gap-1.5"><span className="material-symbols-outlined !text-lg opacity-70">work</span> {offer.workType}</div>
+                          <div className="flex items-center gap-1.5"><span className="material-symbols-outlined !text-lg opacity-70">payments</span> {offer.compensation}</div>
+                        </div>
+                        <div className="flex items-center gap-3 mb-6 mt-auto">
+                          <button
+                            className="flex-1 py-2.5 bg-slate-50 dark:bg-slate-800 group-hover:bg-primary text-slate-700 dark:text-slate-300 group-hover:text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-sm"
+                            onClick={() => navigate(`/postuler/${offer.id}`)}
+                          >
+                            Postuler
+                            <span className="material-symbols-outlined text-sm">send</span>
+                          </button>
+                          <button
+                            className="flex-1 py-2.5 bg-slate-50 dark:bg-slate-800 group-hover:bg-slate-200 dark:group-hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-sm"
+                            onClick={() => navigate(`/emplois/${offer.id}`)}
+                          >
+                            Détails
+                            <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                          </button>
+                        </div>
+                        <div className="flex items-center justify-between pt-5 border-t border-slate-50 dark:border-slate-800">
+                          <div className="flex items-center gap-1 text-[11px] text-slate-400"><span className="material-symbols-outlined !text-xs">calendar_today</span> {offer.posted}</div>
+                          <div className="flex items-center gap-1 text-[11px] text-slate-400"><span className="material-symbols-outlined !text-xs">groups</span> {offer.applicants}</div>
+                        </div>
                       </div>
-                      <h3 className="text-xl font-bold mb-1 text-primary group-hover:text-blue-700 transition-colors">{offer.title}</h3>
-                      <p className="text-slate-500 text-sm font-medium mb-6">{offer.company}</p>
-                      <div className="flex flex-wrap gap-x-6 gap-y-3 text-slate-400 text-sm mb-8">
-                        <div className="flex items-center gap-1.5"><span className="material-symbols-outlined !text-lg opacity-70">location_on</span> {offer.location}</div>
-                        <div className="flex items-center gap-1.5"><span className="material-symbols-outlined !text-lg opacity-70">work</span> {offer.workType}</div>
-                        <div className="flex items-center gap-1.5"><span className="material-symbols-outlined !text-lg opacity-70">{offer.compensation.includes('Salaire') ? 'payments' : offer.compensation.includes('Exp') ? 'schedule' : offer.compensation.includes('Remote') ? 'terminal' : 'engineering'}</span> {offer.compensation}</div>
-                      </div>
-                      <div className="flex items-center gap-3 mb-6 mt-auto">
-                        <button 
-                          className="flex-1 py-2.5 bg-slate-50 dark:bg-slate-800 group-hover:bg-primary text-slate-700 dark:text-slate-300 group-hover:text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-sm" 
-                          onClick={() => navigate('/postuler/1')}
-                        >
-                          Postuler
-                          <span className="material-symbols-outlined text-sm">send</span>
-                        </button>
-                        <button 
-                          className="flex-1 py-2.5 bg-slate-50 dark:bg-slate-800 group-hover:bg-slate-200 dark:group-hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-sm" 
-                          onClick={() => navigate('/emplois/1')}
-                        >
-                          Détails
-                          <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                        </button>
-                      </div>
-                      <div className="flex items-center justify-between pt-5 border-t border-slate-50 dark:border-slate-800">
-                        <div className="flex items-center gap-1 text-[11px] text-slate-400"><span className="material-symbols-outlined !text-xs">calendar_today</span> {offer.posted}</div>
-                        <div className="flex items-center gap-1 text-[11px] text-slate-400"><span className="material-symbols-outlined !text-xs">groups</span> {offer.applicants}</div>
-                      </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
                 {/* Pagination */}
                 <div className="mt-16 flex justify-center gap-2">

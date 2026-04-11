@@ -25,6 +25,9 @@ export class EnterpriseProfile {
   @Column({ nullable: true })
   location: string;
 
+  @Column({ nullable: true })
+  logoUrl: string;
+
   @OneToOne(() => User, user => user.enterpriseProfile, { onDelete: 'CASCADE' })
   @JoinColumn()
   user: User;

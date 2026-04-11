@@ -1,6 +1,34 @@
 import EnterpriseDashboardLayout from '../components/EnterpriseDashboardLayout';
+import { useState, useEffect } from 'react';
+import api from '../services/api';
 
 export default function EnterpriseOffersPage() {
+  const [offers, setOffers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchOffers = async () => {
+      try {
+        setLoading(true);
+        // Assuming we want to fetch the current enterprise's offers.
+        // If your backend doesn't have `/offers/me`, just fetch all and filter or handle it backend side.
+        const res = await api.get('/offers'); 
+        
+        // For now, let's assume the dashboard only shows YOUR offers. If `/offers` returns all, 
+        // we might filter by enterprise, or backend should filter based on token.
+        // We'll set what we receive.
+        setOffers(res.data);
+      } catch (err) {
+        console.error('Error fetching offers:', err);
+        setError('Erreur lors du chargement des offres');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchOffers();
+  }, []);
+
   return (
     <EnterpriseDashboardLayout>
       {/* Header Section */}
@@ -65,162 +93,56 @@ export default function EnterpriseOffersPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              
-              {/* Row 1 */}
-              <tr className="hover:bg-slate-50/50 transition-colors group">
-                <td className="px-8 py-5">
-                  <div>
-                    <p className="font-bold text-slate-900 text-[15px] group-hover:text-primary transition-colors">Développeur Fullstack React/Node</p>
-                    <p className="text-[12px] text-slate-400 mt-1">ID: SL-2024-081</p>
-                  </div>
-                </td>
-                <td className="px-6 py-5 text-center">
-                  <span className="bg-blue-50 text-blue-700 border border-blue-100/50 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider inline-block">Emploi</span>
-                </td>
-                <td className="px-6 py-5">
-                  <p className="text-[14px] font-medium text-slate-600">12 Oct 2023</p>
-                </td>
-                <td className="px-6 py-5 text-center">
-                  <div className="inline-flex -space-x-2">
-                    <img alt="Candidat" className="w-8 h-8 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXDluFT0F_zHWiMkDXtx6Gw_uaCJqLnGzaSqg3R7yeBIU-gX9XGa5OSj7EM3UjTTol-20Nz73lAJJxxxTwApzA1DTc-RpvkPcTdPe-ybg6yd7s9MT7T4RrInieJqX5n5OCIVw38OMDXEggplADHwfZbRq85yurkX9ILXOoNrHSjbdqxWQGmfFs2pZUsK1wSO6pvBX6-CUjHshj5qQA-CAgg3kOfU0H4QdY_UMBEpQlE-eya-8DH6gbq3LZS-8ZjBHOS8xd3-GhQG--" />
-                    <img alt="Candidat" className="w-8 h-8 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC06hJpOQd2i3zlt1PAe_o3QSxnK7QWXK993jJC83HDthswq6NweMumnu30YJLY_aI4fbF5digDICoG_b99UDwFc3QdGs-utx2eCbeUXOSxRyWETOVO8Ybj8kfSJ2SGgwsFrwmd-vEhVX8UnqsE43j31PYaZhZRP3wWuiY96HREoV-ub0d_4oXH603uBZEM9NhtQxOulCw4pnVcrc-7eetc8lMfbmKf9iywE9YjODNLvhqFl6Yn68bdCu1M98S_7OpdyrNeX7KnSv-G" />
-                    <div className="w-8 h-8 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">+42</div>
-                  </div>
-                </td>
-                <td className="px-6 py-5">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-blue-600"></span>
-                    <span className="text-[13px] font-semibold text-blue-700">Active</span>
-                  </div>
-                </td>
-                <td className="px-8 py-5 text-right relative border-l border-transparent">
-    <div className="group inline-block">
-      <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm shadow-transparent hover:shadow-slate-200/50 border border-transparent hover:border-slate-100 focus:outline-none">
-        <span className="material-symbols-outlined !text-[20px]">more_vert</span>
-      </button>
-      <div className="absolute right-10 top-10 w-40 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-slate-100 opacity-0 invisible group-focus-within:opacity-100 group-focus-within:visible transition-all z-10 flex flex-col py-1 overflow-hidden">
-        <button className="px-4 py-2.5 text-left text-[13px] font-bold text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">visibility</span> Voir</button>
-        <button className="px-4 py-2.5 text-left text-[13px] font-bold text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">edit</span> Modifier</button>
-        <div className="h-px bg-slate-100 my-1"></div>
-        <button className="px-4 py-2.5 text-left text-[13px] font-bold text-red-600 hover:bg-red-50 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">delete</span> Supprimer</button>
-      </div>
-    </div>
-  </td>
-              </tr>
-
-              {/* Row 2 */}
-              <tr className="hover:bg-slate-50/50 transition-colors group">
-                <td className="px-8 py-5">
-                  <div>
-                    <p className="font-bold text-slate-900 text-[15px] group-hover:text-primary transition-colors">Stagiaire Assistant Marketing</p>
-                    <p className="text-[12px] text-slate-400 mt-1">ID: SL-2024-085</p>
-                  </div>
-                </td>
-                <td className="px-6 py-5 text-center">
-                  <span className="bg-slate-100 text-slate-600 border border-slate-200/50 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider inline-block">Stage</span>
-                </td>
-                <td className="px-6 py-5">
-                  <p className="text-[14px] font-medium text-slate-600">08 Oct 2023</p>
-                </td>
-                <td className="px-6 py-5 text-center">
-                  <div className="inline-flex -space-x-2">
-                    <img alt="Candidat" className="w-8 h-8 rounded-full border-2 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0F_PeYTTr0Y8AjZHMpuN7VetmMM_qTsmVRrTwGoICt0q4v_cIEdzDzCuPu1bGozEguYLyY30oSuKLQr4IG4itZkqgTI2UL1Ysp6kaooON2EHn6LC_L696XxpmrSTTNsXDoOWq22lmeCiBnW_QGVVoQe_y5U03fV219NXUv9xRJkpM7MwmBJMwpAt5KCUMxTJVGziC4scjNwBT_IZnaKTgm45Zukk0l1UeYUsI3-XGATZEayjo2lFjkQb7UnJVJBRjwc6d_Qbecoy-" />
-                    <div className="w-8 h-8 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">+15</div>
-                  </div>
-                </td>
-                <td className="px-6 py-5">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-blue-600"></span>
-                    <span className="text-[13px] font-semibold text-blue-700">Active</span>
-                  </div>
-                </td>
-                <td className="px-8 py-5 text-right relative border-l border-transparent">
-    <div className="group inline-block">
-      <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm shadow-transparent hover:shadow-slate-200/50 border border-transparent hover:border-slate-100 focus:outline-none">
-        <span className="material-symbols-outlined !text-[20px]">more_vert</span>
-      </button>
-      <div className="absolute right-10 top-10 w-40 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-slate-100 opacity-0 invisible group-focus-within:opacity-100 group-focus-within:visible transition-all z-10 flex flex-col py-1 overflow-hidden">
-        <button className="px-4 py-2.5 text-left text-[13px] font-bold text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">visibility</span> Voir</button>
-        <button className="px-4 py-2.5 text-left text-[13px] font-bold text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">edit</span> Modifier</button>
-        <div className="h-px bg-slate-100 my-1"></div>
-        <button className="px-4 py-2.5 text-left text-[13px] font-bold text-red-600 hover:bg-red-50 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">delete</span> Supprimer</button>
-      </div>
-    </div>
-  </td>
-              </tr>
-
-              {/* Row 3 */}
-              <tr className="hover:bg-slate-50/50 transition-colors group opacity-70">
-                <td className="px-8 py-5">
-                  <div>
-                    <p className="font-bold text-slate-900 text-[15px] group-hover:text-primary transition-colors">Comptable Senior</p>
-                    <p className="text-[12px] text-slate-400 mt-1">ID: SL-2024-072</p>
-                  </div>
-                </td>
-                <td className="px-6 py-5 text-center">
-                  <span className="bg-blue-50 text-blue-700 border border-blue-100/50 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider inline-block">Emploi</span>
-                </td>
-                <td className="px-6 py-5">
-                  <p className="text-[14px] font-medium text-slate-600">15 Sep 2023</p>
-                </td>
-                <td className="px-6 py-5 text-center">
-                  <div className="inline-flex -space-x-2">
-                    <div className="w-8 h-8 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">88</div>
-                  </div>
-                </td>
-                <td className="px-6 py-5">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-slate-400"></span>
-                    <span className="text-[13px] font-semibold text-slate-500">Fermée</span>
-                  </div>
-                </td>
-                <td className="px-8 py-5 text-right relative border-l border-transparent">
-    <div className="group inline-block">
-      <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm shadow-transparent hover:shadow-slate-200/50 border border-transparent hover:border-slate-100 focus:outline-none">
-        <span className="material-symbols-outlined !text-[20px]">more_vert</span>
-      </button>
-      <div className="absolute right-10 top-10 w-40 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-slate-100 opacity-0 invisible group-focus-within:opacity-100 group-focus-within:visible transition-all z-10 flex flex-col py-1 overflow-hidden">
-        <button className="px-4 py-2.5 text-left text-[13px] font-bold text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">visibility</span> Voir</button>
-        <button className="px-4 py-2.5 text-left text-[13px] font-bold text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">edit</span> Modifier</button>
-        <div className="h-px bg-slate-100 my-1"></div>
-        <button className="px-4 py-2.5 text-left text-[13px] font-bold text-red-600 hover:bg-red-50 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">delete</span> Supprimer</button>
-      </div>
-    </div>
-  </td>
-              </tr>
-
-              {/* Row 4 */}
-              <tr className="hover:bg-slate-50/50 transition-colors group bg-slate-50/30">
-                <td className="px-8 py-5">
-                  <div>
-                    <p className="font-bold text-slate-900 text-[15px] group-hover:text-primary transition-colors">Expert Sécurité Cloud</p>
-                    <p className="text-[12px] text-slate-400 mt-1 italic">En cours de rédaction...</p>
-                  </div>
-                </td>
-                <td className="px-6 py-5 text-center">
-                  <span className="bg-blue-50 text-blue-700 border border-blue-100/50 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider inline-block">Emploi</span>
-                </td>
-                <td className="px-6 py-5">
-                  <p className="text-[14px] font-medium text-slate-400">--</p>
-                </td>
-                <td className="px-6 py-5 text-center">
-                  <span className="text-[12px] text-slate-400 font-semibold">N/A</span>
-                </td>
-                <td className="px-6 py-5">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-amber-400"></span>
-                    <span className="text-[13px] font-semibold text-amber-600">Brouillon</span>
-                  </div>
-                </td>
-                <td className="px-8 py-5 text-right">
-                  <div className="flex items-center justify-end gap-3">
-                    <button className="text-primary text-[11px] font-bold uppercase tracking-widest hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors">Publier</button>
-                    <button className="p-2 rounded-xl text-slate-400 hover:text-primary hover:bg-blue-50/50 transition-all border border-transparent hover:border-slate-100" title="Modifier">
-                      <span className="material-symbols-outlined !text-[20px]">edit</span>
-                    </button>
-                  </div>
-                </td>
-              </tr>
+              {loading ? (
+                <tr>
+                  <td colSpan="6" className="text-center py-8 text-slate-500">Chargement des offres...</td>
+                </tr>
+              ) : offers.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="text-center py-8 text-slate-500">Aucune offre trouvée.</td>
+                </tr>
+              ) : (
+                offers.map((offer) => (
+                  <tr key={offer.id} className="hover:bg-slate-50/50 transition-colors group">
+                    <td className="px-8 py-5">
+                      <div>
+                        <p className="font-bold text-slate-900 text-[15px] group-hover:text-primary transition-colors">{offer.title}</p>
+                        <p className="text-[12px] text-slate-400 mt-1">Lieu: {offer.location}</p>
+                      </div>
+                    </td>
+                    <td className="px-6 py-5 text-center">
+                      <span className={`border px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider inline-block ${offer.contractType === 'STAGE' ? 'bg-slate-100 text-slate-600 border-slate-200/50' : 'bg-blue-50 text-blue-700 border-blue-100/50'}`}>
+                        {offer.contractType === 'STAGE' ? 'Stage' : 'Emploi'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-5">
+                      <p className="text-[14px] font-medium text-slate-600">
+                        {new Date(offer.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      </p>
+                    </td>
+                    <td className="px-6 py-5 text-center">
+                      <div className="inline-flex -space-x-2">
+                        <div className="w-8 h-8 mx-auto rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">
+                          {offer.applications ? offer.applications.length : 0}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-5">
+                      <div className="flex items-center gap-2">
+                        <span className={`w-2 h-2 rounded-full ${offer.status === 'ACTIVE' ? 'bg-blue-600' : offer.status === 'EN_ATTENTE' ? 'bg-amber-400' : 'bg-slate-400'}`}></span>
+                        <span className={`text-[13px] font-semibold ${offer.status === 'ACTIVE' ? 'text-blue-700' : offer.status === 'EN_ATTENTE' ? 'text-amber-600' : 'text-slate-500'}`}>
+                          {offer.status === 'ACTIVE' ? 'Active' : offer.status === 'EN_ATTENTE' ? 'En attente' : offer.status}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-8 py-5 text-right relative border-l border-transparent">
+                      <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm shadow-transparent hover:shadow-slate-200/50 border border-transparent hover:border-slate-100 focus:outline-none">
+                        <span className="material-symbols-outlined !text-[20px]">more_vert</span>
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

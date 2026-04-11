@@ -1,140 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StudentDashboardLayout from '../components/StudentDashboardLayout';
-
-const stageOffers = [
-  {
-    id: 1,
-    initials: 'CB',
-    company: 'Coris Bank International',
-    logo: 'https://logo.clearbit.com/corisbankinternational.com',
-    title: 'Stagiaire Analyste Crédit',
-    location: 'Ouagadougou',
-    domain: 'Gestion & Finance',
-    duration: '6 mois',
-    compensation: 'Indemnité incluse',
-    contractType: 'Stage Rémunéré',
-    badge: 'Stage Rémunéré',
-    badgeColors: 'bg-blue-50 text-primary',
-    posted: 'Publié il y a 2 jours',
-    applicants: '12 candidatures'
-  },
-  {
-    id: 2,
-    initials: 'SNB',
-    company: 'SONABEL',
-    logo: 'https://logo.clearbit.com/sonabel.bf',
-    title: 'Ingénieur Électricien (Stagiaire)',
-    location: 'Bobo-Dioulasso',
-    domain: 'Ingénierie & BTP',
-    duration: '3 mois',
-    compensation: 'Temps plein',
-    contractType: 'Académique',
-    badge: 'Stage Académique',
-    badgeColors: 'bg-blue-100 text-blue-700',
-    posted: 'Publié il y a 3 jours',
-    applicants: '8 candidatures'
-  },
-  {
-    id: 3,
-    initials: 'OR',
-    company: 'Orange Burkina Faso',
-    logo: 'https://logo.clearbit.com/orange.com',
-    title: 'Développeur Fullstack Junior',
-    location: 'Ouagadougou',
-    domain: 'Informatique / IT',
-    duration: '6 mois',
-    compensation: 'Indemnité + Bonus',
-    contractType: 'Professionnel',
-    badge: 'Urgent',
-    badgeColors: 'bg-blue-200 text-blue-800',
-    posted: 'Publié il y a 5 jours',
-    applicants: '24 candidatures'
-  },
-  {
-    id: 4,
-    initials: 'MV',
-    company: 'Moov Africa Burkina',
-    logo: 'https://logo.clearbit.com/moov-africa.com',
-    title: 'Chargé de Clientèle (H/F)',
-    location: 'Ouagadougou',
-    domain: 'Marketing & Com',
-    duration: '4 mois',
-    compensation: 'Temps plein',
-    contractType: 'Stage Rémunéré',
-    badge: 'Stage Rémunéré',
-    badgeColors: 'bg-blue-50 text-primary',
-    posted: 'Publié il y a 1 semaine',
-    applicants: '15 candidatures'
-  }
-];
-
-const jobOffers = [
-  {
-    id: 1,
-    initials: 'CB',
-    company: 'Coris Bank International',
-    logo: 'https://logo.clearbit.com/corisbankinternational.com',
-    title: 'Analyste Financier Senior',
-    location: 'Ouagadougou',
-    domain: 'Gestion & Finance',
-    workType: 'Temps plein',
-    compensation: 'Salaire attractif',
-    contractType: 'CDI',
-    badge: 'CDI',
-    badgeColors: 'bg-blue-50 text-primary',
-    posted: 'Publié il y a 1 jour',
-    applicants: '12 candidatures'
-  },
-  {
-    id: 2,
-    initials: 'OR',
-    company: 'Orange Burkina Faso',
-    logo: 'https://logo.clearbit.com/orange.com',
-    title: 'Chef de Projet IT',
-    location: 'Ouagadougou',
-    domain: 'Informatique / IT',
-    workType: 'CDI',
-    compensation: 'Expérience 3+ ans',
-    contractType: 'CDI',
-    badge: 'Urgent',
-    badgeColors: 'bg-blue-200 text-blue-800',
-    posted: 'Publié il y a 3 jours',
-    applicants: '24 candidatures'
-  },
-  {
-    id: 3,
-    initials: 'MV',
-    company: 'Moov Africa Burkina',
-    logo: 'https://logo.clearbit.com/moov-africa.com',
-    title: 'Développeur Senior Java',
-    location: 'Ouagadougou',
-    domain: 'Informatique / IT',
-    workType: 'Temps plein',
-    compensation: 'Remote possible',
-    contractType: 'CDD',
-    badge: 'CDD',
-    badgeColors: 'bg-blue-100 text-blue-700',
-    posted: 'Publié il y a 5 jours',
-    applicants: '15 candidatures'
-  },
-  {
-    id: 4,
-    initials: 'SNB',
-    company: 'SONABEL',
-    logo: 'https://logo.clearbit.com/sonabel.bf',
-    title: 'Responsable Maintenance',
-    location: 'Bobo-Dioulasso',
-    domain: 'Ingénierie & BTP',
-    workType: 'Temps plein',
-    compensation: 'Technique',
-    contractType: 'CDI',
-    badge: 'CDI',
-    badgeColors: 'bg-blue-50 text-primary',
-    posted: 'Publié il y a 1 semaine',
-    applicants: '8 candidatures'
-  }
-];
+import api from '../services/api';
 
 const cities = ['Ouagadougou', 'Bobo-Dioulasso', 'Koudougou'];
 const domains = ['Informatique / IT', 'Gestion & Finance', 'Marketing & Com', 'Ingénierie & BTP'];
@@ -142,7 +9,55 @@ const domains = ['Informatique / IT', 'Gestion & Finance', 'Marketing & Com', 'I
 export default function StudentOffersSearchPage({ offerType = 'stage' }) {
   const navigate = useNavigate();
   const isJob = offerType === 'emploi';
-  const offers = isJob ? jobOffers : stageOffers;
+  const [offersData, setOffersData] = useState({ stage: [], job: [] });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchOffers = async () => {
+      try {
+        const response = await api.get('/offers');
+        const mapped = response.data.map((offer) => {
+          const badgeColors = offer.contractType === 'CDD'
+            ? 'bg-blue-100 text-blue-700'
+            : offer.contractType === 'CDI'
+              ? 'bg-blue-50 text-primary'
+              : 'bg-blue-50 text-primary';
+
+          return {
+            id: offer.id,
+            initials: (offer.enterprise?.companyName || offer.title || 'OF').slice(0, 2).toUpperCase(),
+            company: offer.enterprise?.companyName || 'Confidentiel',
+            logo: offer.enterprise?.logoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(offer.title || 'OF')}&background=e0ecff&color=1d4ed8&bold=true`,
+            title: offer.title,
+            location: offer.location || offer.enterprise?.location || 'Non specifie',
+            domain: offer.enterprise?.industry || 'Autre',
+            duration: offer.durationMonths ? `${offer.durationMonths} mois` : 'Non specifie',
+            workType: offer.contractType || 'Non specifie',
+            compensation: offer.salaryOrStipend ? `${offer.salaryOrStipend} FCFA` : 'Non specifie',
+            contractType: offer.contractType,
+            badge: offer.contractType || 'Offre',
+            badgeColors,
+            posted: offer.createdAt ? `Publie le ${new Date(offer.createdAt).toLocaleDateString('fr-FR')}` : 'Date inconnue',
+            applicants: 'Non disponible',
+          };
+        });
+
+        setOffersData({
+          stage: mapped.filter((offer) => offer.contractType === 'STAGE'),
+          job: mapped.filter((offer) => offer.contractType !== 'STAGE'),
+        });
+      } catch (error) {
+        console.error('Failed to load offers:', error);
+        setOffersData({ stage: [], job: [] });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOffers();
+  }, []);
+
+  const offers = isJob ? offersData.job : offersData.stage;
 
   const [keyword, setKeyword] = useState('');
   const [cityFilter, setCityFilter] = useState('Toutes');
@@ -150,7 +65,7 @@ export default function StudentOffersSearchPage({ offerType = 'stage' }) {
   const [typeFilter, setTypeFilter] = useState('Tous');
   const [sortBy, setSortBy] = useState('recent');
 
-  const typeOptions = isJob ? ['CDI', 'CDD', 'Freelance'] : ['Académique', 'Professionnel', 'Stage Rémunéré'];
+  const typeOptions = isJob ? ['CDI', 'CDD'] : ['STAGE'];
 
   const filteredOffers = useMemo(() => {
     const filtered = offers.filter((offer) => {
@@ -224,7 +139,7 @@ export default function StudentOffersSearchPage({ offerType = 'stage' }) {
               <select className="rounded-xl border border-blue-200 px-4 py-2.5 text-sm" value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}>
                 <option>Tous</option>
                 {typeOptions.map((type) => (
-                  <option key={type}>{type}</option>
+                  <option key={type} value={type}>{type === 'STAGE' ? 'Stage' : type}</option>
                 ))}
               </select>
               <button
@@ -245,7 +160,9 @@ export default function StudentOffersSearchPage({ offerType = 'stage' }) {
           <div>
             <div className="flex items-center justify-between mb-8">
               <p className="text-slate-500 text-sm">
-                Nous avons trouvé <span className="font-bold text-slate-900">{filteredOffers.length} offres</span>
+                {loading ? 'Chargement des offres...' : (
+                  <>Nous avons trouvé <span className="font-bold text-slate-900">{filteredOffers.length} offres</span></>
+                )}
               </p>
               <div className="flex items-center gap-2">
                 <span className="text-sm text-slate-500">Trier par:</span>

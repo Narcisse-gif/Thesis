@@ -67,16 +67,56 @@ export class UsersService {
     const user = await this.findById(userId);
     if (!user) throw new NotFoundException('User not found');
 
+    const { avatarUrl, ...profileData } = updateData || {};
+
+    if (typeof avatarUrl === 'string') {
+      user.avatarUrl = avatarUrl;
+    }
+
     if (user.role === UserRole.STUDENT && user.studentProfile) {
-      Object.assign(user.studentProfile, updateData);
+      Object.assign(user.studentProfile, profileData);
       await this.studentRepository.save(user.studentProfile);
     } else if (user.role === UserRole.ENTERPRISE && user.enterpriseProfile) {
-      Object.assign(user.enterpriseProfile, updateData);
+      Object.assign(user.enterpriseProfile, profileData);
       await this.enterpriseRepository.save(user.enterpriseProfile);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { passwordHash, ...updatedSavedUser } = await this.usersRepository.save(user);
     return updatedSavedUser;
+  }
+
+  async updateAuth(
+    userId: string,
+    data: { email?: string; passwordHash?: string; resetPasswordToken?: string | null; resetPasswordExpiresAt?: Date | null },
+  ) {
+    const user = await this.findById(userId);
+    if (!user) throw new NotFoundException('User not found');
+
+    if (data.email) {
+      const existing = await this.findByEmail(data.email);
+      if (existing && existing.id !== user.id) {
+        throw new ConflictException('User with this email already exists');
+      }
+      user.email = data.email;
+    }
+
+    if (data.passwordHash) {
+      user.passwordHash = data.passwordHash;
+    }
+
+    if (data.resetPasswordToken !== undefined) {
+      user.resetPasswordToken = data.resetPasswordToken;
+    }
+
+    if (data.resetPasswordExpiresAt !== undefined) {
+      user.resetPasswordExpiresAt = data.resetPasswordExpiresAt;
+    }
+
+    return this.usersRepository.save(user);
+  }
+
+  async findByResetToken(token: string) {
+    return this.usersRepository.findOne({ where: { resetPasswordToken: token } });
   }
 }

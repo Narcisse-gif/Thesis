@@ -1,14 +1,8 @@
-﻿import { useMemo, useState } from 'react';
+﻿import { useMemo, useState, useEffect } from 'react';
+import api from '../services/api';
 import StudentDashboardLayout from '../components/StudentDashboardLayout';
 
-const applications = [
-  { id: 1, offer: 'DÃ©veloppeur Fullstack Junior', company: 'Orange Burkina Faso', initials: 'OR', logo: 'https://logo.clearbit.com/orange.com', city: 'Ouagadougou', type: 'Stage', date: '12/10/2023', status: 'Acceptee' },
-  { id: 2, offer: 'Analyste CybersÃ©curitÃ©', company: 'Coris Bank International', initials: 'CB', logo: 'https://logo.clearbit.com/corisbankinternational.com', city: 'Bobo-Dioulasso', type: 'Stage', date: '15/10/2023', status: 'En attente' },
-  { id: 3, offer: 'Assistant Marketing Digital', company: 'Moov Africa', initials: 'MV', logo: 'https://logo.clearbit.com/moov-africa.com', city: 'Ouagadougou', type: 'Emploi', date: '08/10/2023', status: 'Rejetee' },
-  { id: 4, offer: 'Data Analyst Junior', company: 'UBA Burkina', initials: 'UBA', logo: 'https://logo.clearbit.com/ubagroup.com', city: 'Ouagadougou', type: 'Stage', date: '05/10/2023', status: 'En attente' },
-  { id: 5, offer: 'Support IT', company: 'SONABEL', initials: 'SNB', logo: 'https://logo.clearbit.com/sonabel.bf', city: 'Koudougou', type: 'Emploi', date: '28/09/2023', status: 'En attente' },
-  { id: 6, offer: 'Comptable Junior', company: 'BOA Burkina', initials: 'BOA', logo: 'https://logo.clearbit.com/boaburkina.com', city: 'Ouagadougou', type: 'Emploi', date: '21/09/2023', status: 'Acceptee' }
-];
+
 
 const statusStyle = {
   Acceptee: 'bg-green-50 text-green-700 border-green-200',
@@ -17,6 +11,18 @@ const statusStyle = {
 };
 
 export default function StudentApplicationsPage() {
+  const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.get('/applications/my').then(res => {
+      setApplications(res.data);
+      setLoading(false);
+    }).catch(err => {
+      console.error(err);
+      setLoading(false);
+    });
+  }, []);
   const [statusFilter, setStatusFilter] = useState('Tous');
   const [typeFilter, setTypeFilter] = useState('Tous');
   const [cityFilter, setCityFilter] = useState('Toutes');
@@ -24,16 +30,18 @@ export default function StudentApplicationsPage() {
 
   const filteredApplications = useMemo(() => {
     return applications.filter((application) => {
-      const statusMatch = statusFilter === 'Tous' ? true : application.status === statusFilter;
-      const typeMatch = typeFilter === 'Tous' ? true : application.type === typeFilter;
-      const cityMatch = cityFilter === 'Toutes' ? true : application.city === cityFilter;
+      const mapStatus = s => s === 'PENDING' ? 'En attente' : s === 'ACCEPTED' ? 'Acceptee' : 'Rejetee';
+      const statusMatch = statusFilter === 'Tous' ? true : mapStatus(application.status) === statusFilter;
+      const mapType = t => t === 'STAGE' ? 'Stage' : 'Emploi';
+      const typeMatch = typeFilter === 'Tous' ? true : mapType(application.offer.contractType) === typeFilter;
+      const cityMatch = cityFilter === 'Toutes' ? true : application.offer.location === cityFilter;
       const searchMatch =
-        application.offer.toLowerCase().includes(search.toLowerCase()) ||
-        application.company.toLowerCase().includes(search.toLowerCase());
+        application.offer.title.toLowerCase().includes(search.toLowerCase()) ||
+        (application.offer.enterprise?.companyName || '').toLowerCase().includes(search.toLowerCase());
 
       return statusMatch && typeMatch && cityMatch && searchMatch;
     });
-  }, [statusFilter, typeFilter, cityFilter, search]);
+  }, [statusFilter, typeFilter, cityFilter, search, applications]);
 
   return (
     <StudentDashboardLayout>
@@ -87,28 +95,28 @@ export default function StudentApplicationsPage() {
             <tbody className="divide-y divide-slate-100">
               {filteredApplications.map((row) => (
                 <tr key={row.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-6 py-4 text-sm font-semibold text-slate-900">{row.offer}</td>
+                  <td className="px-6 py-4 text-sm font-semibold text-slate-900">{row.offer.title}</td>
                   <td className="px-6 py-4 text-sm text-slate-600">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-xl bg-white border border-blue-100 overflow-hidden p-1.5 shrink-0">
                         <img
-                          alt={`Logo ${row.company}`}
+                          alt={`Logo ${row.offer.enterprise?.companyName}`}
                           className="w-full h-full object-contain"
-                          src={row.logo}
+                          src={row.offer.enterprise?.logoUrl}
                           onError={(event) => {
-                            event.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(row.initials)}&background=e0ecff&color=1d4ed8&bold=true`;
+                            event.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent((row.offer.enterprise?.companyName || 'Ent').substring(0, 2))}&background=e0ecff&color=1d4ed8&bold=true`;
                           }}
                         />
                       </div>
-                      <span>{row.company}</span>
+                      <span>{row.offer.enterprise?.companyName}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-sm text-slate-600">{row.type}</td>
-                  <td className="px-6 py-4 text-sm text-slate-500">{row.city}</td>
-                  <td className="px-6 py-4 text-sm text-slate-500">{row.date}</td>
+                  <td className="px-6 py-4 text-sm text-slate-600">{row.offer.contractType === 'STAGE' ? 'Stage' : 'Emploi'}</td>
+                  <td className="px-6 py-4 text-sm text-slate-500">{row.offer.location}</td>
+                  <td className="px-6 py-4 text-sm text-slate-500">{new Date(row.createdAt).toLocaleDateString('fr-FR')}</td>
                   <td className="px-6 py-4 text-sm">
-                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${statusStyle[row.status]}`}>
-                      {row.status}
+                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${statusStyle[row.status === 'PENDING' ? 'En attente' : row.status === 'ACCEPTED' ? 'Acceptee' : 'Rejetee']}`}>
+                      {row.status === 'PENDING' ? 'En attente' : row.status === 'ACCEPTED' ? 'Acceptee' : 'Rejetee'}
                     </span>
                   </td>
                 </tr>

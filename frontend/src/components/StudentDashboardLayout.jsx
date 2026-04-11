@@ -1,9 +1,48 @@
 import { Link, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import api from '../services/api';
 import logo from '../assets/logo.png';
 
 export default function StudentDashboardLayout({ children }) {
   const location = useLocation();
   const currentPath = location.pathname;
+  const [profile, setProfile] = useState(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await api.get('/users/profile');
+        setProfile(response.data);
+      } catch (error) {
+        console.error('Failed to load profile:', error);
+      }
+    };
+
+    fetchProfile();
+    const handleProfileUpdate = (event) => {
+      if (event?.detail) {
+        setProfile(event.detail);
+      } else {
+        fetchProfile();
+      }
+    };
+
+    window.addEventListener('profile:updated', handleProfileUpdate);
+    return () => window.removeEventListener('profile:updated', handleProfileUpdate);
+  }, []);
+
+  const student = profile?.studentProfile;
+  const displayName = [student?.firstName, student?.lastName].filter(Boolean).join(' ') || profile?.email || 'Etudiant';
+  const displayLevel = student?.studyLevel || 'Profil';
+  const apiBaseUrl = api.defaults.baseURL || '';
+  const resolveAvatarUrl = (value) => {
+    if (!value) return '';
+    if (value.startsWith('http')) return value;
+    if (value.startsWith('/uploads/')) return `${apiBaseUrl}${value}`;
+    return value;
+  };
+  const resolvedAvatarUrl = resolveAvatarUrl(profile?.avatarUrl);
+  const avatarUrl = resolvedAvatarUrl || 'https://lh3.googleusercontent.com/aida-public/AB6AXuBbbE-29oZxa5cMvLOSguw34yhMmR6k-l6kty-ha3n4cO0a-Rr3tm4IACV3toqwlXBtMFEY0xzaO6Owa0AaFvUvVbJmEFToZw6H9XrvkdNl10Jf-rGMTO7IeVPAqh5COd1VvBsvIxb4jW6lW8h41vtmJZ7T8ujSQTpMGvx8YOOpcGBmDOQNGwF-INVPA1Rw9CbNqoby3lb41b5ah_3XkEzQWdQmy6XzN-b9Q4Eq5ZePWCbnr4v8jG6AqBFRNh0eBGQJ9hKg1CytV6pF';
 
   const isActive = (path) => currentPath === path;
 
@@ -105,16 +144,16 @@ export default function StudentDashboardLayout({ children }) {
             </div>
             <div className="flex items-center gap-4 pl-8 border-l border-slate-200">
               <div className="text-right hidden sm:block">
-                <p className="text-sm font-bold text-slate-800 leading-none">Moussa Traoré</p>
-                <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mt-1.5">Master II MIAGE</p>
+                <p className="text-sm font-bold text-slate-800 leading-none">{displayName}</p>
+                <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mt-1.5">{displayLevel}</p>
               </div>
-              <div className="relative group cursor-pointer">
+              <Link to="/etudiant/profil" className="relative group cursor-pointer">
                 <img 
-                  alt="Moussa Traoré" 
+                  alt={displayName}
                   className="h-11 w-11 rounded-xl object-cover ring-4 ring-slate-100/50 group-hover:ring-primary/10 transition-all" 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbbE-29oZxa5cMvLOSguw34yhMmR6k-l6kty-ha3n4cO0a-Rr3tm4IACV3toqwlXBtMFEY0xzaO6Owa0AaFvUvVbJmEFToZw6H9XrvkdNl10Jf-rGMTO7IeVPAqh5COd1VvBsvIxb4jW6lW8h41vtmJZ7T8ujSQTpMGvx8YOOpcGBmDOQNGwF-INVPA1Rw9CbNqoby3lb41b5ah_3XkEzQWdQmy6XzN-b9Q4Eq5ZePWCbnr4v8jG6AqBFRNh0eBGQJ9hKg1CytV6pF" 
+                  src={avatarUrl}
                 />
-              </div>
+              </Link>
             </div>
           </div>
         </header>

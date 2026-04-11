@@ -28,6 +28,12 @@ export class User {
   @Column({ default: false })
   isVerified: boolean;
 
+  @Column({ type: 'varchar', nullable: true })
+  resetPasswordToken: string | null;
+
+  @Column({ type: 'timestamp', nullable: true })
+  resetPasswordExpiresAt: Date | null;
+
   @OneToOne(() => StudentProfile, student => student.user, { cascade: true })
   studentProfile: StudentProfile;
 

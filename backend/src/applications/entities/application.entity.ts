@@ -3,10 +3,10 @@ import { StudentProfile } from '../../users/entities/student-profile.entity';
 import { Offer } from '../../offers/entities/offer.entity';
 
 export enum ApplicationStatus {
-  EN_ATTENTE = 'EN_ATTENTE',
-  ACCEPTEE = 'ACCEPTEE',
-  REFUSEE = 'REFUSEE',
-  ENTRETIEN = 'ENTRETIEN',
+  PENDING = 'PENDING',
+  ACCEPTED = 'ACCEPTED',
+  REJECTED = 'REJECTED',
+  INTERVIEW = 'INTERVIEW',
 }
 
 @Entity('applications')
@@ -14,7 +14,7 @@ export class Application {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'enum', enum: ApplicationStatus, default: ApplicationStatus.EN_ATTENTE })
+  @Column({ type: 'enum', enum: ApplicationStatus, default: ApplicationStatus.PENDING })
   status: ApplicationStatus;
 
   @Column({ nullable: true })

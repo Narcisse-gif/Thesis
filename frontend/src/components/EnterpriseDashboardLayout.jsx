@@ -1,9 +1,30 @@
 import { Link, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import api from '../services/api';
 import logo from '../assets/logo.png';
 
 export default function EnterpriseDashboardLayout({ children }) {
   const location = useLocation();
   const currentPath = location.pathname;
+  const [profile, setProfile] = useState(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await api.get('/users/profile');
+        setProfile(response.data);
+      } catch (error) {
+        console.error('Failed to load enterprise profile:', error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  const enterprise = profile?.enterpriseProfile;
+  const displayName = enterprise?.companyName || profile?.email || 'Entreprise';
+  const displayRole = enterprise?.industry || 'Recruteur';
+  const logoUrl = enterprise?.logoUrl || profile?.avatarUrl || 'https://lh3.googleusercontent.com/aida-public/AB6AXuAJqU_z885wsfTY4g3y616w-sAYQPeMjz4phQuYrHylkxbmljApD9IkvUfBIpo_bAf0L4uBVCTW5O6oXsoHNpkEHWwZNO75N4MqThzQq5_-06SfSTuly50ZICW95FWHbrzlahKWEc7F7et_OgK28obOMvyHGmdLv7mIXhqcFyiSBrr9e5nz_CL-MJJ7688-ymNF9J-27Aae2nKxAYKdfztKOkwCHvers0jAPz5m-GCQzHQ2YRZU369KMLlAvecpKRZxcBNqHvLL1oeQ';
 
   const isActive = (path) => currentPath === path;
 
@@ -105,13 +126,13 @@ export default function EnterpriseDashboardLayout({ children }) {
             </Link>
             <div className="flex items-center gap-3 pl-4 border-l border-slate-200 cursor-pointer group">
               <div className="text-right hidden sm:block">
-                <p className="text-[12px] font-bold text-slate-900 group-hover:text-primary transition-colors">Cina Burkina SA</p>
-                <p className="text-[10px] text-slate-500">Recruteur Pro</p>
+                <p className="text-[12px] font-bold text-slate-900 group-hover:text-primary transition-colors">{displayName}</p>
+                <p className="text-[10px] text-slate-500">{displayRole}</p>
               </div>
               <img 
-                alt="Profil entreprise" 
+                alt={displayName}
                 className="w-10 h-10 rounded-xl object-cover ring-2 ring-primary/10 group-hover:ring-primary/30 transition-all" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJqU_z885wsfTY4g3y616w-sAYQPeMjz4phQuYrHylkxbmljApD9IkvUfBIpo_bAf0L4uBVCTW5O6oXsoHNpkEHWwZNO75N4MqThzQq5_-06SfSTuly50ZICW95FWHbrzlahKWEc7F7et_OgK28obOMvyHGmdLv7mIXhqcFyiSBrr9e5nz_CL-MJJ7688-ymNF9J-27Aae2nKxAYKdfztKOkwCHvers0jAPz5m-GCQzHQ2YRZU369KMLlAvecpKRZxcBNqHvLL1oeQ" 
+                src={logoUrl}
               />
             </div>
           </div>

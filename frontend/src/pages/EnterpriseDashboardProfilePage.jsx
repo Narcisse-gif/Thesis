@@ -1,6 +1,74 @@
-﻿import EnterpriseDashboardLayout from '../components/EnterpriseDashboardLayout';
+﻿import { useEffect, useState } from 'react';
+import EnterpriseDashboardLayout from '../components/EnterpriseDashboardLayout';
+import api from '../services/api';
 
 export default function EnterpriseDashboardProfilePage() {
+  const [profile, setProfile] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [status, setStatus] = useState('');
+  const [formData, setFormData] = useState({
+    companyName: '',
+    industry: '',
+    companySize: '',
+    website: '',
+    shortDescription: '',
+    location: '',
+    logoUrl: '',
+  });
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await api.get('/users/profile');
+        const enterprise = response.data.enterpriseProfile || {};
+        setProfile(response.data);
+        setFormData({
+          companyName: enterprise.companyName || '',
+          industry: enterprise.industry || '',
+          companySize: enterprise.companySize || '',
+          website: enterprise.website || '',
+          shortDescription: enterprise.shortDescription || '',
+          location: enterprise.location || '',
+          logoUrl: enterprise.logoUrl || '',
+        });
+      } catch (error) {
+        console.error('Failed to load enterprise profile:', error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  const enterprise = profile?.enterpriseProfile;
+  const companyName = enterprise?.companyName || 'Entreprise';
+  const industry = enterprise?.industry || 'Secteur non renseigne';
+  const location = enterprise?.location || 'Localisation non renseignee';
+  const logoUrl = enterprise?.logoUrl || 'https://lh3.googleusercontent.com/aida-public/AB6AXuDj2xFMs6eDjKMCKEpPTLS-pjpgSKACScinfp7LAHxtlg-UpiaLpc6SwnOJgZ-l307e8BmXv6GvKsHPuRnEMOxp4IMiNH81aBcjZ0Z4jsjwjnAsrXkqPNpRJuK7iPzrDIlJTL6t7bsnj4f-T3QhVW5ItP_1ZhAo6w6T9xKFMNG488GKiFXVJgSIBWLSe6e0goFF_gGZViijWQPebOnN-jd2X8wqXBwEXJt-vKsJesdLc_N2Tflb0BsqqeQeJE0WSYrWiMP6jv7tCjGp';
+  const aboutText = enterprise?.shortDescription || 'Aucune description disponible.';
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    setStatus('');
+    try {
+      await api.patch('/users/profile', formData);
+      const refreshed = await api.get('/users/profile');
+      setProfile(refreshed.data);
+      setStatus('Profil mis a jour.');
+      setEditMode(false);
+    } catch (error) {
+      console.error('Failed to update enterprise profile:', error);
+      setStatus('Erreur lors de la mise a jour.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <EnterpriseDashboardLayout>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 bg-white p-6 rounded-2xl shadow-sm border border-slate-100/50">
@@ -8,11 +76,30 @@ export default function EnterpriseDashboardProfilePage() {
             <h2 className="text-2xl font-bold text-slate-900 mb-1">Profil Entreprise</h2>
             <p className="text-slate-500 text-sm font-medium">Aperçu public de votre entreprise tel que vu par les talents.</p>
           </div>
-          <button className="px-6 py-3 bg-primary text-white rounded-xl font-bold shadow-lg shadow-primary/25 hover:bg-blue-800 transition-all flex items-center gap-2 shrink-0">
+          <button className="px-6 py-3 bg-primary text-white rounded-xl font-bold shadow-lg shadow-primary/25 hover:bg-blue-800 transition-all flex items-center gap-2 shrink-0" onClick={() => setEditMode((prev) => !prev)}>
             <span className="material-symbols-outlined !text-[18px]">edit</span>
-            Modifier le profil
+            {editMode ? 'Annuler' : 'Modifier le profil'}
           </button>
         </div>
+
+        {editMode && (
+          <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm space-y-4 max-w-5xl mx-auto">
+            <h3 className="text-lg font-bold text-slate-900">Edition du profil</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input className="rounded-xl border border-slate-200 px-4 py-3 text-sm" name="companyName" value={formData.companyName} onChange={handleChange} placeholder="Nom de l'entreprise" />
+              <input className="rounded-xl border border-slate-200 px-4 py-3 text-sm" name="industry" value={formData.industry} onChange={handleChange} placeholder="Secteur" />
+              <input className="rounded-xl border border-slate-200 px-4 py-3 text-sm" name="companySize" value={formData.companySize} onChange={handleChange} placeholder="Taille" />
+              <input className="rounded-xl border border-slate-200 px-4 py-3 text-sm" name="website" value={formData.website} onChange={handleChange} placeholder="Site web" />
+              <input className="rounded-xl border border-slate-200 px-4 py-3 text-sm" name="location" value={formData.location} onChange={handleChange} placeholder="Ville" />
+              <input className="rounded-xl border border-slate-200 px-4 py-3 text-sm" name="logoUrl" value={formData.logoUrl} onChange={handleChange} placeholder="Logo URL" />
+            </div>
+            <textarea className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm" name="shortDescription" value={formData.shortDescription} onChange={handleChange} rows={4} placeholder="Description courte"></textarea>
+            {status && <p className="text-sm text-slate-500">{status}</p>}
+            <button className="px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold hover:bg-blue-800 transition-all" onClick={handleSave} disabled={saving}>
+              {saving ? 'Enregistrement...' : 'Enregistrer'}
+            </button>
+          </div>
+        )}
 
         <div className="max-w-5xl mx-auto space-y-10">
           
@@ -29,20 +116,20 @@ export default function EnterpriseDashboardProfilePage() {
               {/* Prominent Header */}
               <header className="flex flex-col md:flex-row items-center md:items-start gap-6 sm:gap-8 border-b border-slate-100 pb-10">
                 <div className="h-28 w-28 rounded-2xl border border-slate-200 bg-white p-3 shadow-md flex-shrink-0 -mt-20 relative z-10 group hover:shadow-lg transition-all">
-                  <img alt="Coris Bank Logo" className="w-full h-full object-contain group-hover:scale-105 transition-transform" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDj2xFMs6eDjKMCKEpPTLS-pjpgSKACScinfp7LAHxtlg-UpiaLpc6SwnOJgZ-l307e8BmXv6GvKsHPuRnEMOxp4IMiNH81aBcjZ0Z4jsjwjnAsrXkqPNpRJuK7iPzrDIlJTL6t7bsnj4f-T3QhVW5ItP_1ZhAo6w6T9xKFMNG488GKiFXVJgSIBWLSe6e0goFF_gGZViijWQPebOnN-jd2X8wqXBwEXJt-vKsJesdLc_N2Tflb0BsqqeQeJE0WSYrWiMP6jv7tCjGp" />
+                  <img alt={companyName} className="w-full h-full object-contain group-hover:scale-105 transition-transform" src={logoUrl} />
                 </div>
                 
                 <div className="text-center md:text-left space-y-3 flex-1">
-                  <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Coris Bank International</h1>
+                  <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">{companyName}</h1>
                   <div className="flex flex-wrap justify-center md:justify-start items-center gap-4 text-slate-500 font-medium">
                     <span className="flex items-center gap-1.5 text-[14px]">
                       <span className="material-symbols-outlined text-primary !text-[20px]">corporate_fare</span>
-                      Secteur Bancaire &amp; Finance
+                      {industry}
                     </span>
                     <span className="hidden sm:inline w-1 h-1 rounded-full bg-slate-300"></span>
                     <span className="flex items-center gap-1.5 text-[14px]">
                       <span className="material-symbols-outlined text-primary !text-[20px]">location_on</span>
-                      Ouagadougou, Burkina Faso
+                      {location}
                     </span>
                   </div>
                 </div>
@@ -59,8 +146,7 @@ export default function EnterpriseDashboardProfilePage() {
                   Ã€ propos de nous
                 </h2>
                 <div className="text-slate-600 leading-relaxed space-y-4 text-[15px]">
-                  <p>FondÃ© au Burkina Faso, <strong>Coris Bank International</strong> s'est imposÃ© comme un acteur majeur du paysage financier ouest-africain. Notre vision repose sur l'innovation constante et l'accompagnement personnalisÃ© des PME/PMI, des grandes entreprises et des particuliers.</p>
-                  <p>Nous croyons fermement que le dÃ©veloppement Ã©conomique passe par une inclusion financiÃ¨re forte et des solutions adaptÃ©es aux rÃ©alitÃ©s locales.</p>
+                  <p>{aboutText}</p>
                 </div>
               </section>
 
@@ -101,21 +187,21 @@ export default function EnterpriseDashboardProfilePage() {
                       <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Taille de l'entreprise</p>
                       <p className="font-black text-[15px] text-slate-700 flex items-center gap-2">
                         <span className="material-symbols-outlined text-primary !text-[18px]">groups</span>
-                        1 000+ EmployÃ©s
+                        {enterprise?.companySize || 'Non renseigne'}
                       </p>
                     </div>
                     <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                      <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">FondÃ© en</p>
+                      <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Fondation</p>
                       <p className="font-black text-[15px] text-slate-700 flex items-center gap-2">
                         <span className="material-symbols-outlined text-primary !text-[18px]">calendar_month</span>
-                        2008
+                        Non renseigne
                       </p>
                     </div>
                     <div className="col-span-2 bg-slate-50 p-4 rounded-xl border border-slate-100">
                       <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Site Web</p>
-                      <a className="font-bold text-[15px] text-primary hover:text-blue-800 transition-colors flex items-center gap-2" href="#">
+                      <a className="font-bold text-[15px] text-primary hover:text-blue-800 transition-colors flex items-center gap-2" href={enterprise?.website || '#'}>
                         <span className="material-symbols-outlined !text-[18px]">language</span>
-                        www.coris.bank
+                        {enterprise?.website || 'Non renseigne'}
                       </a>
                     </div>
                   </div>

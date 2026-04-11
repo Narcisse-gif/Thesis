@@ -1,9 +1,10 @@
-﻿import { useState } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Layout from '../components/student-dashboard/Layout';
+import api from '../services/api';
 
 /* â”€â”€â”€ DonnÃ©es de la maquette Stitch â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-const JOBS = [
+const FALLBACK_JOBS = [
   {
     id: 1,
     title: 'Senior Full Stack Developer',
@@ -98,10 +99,45 @@ export default function StudentJobsPage() {
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('All');
   const [levelFilter, setLevelFilter] = useState('All Levels');
-  const [savedJobs, setSavedJobs] = useState(new Set(JOBS.filter(j => j.saved).map(j => j.id)));
-  const [selected, setSelected] = useState(JOBS[0]);
+  const [jobs, setJobs] = useState([]);
+  const [savedJobs, setSavedJobs] = useState(new Set());
+  const [selected, setSelected] = useState(null);
 
-  const filtered = JOBS.filter(j => {
+  useEffect(() => {
+    // Remplacer les fausses données (FALLBACK_JOBS) par les données de postgres
+    const fetchJobs = async () => {
+      try {
+        const response = await api.get('/offers');
+        const dbJobs = response.data.map(offer => ({
+          id: offer.id,
+          title: offer.title,
+          company: offer.enterprise?.companyName || 'Confidentiel',
+          location: offer.location || offer.enterprise?.location || 'Burkina Faso',
+          type: offer.contractType === 'STAGE' ? 'Internship' : offer.contractType,
+          level: 'Entry', // Pour simplifier
+          salary: offer.salary || 'Non spÃ©cifiÃ©',
+          posted: new Date(offer.createdAt).toLocaleDateString(),
+          deadline: 'Ouvrir',
+          logo: offer.enterprise?.companyName?.substring(0, 2).toUpperCase() || 'ES',
+          color: 'bg-blue-100 text-blue-700',
+          tags: offer.requirements || [],
+          desc: offer.description,
+          saved: false,
+          match: Math.floor(Math.random() * 20 + 80),
+        }));
+        setJobs(dbJobs.length > 0 ? dbJobs : FALLBACK_JOBS);
+        if (dbJobs.length > 0) setSelected(dbJobs[0]);
+        else setSelected(FALLBACK_JOBS[0]);
+      } catch (err) {
+        console.error("Failed to load offers:", err);
+        setJobs(FALLBACK_JOBS);
+        setSelected(FALLBACK_JOBS[0]);
+      }
+    };
+    fetchJobs();
+  }, []);
+
+  const filtered = jobs.filter(j => {
     const q = search.toLowerCase();
     const matchQ = !q || j.title.toLowerCase().includes(q) || j.company.toLowerCase().includes(q) || j.tags.some(t => t.toLowerCase().includes(q));
     const matchType = typeFilter === 'All' || j.type === typeFilter;

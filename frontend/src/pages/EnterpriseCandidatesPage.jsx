@@ -1,6 +1,36 @@
+import { useState, useEffect } from 'react';
+import api from '../services/api';
 import EnterpriseDashboardLayout from '../components/EnterpriseDashboardLayout';
 
 export default function EnterpriseCandidatesPage() {
+  const [candidates, setCandidates] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchCandidates = async () => {
+    try {
+      const res = await api.get('/applications/enterprise');
+      setCandidates(res.data);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCandidates();
+  }, []);
+
+  if (loading) return <div className="text-center py-20 text-slate-500 font-bold">Chargement des candidats...</div>;
+
+  const handleStatusChange = async (id, status) => {
+    try {
+      await api.patch(`/applications/${id}/status`, { status });
+      fetchCandidates();
+    } catch (err) {
+      console.error('Failed to change status', err);
+    }
+  };
   return (
     <EnterpriseDashboardLayout>
       {/* Hero Header Section */}
@@ -47,169 +77,57 @@ export default function EnterpriseCandidatesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              
-              {/* Candidate Row 1 */}
-              <tr className="hover:bg-slate-50/50 transition-colors group">
-                <td className="px-6 py-5">
-                  <div className="flex items-center gap-4">
-                    <img alt="Awa" className="w-10 h-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeGfhQxTqd8Ark0dTR17UmjrlIDqmYq-5_Pq66kZDElJmT3hw2osyXoRDnCsRUqIVZ04vZwoutRoBtMO2ZqJr61MbVxrbmSuucUTvBiZNSzqtJEHixaZRZq90jk453LlA1VIuGxQDwdt_DHty1rrMac_zTMlHp6Bi6fC5vSCese8XMAZgpbUh4HIK72XIOdzbA9fH3yxY9irBvp2RbkeqARTq6J8eWW_QqFLtHB4Q2t6GgiXuxHzGbdwFzN3Nt7Ce0soTl4g1W-bNH" />
-                    <div>
-                      <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">Awa Ouédraogo</p>
-                      <p className="text-[12px] text-slate-400 mt-0.5">awa.ouedraogo@email.com</p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-5">
-                  <p className="text-[14px] text-slate-700 font-medium">Université Joseph Ki-Zerbo</p>
-                  <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mt-1">Master Informatique</p>
-                </td>
-                <td className="px-6 py-5">
-                  <span className="px-3 py-1 bg-slate-100 text-slate-600 border border-slate-200/50 rounded-full text-[10px] font-bold uppercase tracking-wider">Développeur Fullstack</span>
-                </td>
-                <td className="px-6 py-5">
-                  <p className="text-[13px] text-slate-600 font-medium">12 Oct. 2023</p>
-                </td>
-                <td className="px-6 py-5">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-100/50 uppercase tracking-wider">En attente</span>
-                </td>
-                <td className="px-6 py-5 text-right relative">
-                  <div className="group/action inline-block">
-                    <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm border border-transparent hover:border-slate-100 focus:outline-none">
-                      <span className="material-symbols-outlined !text-[20px]">more_vert</span>
-                    </button>
-                    <div className="absolute right-10 top-2 w-48 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-slate-100 opacity-0 invisible group-focus-within/action:opacity-100 group-focus-within/action:visible z-50 flex flex-col py-1 overflow-hidden text-left">
-                      <button className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">person</span> Voir le profil</button>
-                      <button className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">rule</span> Changer le statut</button>
-                      <div className="h-px bg-slate-100 my-1"></div>
-                      <button className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">chat_bubble</span> Texter</button>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-
-              {/* Candidate Row 2 */}
-              <tr className="hover:bg-slate-50/50 transition-colors group">
-                <td className="px-6 py-5">
-                  <div className="flex items-center gap-4">
-                    <img alt="Ibrahim" className="w-10 h-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhmEEAkTcjhXQ99FUj4uP7sAlxqPV3wBPHtkmVe26mPVO5IWMuiFKcrTz34RvPNBCScwEX3F607CBoX5kzyc81yajhdZzh8lwx8AcAmoFuVkV_CxRcYYcxnqDNAiBzOM5GRzANdYnhKN2pk2RddLwM7ZbBOFzOvmUcUarQo0-YwVOXOeAnjzpdlivtsbcrFlNfRe2T6b0Tg2Pgq12NYSfh-oRaOaj_89Lv48COhPHeb4jb82L6qgEBylSkqJVFIZbEZF7mCUBrRE6l" />
-                    <div>
-                      <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">Ibrahim Sawadogo</p>
-                      <p className="text-[12px] text-slate-400 mt-0.5">ib.sawadogo@email.bf</p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-5">
-                  <p className="text-[14px] text-slate-700 font-medium">ESI / Bobo-Dioulasso</p>
-                  <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mt-1">Ingénieur Systèmes</p>
-                </td>
-                <td className="px-6 py-5">
-                  <span className="px-3 py-1 bg-slate-100 text-slate-600 border border-slate-200/50 rounded-full text-[10px] font-bold uppercase tracking-wider">Développeur Fullstack</span>
-                </td>
-                <td className="px-6 py-5">
-                  <p className="text-[13px] text-slate-600 font-medium">10 Oct. 2023</p>
-                </td>
-                <td className="px-6 py-5">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-green-50 text-green-700 border border-green-100/50 uppercase tracking-wider">Acceptée</span>
-                </td>
-                <td className="px-6 py-5 text-right relative">
-                  <div className="group/action inline-block">
-                    <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm border border-transparent hover:border-slate-100 focus:outline-none">
-                      <span className="material-symbols-outlined !text-[20px]">more_vert</span>
-                    </button>
-                    <div className="absolute right-10 top-2 w-48 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-slate-100 opacity-0 invisible group-focus-within/action:opacity-100 group-focus-within/action:visible z-50 flex flex-col py-1 overflow-hidden text-left">
-                      <button className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">person</span> Voir le profil</button>
-                      <button className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">rule</span> Changer le statut</button>
-                      <div className="h-px bg-slate-100 my-1"></div>
-                      <button className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">chat_bubble</span> Texter</button>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-
-              {/* Candidate Row 3 */}
-              <tr className="hover:bg-slate-50/50 transition-colors group">
-                <td className="px-6 py-5">
-                  <div className="flex items-center gap-4">
-                    <img alt="Fatou" className="w-10 h-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeiLGiKjKr2c_C_pvxlCXzgi14iI-Beapu4XeHdLTk-XRFFAYWvNAQoGg6D0zWAiwohUpZVjF0TOx4USrxeBxCUCuLH4SLMZOX45k0xgzWTCFks7MRWwdlzWUIql1XuSPT4ZLMBM0QiD4SNspewLbGUwaOjVtMoUg2TiywmMnkQcz5phatiZa0NpJC2p2jYsPV3LUeETXZ2ZSuwrkT1dCA8K4aZ_6RdLaxkCFHUzEkpR2AQzCBxur5_zOxyB1_nPxhSMgSSAyizFnr" />
-                    <div>
-                      <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">Fatou Traoré</p>
-                      <p className="text-[12px] text-slate-400 mt-0.5">fatou.t@email.com</p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-5">
-                  <p className="text-[14px] text-slate-700 font-medium">IAM Ouagadougou</p>
-                  <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mt-1">Licence Marketing</p>
-                </td>
-                <td className="px-6 py-5">
-                  <span className="px-3 py-1 bg-slate-100 text-slate-600 border border-slate-200/50 rounded-full text-[10px] font-bold uppercase tracking-wider">Assistant Marketing</span>
-                </td>
-                <td className="px-6 py-5">
-                  <p className="text-[13px] text-slate-600 font-medium">09 Oct. 2023</p>
-                </td>
-                <td className="px-6 py-5">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-red-50 text-red-700 border border-red-100/50 uppercase tracking-wider">Rejetée</span>
-                </td>
-                <td className="px-6 py-5 text-right relative">
-                  <div className="group/action inline-block">
-                    <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm border border-transparent hover:border-slate-100 focus:outline-none">
-                      <span className="material-symbols-outlined !text-[20px]">more_vert</span>
-                    </button>
-                    <div className="absolute right-10 top-2 w-48 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-slate-100 opacity-0 invisible group-focus-within/action:opacity-100 group-focus-within/action:visible z-50 flex flex-col py-1 overflow-hidden text-left">
-                      <button className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">person</span> Voir le profil</button>
-                      <button className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">rule</span> Changer le statut</button>
-                      <div className="h-px bg-slate-100 my-1"></div>
-                      <button className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">chat_bubble</span> Texter</button>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-
-              {/* Candidate Row 4 */}
-              <tr className="hover:bg-slate-50/50 transition-colors group">
-                <td className="px-6 py-5">
-                  <div className="flex items-center gap-4">
-                    <img alt="Moussa" className="w-10 h-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyMAk38AB-Y4gDaglTbseEJb41gbrnTiSRvAh2i70ycAsy0FZm1INZGyvxi0wztfyMqPqfxdRAvMKeSWk538MXmJUsIQSJYnqJ4w8qTx5JeoTaUxapHijKUz23vKH-Zjj16kJTQc1CW4D5gIjYYHoSdbJZCymBfB7OJ_6JKczmWaHq8YZGZZNT1Ki9iC5LK3FN0wW6rCIuZdrUAM6WMkhdQe8QCAOLrJr6-v4OtltWBP2kYsm8o5cN6PkUhEKroMQRT-V9-bJQzfGV" />
-                    <div>
-                      <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">Moussa Kabore</p>
-                      <p className="text-[12px] text-slate-400 mt-0.5">kabore.m@email.bf</p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-5">
-                  <p className="text-[14px] text-slate-700 font-medium">Aube Nouvelle</p>
-                  <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mt-1">Comptabilité</p>
-                </td>
-                <td className="px-6 py-5">
-                  <span className="px-3 py-1 bg-slate-100 text-slate-600 border border-slate-200/50 rounded-full text-[10px] font-bold uppercase tracking-wider">Analyste Financier</span>
-                </td>
-                <td className="px-6 py-5">
-                  <p className="text-[13px] text-slate-600 font-medium">08 Oct. 2023</p>
-                </td>
-                <td className="px-6 py-5">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-100/50 uppercase tracking-wider">En attente</span>
-                </td>
-                <td className="px-6 py-5 text-right relative">
-                  <div className="group/action inline-block">
-                    <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm border border-transparent hover:border-slate-100 focus:outline-none">
-                      <span className="material-symbols-outlined !text-[20px]">more_vert</span>
-                    </button>
-                    <div className="absolute right-10 top-2 w-48 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-slate-100 opacity-0 invisible group-focus-within/action:opacity-100 group-focus-within/action:visible z-50 flex flex-col py-1 overflow-hidden text-left">
-                      <button className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">person</span> Voir le profil</button>
-                      <button className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-blue-600 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">rule</span> Changer le statut</button>
-                      <div className="h-px bg-slate-100 my-1"></div>
-                      <button className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">chat_bubble</span> Texter</button>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
+    {candidates.map((app) => (
+      <tr key={app.id} className="hover:bg-slate-50/50 transition-colors group">
+        <td className="px-6 py-5">
+          <div className="flex items-center gap-4">
+            <img alt="Candidat" className="w-10 h-10 rounded-full object-cover" src={"https://ui-avatars.com/api/?name=" + encodeURIComponent(app.student?.user?.firstName || 'C')} />
+            <div>
+              <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">{app.student?.user?.firstName} {app.student?.user?.lastName}</p>
+              <p className="text-[12px] text-slate-400 mt-0.5">{app.student?.user?.email}</p>
+            </div>
+          </div>
+        </td>
+        <td className="px-6 py-5">
+          <p className="text-[14px] text-slate-700 font-medium">{app.student?.university}</p>
+          <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mt-1">{app.student?.fieldOfStudy}</p>
+        </td>
+        <td className="px-6 py-5">
+          <span className="px-3 py-1 bg-slate-100 text-slate-600 border border-slate-200/50 rounded-full text-[10px] font-bold uppercase tracking-wider">{app.offer?.title}</span>
+        </td>
+        <td className="px-6 py-5">
+          <p className="text-[13px] text-slate-600 font-medium">{new Date(app.appliedAt).toLocaleDateString('fr-FR')}</p>
+        </td>
+        <td className="px-6 py-5">
+          <span className={`inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${app.status === 'PENDING' ? 'bg-amber-50 text-amber-700 border-amber-100/50' : app.status === 'ACCEPTED' ? 'bg-green-50 text-green-700 border-green-100/50' : 'bg-red-50 text-red-700 border-red-100/50'}`}>
+            {app.status === 'PENDING' ? 'En attente' : app.status === 'ACCEPTED' ? 'Acceptée' : 'Rejetée'}
+          </span>
+        </td>
+        <td className="px-6 py-5 text-right relative">
+          <div className="group/action inline-block">
+            <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-400 hover:text-primary shadow-sm border border-transparent hover:border-slate-100 focus:outline-none">
+              <span className="material-symbols-outlined !text-[20px]">more_vert</span>
+            </button>
+            <div className="absolute right-10 top-2 w-48 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-slate-100 opacity-0 invisible group-focus-within/action:opacity-100 group-focus-within/action:visible z-50 flex flex-col py-1 overflow-hidden text-left">
+              <button onClick={() => alert('Profil du candidat ' + app.id)} className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">person</span> Voir le profil</button>
+              {app.status === 'PENDING' && (
+                <>
+                  <button onClick={() => handleStatusChange(app.id, 'ACCEPTED')} className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-green-50 hover:text-green-600 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">check_circle</span> Accepter</button>
+                  <button onClick={() => handleStatusChange(app.id, 'REJECTED')} className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">cancel</span> Rejeter</button>
+                </>
+              )}
+            </div>
+          </div>
+        </td>
+      </tr>
+    ))}
+  </tbody>
           </table>
         </div>
 
         {/* Pagination Section */}
         <div className="p-6 bg-slate-50/50 flex flex-col sm:flex-row items-center justify-between border-t border-slate-100 gap-4">
-          <p className="text-[13px] text-slate-500 font-medium">Affichage de <span className="text-slate-900 font-bold">4</span> sur <span className="text-slate-900 font-bold">28</span> candidatures</p>
+          <p className="text-[13px] text-slate-500 font-medium">Affichage de <span className="text-slate-900 font-bold">{candidates.length}</span> candidatures</p>
           <div className="flex items-center gap-1.5">
             <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-white shadow-sm border border-slate-100 text-slate-400 hover:text-primary transition-all">
               <span className="material-symbols-outlined !text-[18px]">chevron_left</span>
