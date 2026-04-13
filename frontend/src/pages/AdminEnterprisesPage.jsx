@@ -1,21 +1,96 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AdminDashboardLayout from '../components/AdminDashboardLayout';
+import api from '../services/api';
 
 export default function AdminEnterprisesPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('Tous');
   const [dropdownOpen, setDropdownOpen] = useState(null);
+  const navigate = useNavigate();
 
-  const [companies, setCompanies] = useState([
-    { id: 'ENT-294', name: 'Coris Bank International', sector: 'Finance', joinedDate: 'Aug 10, 2023', status: 'Vérifié', offers: 14, logo: 'https://ui-avatars.com/api/?name=Coris+Bank&background=1e40af&color=fff' },
-    { id: 'ENT-112', name: 'Orange Burkina', sector: 'Télécommunications', joinedDate: 'Sep 05, 2023', status: 'Vérifié', offers: 25, logo: 'https://ui-avatars.com/api/?name=Orange+Burkina&background=f97316&color=fff' },
-    { id: 'ENT-405', name: 'Lydia Ludic', sector: 'Divertissement', joinedDate: 'Oct 18, 2023', status: 'Vérifié', offers: 3, logo: 'https://ui-avatars.com/api/?name=Lydia+Ludic&background=cbd5e1&color=0f172a' },
-    { id: 'ENT-882', name: 'Burkina Tech Solutions', sector: 'IT & Logiciels', joinedDate: 'Dec 02, 2023', status: 'En attente', offers: 0, logo: 'https://ui-avatars.com/api/?name=Burkina+Tech+Solutions&background=3b82f6&color=fff' },
-    { id: 'ENT-919', name: 'E-Shop Bobo', sector: 'E-commerce', joinedDate: 'Jan 15, 2024', status: 'Suspendu', offers: 0, logo: 'https://ui-avatars.com/api/?name=EShop+Bobo&background=fecdd3&color=991b1b' },
-  ]);
+  const [companies, setCompanies] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleStatusChange = (id, newStatus) => {
-    setCompanies(companies.map(c => c.id === id ? { ...c, status: newStatus } : c));
+  useEffect(() => {
+    const fetchEnterprises = async () => {
+      try {
+        const [usersRes, offersRes] = await Promise.all([
+          api.get('/admin/users'),
+          api.get('/admin/offers'),
+        ]);
+
+        const offers = offersRes.data || [];
+        const offersByEnterprise = offers.reduce((acc, offer) => {
+          const enterpriseId = offer.enterprise?.id;
+          if (!enterpriseId) return acc;
+          acc[enterpriseId] = (acc[enterpriseId] || 0) + 1;
+          return acc;
+        }, {});
+
+        const apiBaseUrl = api.defaults.baseURL || '';
+        const resolveLogoUrl = (value) => {
+          if (!value) return '';
+          if (value.startsWith('http')) return value;
+          if (value.startsWith('/uploads/')) return `${apiBaseUrl}${value}`;
+          return value;
+        };
+
+        const mapped = (usersRes.data || [])
+          .filter((user) => user.role === 'ENTERPRISE')
+          .map((user) => {
+            const enterprise = user.enterpriseProfile || {};
+            const name = enterprise.companyName || user.email;
+            const status = user.isSuspended
+              ? 'Suspendu'
+              : user.isVerified
+                ? 'Vérifié'
+                : 'En attente';
+            const logo = resolveLogoUrl(enterprise.logoUrl) || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=1e40af&color=fff`;
+            const joinedDate = user.createdAt ? new Date(user.createdAt).toLocaleDateString('fr-FR') : '—';
+            return {
+              id: user.id,
+              userId: user.id,
+              name,
+              sector: enterprise.industry || 'Secteur',
+              joinedDate,
+              status,
+              offers: offersByEnterprise[enterprise.id] || 0,
+              logo,
+            };
+          });
+
+        setCompanies(mapped);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEnterprises();
+  }, []);
+
+  const updateCompanyStatus = (id, status) => {
+    setCompanies((prev) => prev.map((c) => (c.id === id ? { ...c, status } : c)));
+  };
+
+  const handleSuspendEnterprise = async (id) => {
+    try {
+      await api.patch(`/admin/enterprises/${id}/verify`, { isSuspended: true, isVerified: false });
+      updateCompanyStatus(id, 'Suspendu');
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleActivateEnterprise = async (id) => {
+    try {
+      await api.patch(`/admin/enterprises/${id}/verify`, { isSuspended: false });
+      updateCompanyStatus(id, 'Vérifié');
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const filteredCompanies = companies.filter(c => {
@@ -77,14 +152,19 @@ export default function AdminEnterprisesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {filteredCompanies.length > 0 ? filteredCompanies.map(c => (
+              {loading ? (
+                <tr>
+                  <td colSpan="6" className="px-6 py-8 text-center text-slate-500 text-[13px]">
+                    Chargement...
+                  </td>
+                </tr>
+              ) : filteredCompanies.length > 0 ? filteredCompanies.map(c => (
                 <tr key={c.id} className="hover:bg-slate-50/50 transition-colors group">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <img src={c.logo} alt="logo" className="w-10 h-10 rounded-xl object-cover border border-slate-100" />
                       <div>
                         <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">{c.name}</p>
-                        <p className="text-[12px] font-medium text-slate-500">{c.id}</p>
                       </div>
                     </div>
                   </td>
@@ -112,32 +192,25 @@ export default function AdminEnterprisesPage() {
                         <>
                           <div className="fixed inset-0 z-0" onClick={() => setDropdownOpen(null)}></div>
                           <div className="absolute right-0 top-full mt-1 w-44 bg-white rounded-xl shadow-lg border border-slate-100 py-1.5 z-10 text-[13px] font-medium">
-                            <button onClick={() => setDropdownOpen(null)} className="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 flex items-center gap-2">
+                            <button
+                              onClick={() => { setDropdownOpen(null); navigate(`/admin/entreprises/${c.userId}`); }}
+                              className="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 flex items-center gap-2"
+                            >
                               <span className="material-symbols-outlined !text-[18px]">visibility</span>
                               Voir le profil
                             </button>
                             
-                            {c.status !== 'Vérifié' && (
-                              <button 
-                                onClick={() => { handleStatusChange(c.id, 'Vérifié'); setDropdownOpen(null); }}
-                                className="w-full text-left px-4 py-2 hover:bg-emerald-50 text-emerald-600 flex items-center gap-2"
-                              >
-                                <span className="material-symbols-outlined !text-[18px]">verified</span>
-                                Vérifier (KYC)
-                              </button>
-                            )}
-
                             {c.status !== 'Suspendu' ? (
                               <button 
-                                onClick={() => { handleStatusChange(c.id, 'Suspendu'); setDropdownOpen(null); }}
+                                onClick={() => { handleSuspendEnterprise(c.id); setDropdownOpen(null); }}
                                 className="w-full text-left px-4 py-2 hover:bg-rose-50 text-rose-600 flex items-center gap-2"
                               >
                                 <span className="material-symbols-outlined !text-[18px]">block</span>
                                 Suspendre
                               </button>
                             ) : (
-                               <button 
-                                onClick={() => { handleStatusChange(c.id, 'En attente'); setDropdownOpen(null); }}
+                              <button 
+                                onClick={() => { handleActivateEnterprise(c.id); setDropdownOpen(null); }}
                                 className="w-full text-left px-4 py-2 hover:bg-emerald-50 text-emerald-600 flex items-center gap-2"
                               >
                                 <span className="material-symbols-outlined !text-[18px]">check_circle</span>
@@ -150,7 +223,7 @@ export default function AdminEnterprisesPage() {
                     </div>
                   </td>
                 </tr>
-              )) : (
+                )) : (
                 <tr>
                    <td colSpan="6" className="px-6 py-8 text-center text-slate-500 text-[13px]">
                       Aucune entreprise trouvée.

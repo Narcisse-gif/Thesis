@@ -4,8 +4,11 @@ import api from '../services/api';
 
 export default function EnterpriseDashboardProfilePage() {
   const [profile, setProfile] = useState(null);
+  const [offers, setOffers] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [bannerUploading, setBannerUploading] = useState(false);
+  const [logoUploading, setLogoUploading] = useState(false);
   const [status, setStatus] = useState('');
   const [formData, setFormData] = useState({
     companyName: '',
@@ -14,7 +17,10 @@ export default function EnterpriseDashboardProfilePage() {
     website: '',
     shortDescription: '',
     location: '',
-    logoUrl: '',
+    phoneNumber: '',
+    address: '',
+    postalCode: '',
+    bannerUrl: '',
   });
 
   useEffect(() => {
@@ -30,21 +36,52 @@ export default function EnterpriseDashboardProfilePage() {
           website: enterprise.website || '',
           shortDescription: enterprise.shortDescription || '',
           location: enterprise.location || '',
-          logoUrl: enterprise.logoUrl || '',
+          phoneNumber: enterprise.phoneNumber || '',
+          address: enterprise.address || '',
+          postalCode: enterprise.postalCode || '',
+          bannerUrl: enterprise.bannerUrl || '',
         });
       } catch (error) {
         console.error('Failed to load enterprise profile:', error);
       }
     };
 
+    const fetchOffers = async () => {
+      try {
+        const response = await api.get('/offers/mine');
+        setOffers(response.data);
+      } catch (error) {
+        console.error('Failed to load offers:', error);
+      }
+    };
+
     fetchProfile();
+    fetchOffers();
   }, []);
 
   const enterprise = profile?.enterpriseProfile;
   const companyName = enterprise?.companyName || 'Entreprise';
   const industry = enterprise?.industry || 'Secteur non renseigne';
   const location = enterprise?.location || 'Localisation non renseignee';
-  const logoUrl = enterprise?.logoUrl || 'https://lh3.googleusercontent.com/aida-public/AB6AXuDj2xFMs6eDjKMCKEpPTLS-pjpgSKACScinfp7LAHxtlg-UpiaLpc6SwnOJgZ-l307e8BmXv6GvKsHPuRnEMOxp4IMiNH81aBcjZ0Z4jsjwjnAsrXkqPNpRJuK7iPzrDIlJTL6t7bsnj4f-T3QhVW5ItP_1ZhAo6w6T9xKFMNG488GKiFXVJgSIBWLSe6e0goFF_gGZViijWQPebOnN-jd2X8wqXBwEXJt-vKsJesdLc_N2Tflb0BsqqeQeJE0WSYrWiMP6jv7tCjGp';
+  const phoneNumber = enterprise?.phoneNumber || 'Telephone non renseigne';
+  const address = enterprise?.address || 'Adresse non renseignee';
+  const postalCode = enterprise?.postalCode || 'Code postal non renseigne';
+  const apiBaseUrl = api.defaults.baseURL || '';
+  const resolveFileUrl = (value) => {
+    if (!value) return '';
+    if (value.startsWith('http')) return value;
+    if (value.startsWith('/uploads/')) return `${apiBaseUrl}${value}`;
+    return value;
+  };
+  const logoUrl = resolveFileUrl(enterprise?.logoUrl);
+  const bannerUrl = resolveFileUrl(enterprise?.bannerUrl);
+  const initials = companyName
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase() || 'ENT';
   const aboutText = enterprise?.shortDescription || 'Aucune description disponible.';
 
   const handleChange = (event) => {
@@ -59,6 +96,7 @@ export default function EnterpriseDashboardProfilePage() {
       await api.patch('/users/profile', formData);
       const refreshed = await api.get('/users/profile');
       setProfile(refreshed.data);
+      window.dispatchEvent(new CustomEvent('profile:updated', { detail: refreshed.data }));
       setStatus('Profil mis a jour.');
       setEditMode(false);
     } catch (error) {
@@ -66,6 +104,55 @@ export default function EnterpriseDashboardProfilePage() {
       setStatus('Erreur lors de la mise a jour.');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleBannerFileChange = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setBannerUploading(true);
+    setStatus('');
+    try {
+      const payload = new FormData();
+      payload.append('file', file);
+      const response = await api.post('/users/banner', payload, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      const updated = response.data;
+      setProfile(updated);
+      setFormData((prev) => ({ ...prev, bannerUrl: updated?.enterpriseProfile?.bannerUrl || prev.bannerUrl }));
+      window.dispatchEvent(new CustomEvent('profile:updated', { detail: updated }));
+      setStatus('Banniere mise a jour.');
+    } catch (error) {
+      console.error('Failed to upload banner:', error);
+      setStatus('Erreur lors du chargement de la banniere.');
+    } finally {
+      setBannerUploading(false);
+    }
+  };
+
+  const handleLogoFileChange = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setLogoUploading(true);
+    setStatus('');
+    try {
+      const payload = new FormData();
+      payload.append('file', file);
+      const response = await api.post('/users/logo', payload, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      const updated = response.data;
+      setProfile(updated);
+      window.dispatchEvent(new CustomEvent('profile:updated', { detail: updated }));
+      setStatus('Logo mis a jour.');
+    } catch (error) {
+      console.error('Failed to upload logo:', error);
+      setStatus('Erreur lors du chargement du logo.');
+    } finally {
+      setLogoUploading(false);
     }
   };
 
@@ -91,7 +178,25 @@ export default function EnterpriseDashboardProfilePage() {
               <input className="rounded-xl border border-slate-200 px-4 py-3 text-sm" name="companySize" value={formData.companySize} onChange={handleChange} placeholder="Taille" />
               <input className="rounded-xl border border-slate-200 px-4 py-3 text-sm" name="website" value={formData.website} onChange={handleChange} placeholder="Site web" />
               <input className="rounded-xl border border-slate-200 px-4 py-3 text-sm" name="location" value={formData.location} onChange={handleChange} placeholder="Ville" />
-              <input className="rounded-xl border border-slate-200 px-4 py-3 text-sm" name="logoUrl" value={formData.logoUrl} onChange={handleChange} placeholder="Logo URL" />
+              <input className="rounded-xl border border-slate-200 px-4 py-3 text-sm" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="Telephone" />
+              <input className="rounded-xl border border-slate-200 px-4 py-3 text-sm" name="address" value={formData.address} onChange={handleChange} placeholder="Adresse" />
+              <input className="rounded-xl border border-slate-200 px-4 py-3 text-sm" name="postalCode" value={formData.postalCode} onChange={handleChange} placeholder="Code postal" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Banniere (fichier)</label>
+                <input className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm bg-white" type="file" accept="image/*" onChange={handleBannerFileChange} disabled={bannerUploading} />
+                {resolveFileUrl(formData.bannerUrl) && (
+                  <img src={resolveFileUrl(formData.bannerUrl)} alt="Apercu" className="mt-3 h-20 w-full rounded-xl object-cover border border-slate-200" />
+                )}
+              </div>
+              <div>
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Logo (fichier)</label>
+                <input className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm bg-white" type="file" accept="image/*" onChange={handleLogoFileChange} disabled={logoUploading} />
+                {logoUrl && (
+                  <img src={logoUrl} alt="Logo" className="mt-3 h-20 w-full rounded-xl object-contain border border-slate-200 bg-white" />
+                )}
+              </div>
             </div>
             <textarea className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm" name="shortDescription" value={formData.shortDescription} onChange={handleChange} rows={4} placeholder="Description courte"></textarea>
             {status && <p className="text-sm text-slate-500">{status}</p>}
@@ -107,7 +212,11 @@ export default function EnterpriseDashboardProfilePage() {
           <article className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
             {/* Banner Image */}
             <div className="h-48 sm:h-56 w-full relative overflow-hidden bg-slate-100">
-              <img alt="Corporate Building" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAIHnjE4-Uo9pTSvdIyMVkwI65GS_1bz4NFknVby0DoqfFSeNWq1eRN_pDl7QuzQvkvXu4QbdnR0TCLAZ4Owj8ODKnqNxa701y65xT_4x1KeqzUHMUvuJW3ickYyCPtITugjYXnIilzR2VfV9gHO1ldxNXZESpIbpj4QMSgAASscs_2OnCJADx_4DQ-LYcPBCLErBEEBz55aZsrd6ECy0loI9U_LMVQECNIUgdms0xAw3o7nonVBbKeaX-U3TY-8A_KuJCj1wZe7RmV" />
+              {bannerUrl ? (
+                <img alt="Banniere entreprise" className="w-full h-full object-cover" src={bannerUrl} />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-r from-slate-200 via-slate-100 to-blue-100" />
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 to-black/10"></div>
             </div>
             
@@ -115,8 +224,14 @@ export default function EnterpriseDashboardProfilePage() {
             <div className="p-6 sm:p-10 md:p-12 space-y-12 relative">
               {/* Prominent Header */}
               <header className="flex flex-col md:flex-row items-center md:items-start gap-6 sm:gap-8 border-b border-slate-100 pb-10">
-                <div className="h-28 w-28 rounded-2xl border border-slate-200 bg-white p-3 shadow-md flex-shrink-0 -mt-20 relative z-10 group hover:shadow-lg transition-all">
-                  <img alt={companyName} className="w-full h-full object-contain group-hover:scale-105 transition-transform" src={logoUrl} />
+                <div className="h-28 w-28 rounded-2xl border border-slate-200 bg-white p-3 shadow-md flex-shrink-0 -mt-20 relative z-10 group hover:shadow-lg transition-all flex items-center justify-center">
+                  {logoUrl ? (
+                    <img alt={companyName} className="w-full h-full object-contain group-hover:scale-105 transition-transform" src={logoUrl} />
+                  ) : (
+                    <div className="w-full h-full rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center text-2xl font-black">
+                      {initials}
+                    </div>
+                  )}
                 </div>
                 
                 <div className="text-center md:text-left space-y-3 flex-1">
@@ -143,45 +258,17 @@ export default function EnterpriseDashboardProfilePage() {
               <section className="space-y-4">
                 <h2 className="text-[12px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
                   <span className="material-symbols-outlined !text-[18px]">info</span>
-                  Ã€ propos de nous
+                  A propos de nous
                 </h2>
                 <div className="text-slate-600 leading-relaxed space-y-4 text-[15px]">
                   <p>{aboutText}</p>
                 </div>
               </section>
 
-              {/* Core Values */}
-              <section className="space-y-6">
-                <h2 className="text-[12px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
-                  <span className="material-symbols-outlined !text-[18px]">diamond</span>
-                  Valeurs Fondamentales
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div className="p-6 rounded-2xl bg-white border border-slate-200 hover:border-primary/30 transition-colors shadow-sm flex items-start gap-5 group cursor-default">
-                    <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors flex-shrink-0">
-                      <span className="material-symbols-outlined">lightbulb</span>
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-[16px] text-slate-900 mb-1.5">Innovation</h3>
-                      <p className="text-[14px] text-slate-500 leading-relaxed">Pionnier de la digitalisation bancaire, nous rÃ©inventons chaque jour les services de demain.</p>
-                    </div>
-                  </div>
-                  <div className="p-6 rounded-2xl bg-white border border-slate-200 hover:border-blue-500/30 transition-colors shadow-sm flex items-start gap-5 group cursor-default">
-                    <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors flex-shrink-0">
-                      <span className="material-symbols-outlined">handshake</span>
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-[16px] text-slate-900 mb-1.5">IntÃ©gritÃ©</h3>
-                      <p className="text-[14px] text-slate-500 leading-relaxed">La confiance est le socle de notre relation client. Nous opÃ©rons avec une transparence absolue.</p>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
               {/* Key Information & Socials */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 border-t border-slate-100">
                 <section className="md:col-span-2 space-y-6">
-                  <h2 className="text-[12px] font-black uppercase tracking-widest text-primary">Informations ClÃ©s</h2>
+                  <h2 className="text-[12px] font-black uppercase tracking-widest text-primary">Informations Cles</h2>
                   <div className="grid grid-cols-2 gap-y-6 gap-x-4">
                     <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
                       <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Taille de l'entreprise</p>
@@ -191,10 +278,24 @@ export default function EnterpriseDashboardProfilePage() {
                       </p>
                     </div>
                     <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                      <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Fondation</p>
+                      <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Telephone</p>
                       <p className="font-black text-[15px] text-slate-700 flex items-center gap-2">
-                        <span className="material-symbols-outlined text-primary !text-[18px]">calendar_month</span>
-                        Non renseigne
+                        <span className="material-symbols-outlined text-primary !text-[18px]">call</span>
+                        {phoneNumber}
+                      </p>
+                    </div>
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                      <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Adresse</p>
+                      <p className="font-black text-[15px] text-slate-700 flex items-center gap-2">
+                        <span className="material-symbols-outlined text-primary !text-[18px]">home</span>
+                        {address}
+                      </p>
+                    </div>
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                      <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Code postal</p>
+                      <p className="font-black text-[15px] text-slate-700 flex items-center gap-2">
+                        <span className="material-symbols-outlined text-primary !text-[18px]">markunread_mailbox</span>
+                        {postalCode}
                       </p>
                     </div>
                     <div className="col-span-2 bg-slate-50 p-4 rounded-xl border border-slate-100">
@@ -204,6 +305,15 @@ export default function EnterpriseDashboardProfilePage() {
                         {enterprise?.website || 'Non renseigne'}
                       </a>
                     </div>
+                    {enterprise?.cvUrl && (
+                      <div className="col-span-2 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Document entreprise</p>
+                        <a className="font-bold text-[15px] text-primary hover:text-blue-800 transition-colors flex items-center gap-2" href={resolveFileUrl(enterprise.cvUrl)} target="_blank" rel="noreferrer">
+                          <span className="material-symbols-outlined !text-[18px]">download</span>
+                          Telecharger le document
+                        </a>
+                      </div>
+                    )}
                   </div>
                 </section>
               </div>
@@ -213,48 +323,41 @@ export default function EnterpriseDashboardProfilePage() {
           {/* Current Opportunities Section */}
           <section className="space-y-8 mt-16">
             <div className="flex items-center justify-between border-b border-slate-200 pb-4">
-              <h2 className="text-2xl font-bold text-slate-900">OpportunitÃ©s Actuelles</h2>
+              <h2 className="text-2xl font-bold text-slate-900">Opportunites actuelles</h2>
               <button className="text-primary font-bold text-[14px] flex items-center gap-1 hover:gap-2 transition-all">
                 Tout voir <span className="material-symbols-outlined !text-[20px]">arrow_forward</span>
               </button>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Job Card 1 */}
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-primary/30 hover:shadow-lg transition-all group cursor-pointer">
-                <div className="flex justify-between items-start mb-5">
-                  <span className="bg-amber-50 text-amber-600 text-[10px] font-black px-2.5 py-1 rounded-md uppercase tracking-widest border border-amber-100/50">Finance</span>
-                  <span className="text-slate-400 text-[11px] font-bold uppercase tracking-wider">Il y a 2 j</span>
+              {offers.length === 0 ? (
+                <div className="bg-white p-6 rounded-2xl border border-slate-200 text-slate-500">
+                  Aucune offre publiee pour le moment.
                 </div>
-                <h3 className="text-[18px] font-bold text-slate-900 group-hover:text-primary transition-colors line-clamp-1">Stagiaire Analyste CrÃ©dit</h3>
-                <p className="text-slate-500 text-[13px] mt-2 mb-6 line-clamp-2 leading-relaxed">Rejoignez notre Ã©quipe d'analyse pour Ã©valuer les dossiers de financement PME dans un environnement dynamique...</p>
-                <div className="flex items-center justify-between border-t border-slate-100 pt-5">
-                  <div className="flex items-center gap-2 text-[12px] font-bold text-slate-500">
-                    <span className="material-symbols-outlined !text-[16px]">schedule</span> 6 mois
+              ) : (
+                offers.slice(0, 2).map((offer) => (
+                  <div key={offer.id} className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-primary/30 hover:shadow-lg transition-all group cursor-pointer">
+                    <div className="flex justify-between items-start mb-5">
+                      <span className="bg-blue-50 text-blue-600 text-[10px] font-black px-2.5 py-1 rounded-md uppercase tracking-widest border border-blue-100/50">
+                        {offer.contractType === 'STAGE' ? 'Stage' : offer.contractType}
+                      </span>
+                      <span className="text-slate-400 text-[11px] font-bold uppercase tracking-wider">
+                        {new Date(offer.createdAt).toLocaleDateString('fr-FR')}
+                      </span>
+                    </div>
+                    <h3 className="text-[18px] font-bold text-slate-900 group-hover:text-primary transition-colors line-clamp-1">{offer.title}</h3>
+                    <p className="text-slate-500 text-[13px] mt-2 mb-6 line-clamp-2 leading-relaxed">{offer.description}</p>
+                    <div className="flex items-center justify-between border-t border-slate-100 pt-5">
+                      <div className="flex items-center gap-2 text-[12px] font-bold text-slate-500">
+                        <span className="material-symbols-outlined !text-[16px]">location_on</span> {offer.location}
+                      </div>
+                      <button className="w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-primary transition-colors border border-slate-200">
+                        <span className="material-symbols-outlined !text-[18px]">bookmark</span>
+                      </button>
+                    </div>
                   </div>
-                  <button className="w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-primary transition-colors border border-slate-200">
-                    <span className="material-symbols-outlined !text-[18px]">bookmark</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Job Card 2 */}
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 hover:border-primary/30 hover:shadow-lg transition-all group cursor-pointer">
-                <div className="flex justify-between items-start mb-5">
-                  <span className="bg-blue-50 text-blue-600 text-[10px] font-black px-2.5 py-1 rounded-md uppercase tracking-widest border border-blue-100/50">Tech</span>
-                  <span className="text-slate-400 text-[11px] font-bold uppercase tracking-wider">Il y a 5 j</span>
-                </div>
-                <h3 className="text-[18px] font-bold text-slate-900 group-hover:text-primary transition-colors line-clamp-1">DÃ©veloppeur Fullstack (H/F)</h3>
-                <p className="text-slate-500 text-[13px] mt-2 mb-6 line-clamp-2 leading-relaxed">Support au dÃ©veloppement de nouvelles fonctionnalitÃ©s pour notre plateforme digitale de banque en ligne...</p>
-                <div className="flex items-center justify-between border-t border-slate-100 pt-5">
-                  <div className="flex items-center gap-2 text-[12px] font-bold text-slate-500">
-                    <span className="material-symbols-outlined !text-[16px]">schedule</span> CDI
-                  </div>
-                  <button className="w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-primary transition-colors border border-slate-200">
-                    <span className="material-symbols-outlined !text-[18px]">bookmark</span>
-                  </button>
-                </div>
-              </div>
+                ))
+              )}
             </div>
           </section>
         </div>

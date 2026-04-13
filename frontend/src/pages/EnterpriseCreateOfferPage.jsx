@@ -50,7 +50,17 @@ export default function EnterpriseCreateOfferPage() {
       navigate('/entreprise/offres');
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.message || 'Erreur lors de la création de l\'offre');
+      const status = err.response?.status;
+      const apiMessage = err.response?.data?.message;
+      if (status === 403) {
+        if (apiMessage && apiMessage.toLowerCase().includes('suspendu')) {
+          setError('Votre compte entreprise est suspendu. Vous ne pouvez pas publier d\'offres.');
+        } else {
+          setError('Votre entreprise doit etre verifiee par un admin avant de publier des offres.');
+        }
+      } else {
+        setError(apiMessage || 'Erreur lors de la creation de l\'offre');
+      }
     } finally {
       setLoading(false);
     }
@@ -65,6 +75,11 @@ export default function EnterpriseCreateOfferPage() {
       </div>
 
       <div className="max-w-5xl mx-auto">
+        {error && (
+          <div className="mb-8 rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-[14px] font-semibold text-rose-700">
+            {error}
+          </div>
+        )}
         {/* Stepper Navigation */}
         <div className="flex items-center justify-between sm:justify-start gap-4 sm:gap-8 mb-12 overflow-x-auto pb-4 scrollbar-hide">
           {/* Step 1 */}

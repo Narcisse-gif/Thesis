@@ -19,12 +19,36 @@ export default function EnterpriseDashboardLayout({ children }) {
     };
 
     fetchProfile();
+    const handleProfileUpdate = (event) => {
+      if (event?.detail) {
+        setProfile(event.detail);
+      } else {
+        fetchProfile();
+      }
+    };
+
+    window.addEventListener('profile:updated', handleProfileUpdate);
+    return () => window.removeEventListener('profile:updated', handleProfileUpdate);
   }, []);
 
   const enterprise = profile?.enterpriseProfile;
   const displayName = enterprise?.companyName || profile?.email || 'Entreprise';
   const displayRole = enterprise?.industry || 'Recruteur';
-  const logoUrl = enterprise?.logoUrl || profile?.avatarUrl || 'https://lh3.googleusercontent.com/aida-public/AB6AXuAJqU_z885wsfTY4g3y616w-sAYQPeMjz4phQuYrHylkxbmljApD9IkvUfBIpo_bAf0L4uBVCTW5O6oXsoHNpkEHWwZNO75N4MqThzQq5_-06SfSTuly50ZICW95FWHbrzlahKWEc7F7et_OgK28obOMvyHGmdLv7mIXhqcFyiSBrr9e5nz_CL-MJJ7688-ymNF9J-27Aae2nKxAYKdfztKOkwCHvers0jAPz5m-GCQzHQ2YRZU369KMLlAvecpKRZxcBNqHvLL1oeQ';
+  const apiBaseUrl = api.defaults.baseURL || '';
+  const resolveLogoUrl = (value) => {
+    if (!value) return '';
+    if (value.startsWith('http')) return value;
+    if (value.startsWith('/uploads/')) return `${apiBaseUrl}${value}`;
+    return value;
+  };
+  const logoUrl = resolveLogoUrl(enterprise?.logoUrl) || resolveLogoUrl(profile?.avatarUrl);
+  const initials = displayName
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase() || 'ENT';
 
   const isActive = (path) => currentPath === path;
 
@@ -91,18 +115,17 @@ export default function EnterpriseDashboardLayout({ children }) {
   </div>
 </nav>
         
-        <div className="mt-auto pt-8 border-t border-slate-50">
-  
-  <Link to="/conseils" className="bg-slate-50 rounded-2xl p-4 flex items-center gap-3 hover:bg-blue-50 transition-colors group">
-    <div className="h-10 w-10 rounded-xl bg-white flex items-center justify-center text-slate-400 shadow-sm group-hover:text-primary transition-colors">
-      <span className="material-symbols-outlined !text-xl">help_outline</span>
-    </div>
-    <div>
-      <p className="text-[12px] font-semibold text-slate-700 group-hover:text-primary transition-colors">Aide & Support</p>
-      <p className="text-[10px] text-slate-400">Centre d'aide</p>
-    </div>
-  </Link>
-</div>
+        <div className="mt-auto pt-8 border-t border-slate-50 relative bottom-0">
+          <Link to="/conseils" className="bg-primary/5 border border-primary/20 rounded-2xl p-4 flex items-center gap-3 hover:bg-primary/10 transition-all group shadow-sm mx-2">
+            <div className="h-10 w-10 rounded-xl bg-white flex items-center justify-center text-primary shadow-sm group-hover:scale-110 transition-transform">
+              <span className="material-symbols-outlined !text-xl">help_center</span>
+            </div>
+            <div>
+              <p className="text-[13px] font-bold text-primary">Aide & Support</p>
+              <p className="text-[11px] font-medium text-primary/70 mt-0.5">Consulter les guides</p>
+            </div>
+          </Link>
+        </div>
       </aside>
 
       {/* Main Content Area */}
@@ -129,11 +152,17 @@ export default function EnterpriseDashboardLayout({ children }) {
                 <p className="text-[12px] font-bold text-slate-900 group-hover:text-primary transition-colors">{displayName}</p>
                 <p className="text-[10px] text-slate-500">{displayRole}</p>
               </div>
-              <img 
-                alt={displayName}
-                className="w-10 h-10 rounded-xl object-cover ring-2 ring-primary/10 group-hover:ring-primary/30 transition-all" 
-                src={logoUrl}
-              />
+              {logoUrl ? (
+                <img
+                  alt={displayName}
+                  className="w-10 h-10 rounded-xl object-cover ring-2 ring-primary/10 group-hover:ring-primary/30 transition-all"
+                  src={logoUrl}
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-xl bg-slate-200 text-slate-600 ring-2 ring-primary/10 group-hover:ring-primary/30 transition-all flex items-center justify-center text-[11px] font-bold">
+                  {initials}
+                </div>
+              )}
             </div>
           </div>
         </header>

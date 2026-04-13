@@ -10,7 +10,7 @@ export default function StudentRegisterPage() {
     email: '',
     phone: '',
     university: '',
-    study_level: 'licence1',
+    study_level: 'Licence 1',
     study_field: '',
     city: '',
     password: '',
@@ -40,6 +40,11 @@ export default function StudentRegisterPage() {
         role: 'STUDENT',
         firstName: formData.first_name,
         lastName: formData.last_name,
+        phoneNumber: formData.phone,
+        location: formData.city,
+        fieldOfStudy: formData.study_field,
+        studyLevel: formData.study_level,
+        university: formData.university,
       };
       
       const response = await api.post('/auth/register', payload);
@@ -49,19 +54,13 @@ export default function StudentRegisterPage() {
       localStorage.setItem('token', token);
       localStorage.setItem('user_role', 'STUDENT');
 
-      await api.patch('/users/profile', {
-        phoneNumber: formData.phone,
-        location: formData.city,
-        fieldOfStudy: formData.study_field,
-        studyLevel: formData.study_level,
-        university: formData.university
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
       navigate('/etudiant/dashboard');
     } catch (err) {
-      setErrorMsg(err.response?.data?.message || 'Erreur lors de l\'inscription');
+      if (err.response?.status === 503) {
+        setErrorMsg('Plateforme en maintenance. Inscription reservee aux administrateurs.');
+      } else {
+        setErrorMsg(err.response?.data?.message || 'Erreur lors de l\'inscription');
+      }
     } finally {
       setLoading(false);
     }
@@ -137,20 +136,20 @@ export default function StudentRegisterPage() {
                   <label className="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" htmlFor="university">Université / Institut</label>
                   <select value={formData.university} onChange={handleChange} className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary transition-colors appearance-none bg-white text-sm outline-none cursor-pointer" id="university" name="university" required>
                     <option disabled value="">Sélectionner</option>
-                    <option value="bit">BIT Ouaga</option>
-                    <option value="unb">UNB Bobo</option>
-                    <option value="uo">Université Joseph Ki-Zerbo</option>
-                    <option value="u-aube">Aube Nouvelle</option>
+                    <option value="BIT Ouaga">BIT Ouaga</option>
+                    <option value="UNB Bobo">UNB Bobo</option>
+                    <option value="Université Joseph Ki-Zerbo">Université Joseph Ki-Zerbo</option>
+                    <option value="Aube Nouvelle">Aube Nouvelle</option>
                   </select>
                 </div>
                 <div className="col-span-1">
                   <label className="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" htmlFor="study_level">Niveau d'étude</label>
                   <select value={formData.study_level} onChange={handleChange} className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary transition-colors appearance-none bg-white text-sm outline-none cursor-pointer" id="study_level" name="study_level" required>
-                    <option value="licence1">Licence 1</option>
-                    <option value="licence2">Licence 2</option>
-                    <option value="licence3">Licence 3</option>
-                    <option value="master1">Master 1</option>
-                    <option value="master2">Master 2</option>
+                    <option value="Licence 1">Licence 1</option>
+                    <option value="Licence 2">Licence 2</option>
+                    <option value="Licence 3">Licence 3</option>
+                    <option value="Master 1">Master 1</option>
+                    <option value="Master 2">Master 2</option>
                   </select>
                 </div>
                 <div className="col-span-1">

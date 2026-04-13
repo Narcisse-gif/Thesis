@@ -12,6 +12,7 @@ import { Offer } from './offers/entities/offer.entity';
 import { Application } from './applications/entities/application.entity';
 import { Message } from './messages/entities/message.entity';
 import { Favorite } from './favorites/entities/favorite.entity';
+import { AdminSettings } from './admin/entities/admin-settings.entity';
 
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
@@ -41,6 +42,7 @@ import { AdminModule } from './admin/admin.module';
         Application,
         Message,
         Favorite,
+        AdminSettings,
       ],
       synchronize: true, // Auto-create tables in dev environment
     }),

@@ -11,13 +11,7 @@ export default function EnterpriseOffersPage() {
     const fetchOffers = async () => {
       try {
         setLoading(true);
-        // Assuming we want to fetch the current enterprise's offers.
-        // If your backend doesn't have `/offers/me`, just fetch all and filter or handle it backend side.
-        const res = await api.get('/offers'); 
-        
-        // For now, let's assume the dashboard only shows YOUR offers. If `/offers` returns all, 
-        // we might filter by enterprise, or backend should filter based on token.
-        // We'll set what we receive.
+        const res = await api.get('/offers/mine');
         setOffers(res.data);
       } catch (err) {
         console.error('Error fetching offers:', err);
@@ -65,11 +59,11 @@ export default function EnterpriseOffersPage() {
           <div className="hidden sm:block h-10 w-px bg-slate-100 mx-2"></div>
           <div className="flex items-center gap-8 justify-between sm:justify-end w-full sm:w-auto">
             <div className="text-left sm:text-right">
-              <p className="text-2xl font-bold text-primary">24</p>
+              <p className="text-2xl font-bold text-primary">{offers.filter((offer) => offer.status === 'ACTIVE').length}</p>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Offres actives</p>
             </div>
             <div className="text-left sm:text-right">
-              <p className="text-2xl font-bold text-blue-600">158</p>
+              <p className="text-2xl font-bold text-blue-600">{offers.reduce((total, offer) => total + (offer.applications?.length || 0), 0)}</p>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Candidats totaux</p>
             </div>
           </div>

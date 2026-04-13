@@ -8,6 +8,18 @@ export default function StudentProfilePage() {
   const [editMode, setEditMode] = useState(false);
   const [saving, setSaving] = useState(false);
   const [avatarUploading, setAvatarUploading] = useState(false);
+  const [cvUploading, setCvUploading] = useState(false);
+  const [coverLetterUploading, setCoverLetterUploading] = useState(false);
+  const [showSkillForm, setShowSkillForm] = useState(false);
+  const [newSkill, setNewSkill] = useState('');
+  const [showAcademicForm, setShowAcademicForm] = useState(false);
+  const [academicForm, setAcademicForm] = useState({
+    studyLevel: '',
+    university: '',
+    fieldOfStudy: '',
+    status: 'En cours',
+  });
+  const [deleteAcademicIndex, setDeleteAcademicIndex] = useState(null);
   const [status, setStatus] = useState('');
   const [formData, setFormData] = useState({
     firstName: '',
@@ -17,8 +29,11 @@ export default function StudentProfilePage() {
     studyLevel: '',
     fieldOfStudy: '',
     university: '',
+    languages: '',
+    availability: '',
     skills: '',
     cvUrl: '',
+    coverLetterUrl: '',
     avatarUrl: '',
   });
 
@@ -35,8 +50,11 @@ export default function StudentProfilePage() {
           studyLevel: response.data.studentProfile?.studyLevel || '',
           fieldOfStudy: response.data.studentProfile?.fieldOfStudy || '',
           university: response.data.studentProfile?.university || '',
+          languages: response.data.studentProfile?.languages || '',
+          availability: response.data.studentProfile?.availability || '',
           skills: Array.isArray(response.data.studentProfile?.skills) ? response.data.studentProfile.skills.join(', ') : '',
           cvUrl: response.data.studentProfile?.cvUrl || '',
+          coverLetterUrl: response.data.studentProfile?.coverLetterUrl || '',
           avatarUrl: response.data.avatarUrl || '',
         });
       } catch (error) {
@@ -58,8 +76,20 @@ export default function StudentProfilePage() {
     if (value.startsWith('/uploads/')) return `${apiBaseUrl}${value}`;
     return value;
   };
-  const resolvedAvatarUrl = resolveAvatarUrl(profile?.avatarUrl);
-  const avatarUrl = resolvedAvatarUrl || 'https://lh3.googleusercontent.com/aida-public/AB6AXuBG-R6Zhc_bpWtkMpLl5OGoqziwHa5L1YpWjeTXCF5lXgGJm1FS-ISArUttp-09xNlqALNKoyGpn0dBZ7kz41LjEXZZtsZg3hD6ie1kpVb4e88hAEY-oPVBKQA3PsouUHKS5BzXk9i-QedE4qZi_No1PQ6DXPsPOz5UVUeCLHlNXqeCkOzEJUD8DHda6Tfg4PW2n46sdThx0rX2HVcnxkcqH66hU85lJnXOsdSjDHvp-km6EhotqhdoOUFA_T5qEDosGdJS4EtRecdc';
+  const resolveFileUrl = (value) => {
+    if (!value) return '';
+    if (value.startsWith('http')) return value;
+    if (value.startsWith('/uploads/')) return `${apiBaseUrl}${value}`;
+    return value;
+  };
+  const avatarUrl = resolveAvatarUrl(profile?.avatarUrl);
+  const initials = fullName
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase() || 'ET';
   const studyLevel = student?.studyLevel || 'Niveau non renseigne';
   const location = student?.location || 'Localisation non renseignee';
   const email = profile?.email || 'Email non renseigne';
@@ -67,20 +97,40 @@ export default function StudentProfilePage() {
   const university = student?.university || 'Universite non renseignee';
   const fieldOfStudy = student?.fieldOfStudy || 'Domaine non renseigne';
   const skills = Array.isArray(student?.skills) ? student.skills : [];
-  const aboutText = student ? `Etudiant en ${fieldOfStudy} a ${university}.` : 'Profil non charge.';
+  const languages = student?.languages || 'Non renseigne';
+  const availability = student?.availability || 'Non renseignee';
+  const academicEntries = Array.isArray(student?.academicEntries) ? student.academicEntries : [];
+  const displayAcademicEntries = academicEntries.length > 0
+    ? academicEntries
+    : (student?.studyLevel || student?.university || student?.fieldOfStudy)
+      ? [{
+        studyLevel: student?.studyLevel || 'Niveau',
+        university: student?.university || 'Universite',
+        fieldOfStudy: student?.fieldOfStudy || 'Domaine',
+        status: 'En cours',
+      }]
+      : [];
+  const currentAcademic = displayAcademicEntries.find((entry) => entry.status === 'En cours') || displayAcademicEntries[0];
+  const aboutField = currentAcademic?.fieldOfStudy || fieldOfStudy;
+  const aboutUniversity = currentAcademic?.university || university;
+  const aboutText = student
+    ? `Etudiant en ${aboutField} a ${aboutUniversity}.`
+    : 'Profil non charge.';
 
   const completion = useMemo(() => {
+    const hasAcademic = displayAcademicEntries.length > 0 ? 'academic' : null;
     const fields = [
       student?.firstName,
       student?.lastName,
-      student?.university,
-      student?.fieldOfStudy,
-      student?.studyLevel,
+      hasAcademic,
       student?.location,
       student?.phoneNumber,
       profile?.avatarUrl,
       student?.skills?.length ? 'skills' : null,
       student?.cvUrl,
+      student?.coverLetterUrl,
+      student?.languages,
+      student?.availability,
     ];
     const filled = fields.filter(Boolean).length;
     return Math.round((filled / fields.length) * 100);
@@ -116,6 +166,127 @@ export default function StudentProfilePage() {
     }
   };
 
+  const uploadDocument = async (endpoint, file, setUploading, fieldName, successMessage) => {
+    setUploading(true);
+    setStatus('');
+    try {
+      const payload = new FormData();
+      payload.append('file', file);
+      const response = await api.post(endpoint, payload, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      const updated = response.data;
+      setProfile(updated);
+      setFormData((prev) => ({ ...prev, [fieldName]: updated?.studentProfile?.[fieldName] || prev[fieldName] }));
+      window.dispatchEvent(new CustomEvent('profile:updated', { detail: updated }));
+      setStatus(successMessage);
+    } catch (error) {
+      console.error('Failed to upload document:', error);
+      setStatus('Erreur lors du chargement du document.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleCvFileChange = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    await uploadDocument('/users/cv', file, setCvUploading, 'cvUrl', 'CV mis a jour.');
+  };
+
+  const handleCoverLetterFileChange = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    await uploadDocument('/users/cover-letter', file, setCoverLetterUploading, 'coverLetterUrl', 'Lettre de motivation mise a jour.');
+  };
+
+  const updateProfilePatch = async (patch, successMessage) => {
+    setStatus('');
+    try {
+      await api.patch('/users/profile', patch);
+      const refreshed = await api.get('/users/profile');
+      setProfile(refreshed.data);
+      setFormData((prev) => ({
+        ...prev,
+        studyLevel: refreshed.data.studentProfile?.studyLevel || prev.studyLevel,
+        fieldOfStudy: refreshed.data.studentProfile?.fieldOfStudy || prev.fieldOfStudy,
+        university: refreshed.data.studentProfile?.university || prev.university,
+        skills: Array.isArray(refreshed.data.studentProfile?.skills) ? refreshed.data.studentProfile.skills.join(', ') : prev.skills,
+        languages: refreshed.data.studentProfile?.languages || prev.languages,
+        availability: refreshed.data.studentProfile?.availability || prev.availability,
+      }));
+      window.dispatchEvent(new CustomEvent('profile:updated', { detail: refreshed.data }));
+      if (successMessage) setStatus(successMessage);
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+      setStatus('Erreur lors de la mise a jour.');
+    }
+  };
+
+  const handleOpenSkillForm = () => {
+    setNewSkill('');
+    setShowSkillForm(true);
+  };
+
+  const handleSubmitSkill = async (event) => {
+    event.preventDefault();
+    const cleaned = newSkill.trim();
+    if (!cleaned) {
+      setStatus('Veuillez saisir une competence.');
+      return;
+    }
+    const currentSkills = Array.isArray(student?.skills) ? student.skills : [];
+    const updatedSkills = [...new Set([...currentSkills, cleaned])];
+    await updateProfilePatch({ skills: updatedSkills }, 'Competence ajoutee.');
+    setShowSkillForm(false);
+  };
+
+  const handleOpenAcademicForm = () => {
+    setAcademicForm({
+      studyLevel: '',
+      university: '',
+      fieldOfStudy: '',
+      status: 'En cours',
+    });
+    setShowAcademicForm(true);
+  };
+
+  const handleAcademicChange = (event) => {
+    const { name, value } = event.target;
+    setAcademicForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmitAcademic = async (event) => {
+    event.preventDefault();
+    const entry = {
+      studyLevel: academicForm.studyLevel.trim(),
+      university: academicForm.university.trim(),
+      fieldOfStudy: academicForm.fieldOfStudy.trim(),
+      status: academicForm.status,
+    };
+    if (!entry.studyLevel && !entry.university && !entry.fieldOfStudy) {
+      setStatus('Veuillez saisir un parcours academique.');
+      return;
+    }
+    const updatedEntries = [...displayAcademicEntries, entry];
+    await updateProfilePatch(
+      { academicEntries: updatedEntries },
+      'Parcours academique mis a jour.',
+    );
+    setShowAcademicForm(false);
+  };
+
+  const handleDeleteAcademic = async (indexToRemove) => {
+    setDeleteAcademicIndex(indexToRemove);
+  };
+
+  const handleConfirmDeleteAcademic = async () => {
+    if (deleteAcademicIndex === null) return;
+    const filtered = displayAcademicEntries.filter((_, index) => index !== deleteAcademicIndex);
+    await updateProfilePatch({ academicEntries: filtered }, 'Parcours academique mis a jour.');
+    setDeleteAcademicIndex(null);
+  };
+
   const handleSave = async () => {
     setSaving(true);
     setStatus('');
@@ -128,8 +299,11 @@ export default function StudentProfilePage() {
         studyLevel: formData.studyLevel,
         fieldOfStudy: formData.fieldOfStudy,
         university: formData.university,
+        languages: formData.languages,
+        availability: formData.availability,
         skills: formData.skills.split(',').map((item) => item.trim()).filter(Boolean),
         cvUrl: formData.cvUrl,
+        coverLetterUrl: formData.coverLetterUrl,
         avatarUrl: formData.avatarUrl,
       };
       await api.patch('/users/profile', payload);
@@ -154,14 +328,19 @@ export default function StudentProfilePage() {
       <section className="mb-12 flex flex-col md:flex-row items-end justify-between gap-8">
         <div className="flex flex-col sm:flex-row items-center sm:items-end gap-8 text-center sm:text-left">
           <div className="relative">
-            <img
-              className="w-40 h-40 rounded-3xl object-cover shadow-xl border-4 border-white"
-              alt={fullName}
-              src={avatarUrl}
-            />
+            {avatarUrl ? (
+              <img
+                className="w-40 h-40 rounded-3xl object-cover shadow-xl border-4 border-white"
+                alt={fullName}
+                src={avatarUrl}
+              />
+            ) : (
+              <div className="w-40 h-40 rounded-3xl shadow-xl border-4 border-white bg-slate-200 text-slate-600 flex items-center justify-center text-3xl font-bold">
+                {initials}
+              </div>
+            )}
           </div>
           <div>
-            <span className="text-xs font-bold tracking-[0.2em] text-blue-600 uppercase mb-2 block">Etudiant en {studyLevel}</span>
             <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight mb-3">{fullName}</h1>
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 text-slate-500">
               <div className="flex items-center gap-1.5">
@@ -216,8 +395,12 @@ export default function StudentProfilePage() {
               <input className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm" name="university" value={formData.university} onChange={handleChange} />
             </div>
             <div>
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Avatar URL</label>
-              <input className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm" name="avatarUrl" value={formData.avatarUrl} onChange={handleChange} />
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Langues</label>
+              <input className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm" name="languages" value={formData.languages} onChange={handleChange} />
+            </div>
+            <div>
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Disponibilite</label>
+              <input className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm" name="availability" value={formData.availability} onChange={handleChange} />
             </div>
             <div>
               <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Avatar (fichier)</label>
@@ -231,8 +414,22 @@ export default function StudentProfilePage() {
               <input className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm" name="skills" value={formData.skills} onChange={handleChange} />
             </div>
             <div className="md:col-span-2">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Lien CV</label>
-              <input className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm" name="cvUrl" value={formData.cvUrl} onChange={handleChange} />
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500">CV (fichier)</label>
+              <input className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm bg-white" type="file" accept=".pdf,.doc,.docx" onChange={handleCvFileChange} disabled={cvUploading} />
+              {resolveFileUrl(formData.cvUrl) && (
+                <a className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-primary" href={resolveFileUrl(formData.cvUrl)} target="_blank" rel="noreferrer">
+                  Voir le CV charge
+                </a>
+              )}
+            </div>
+            <div className="md:col-span-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Lettre de motivation (fichier)</label>
+              <input className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm bg-white" type="file" accept=".pdf,.doc,.docx" onChange={handleCoverLetterFileChange} disabled={coverLetterUploading} />
+              {resolveFileUrl(formData.coverLetterUrl) && (
+                <a className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-primary" href={resolveFileUrl(formData.coverLetterUrl)} target="_blank" rel="noreferrer">
+                  Voir la lettre chargee
+                </a>
+              )}
             </div>
           </div>
           {status && <p className="text-sm text-slate-500 mt-4">{status}</p>}
@@ -263,11 +460,11 @@ export default function StudentProfilePage() {
               </div>
               <div>
                 <span className="text-[10px] font-bold text-slate-400 tracking-widest uppercase">Langues</span>
-                <p className="text-slate-900 font-semibold mt-1">Non renseigne</p>
+                <p className="text-slate-900 font-semibold mt-1">{languages}</p>
               </div>
               <div>
                 <span className="text-[10px] font-bold text-slate-400 tracking-widest uppercase">Disponibilite</span>
-                <p className="text-slate-900 font-semibold mt-1">Non renseignee</p>
+                <p className="text-slate-900 font-semibold mt-1">{availability}</p>
               </div>
             </div>
           </div>
@@ -278,26 +475,62 @@ export default function StudentProfilePage() {
                 <span className="material-symbols-outlined text-primary">school</span>
                 Parcours Academique
               </h3>
-              <button className="text-primary hover:bg-blue-50 p-2 rounded-xl transition-colors">
+              <button className="text-primary hover:bg-blue-50 p-2 rounded-xl transition-colors" onClick={handleOpenAcademicForm}>
                 <span className="material-symbols-outlined">add</span>
               </button>
             </div>
 
-            {student?.studyLevel || student?.university ? (
-              <div className="relative space-y-10 sm:space-y-12 before:absolute before:inset-0 before:ml-5 before:h-full before:w-0.5 before:bg-slate-100">
-                <div className="relative flex items-start pl-12">
-                  <div className="absolute left-0 flex h-10 w-10 items-center justify-center rounded-full bg-blue-50 text-primary ring-8 ring-white">
-                    <span className="material-symbols-outlined !text-xl">workspace_premium</span>
-                  </div>
-                  <div className="flex-1 bg-slate-50 border border-slate-100/60 p-5 rounded-2xl">
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-2">
-                      <h4 className="text-lg font-bold text-slate-900">{studyLevel}</h4>
-                      <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider w-fit">En cours</span>
-                    </div>
-                    <p className="text-blue-600 font-semibold mb-3 text-sm">{university}</p>
-                    <p className="text-slate-500 text-[13px] leading-relaxed mb-4">{fieldOfStudy}</p>
-                  </div>
+            {showAcademicForm && (
+              <form className="mb-6 grid grid-cols-1 gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-5" onSubmit={handleSubmitAcademic}>
+                <div>
+                  <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Niveau d'etude</label>
+                  <input className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm" name="studyLevel" value={academicForm.studyLevel} onChange={handleAcademicChange} />
                 </div>
+                <div>
+                  <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Universite</label>
+                  <input className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm" name="university" value={academicForm.university} onChange={handleAcademicChange} />
+                </div>
+                <div>
+                  <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Domaine d'etude</label>
+                  <input className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm" name="fieldOfStudy" value={academicForm.fieldOfStudy} onChange={handleAcademicChange} />
+                </div>
+                <div>
+                  <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Statut</label>
+                  <select className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm" name="status" value={academicForm.status} onChange={handleAcademicChange}>
+                    <option value="En cours">En cours</option>
+                    <option value="Termine">Termine</option>
+                    <option value="En pause">En pause</option>
+                  </select>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  <button className="rounded-xl bg-primary px-4 py-2 text-xs font-bold text-white" type="submit">Enregistrer</button>
+                  <button className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-bold text-slate-600" type="button" onClick={() => setShowAcademicForm(false)}>Annuler</button>
+                </div>
+              </form>
+            )}
+
+            {displayAcademicEntries.length > 0 ? (
+              <div className="relative space-y-10 sm:space-y-12 before:absolute before:inset-0 before:ml-5 before:h-full before:w-0.5 before:bg-slate-100">
+                {displayAcademicEntries.map((entry, index) => (
+                  <div key={`${entry.studyLevel}-${entry.university}-${index}`} className="relative flex items-start pl-12">
+                    <div className="absolute left-0 flex h-10 w-10 items-center justify-center rounded-full bg-blue-50 text-primary ring-8 ring-white">
+                      <span className="material-symbols-outlined !text-xl">workspace_premium</span>
+                    </div>
+                    <div className="flex-1 bg-slate-50 border border-slate-100/60 p-5 rounded-2xl">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-2">
+                        <h4 className="text-lg font-bold text-slate-900">{entry.studyLevel || 'Niveau'}</h4>
+                        <div className="flex items-center gap-2">
+                          <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider w-fit">{entry.status || 'En cours'}</span>
+                          <button className="rounded-full border border-slate-200 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-500 hover:bg-white" type="button" onClick={() => handleDeleteAcademic(index)}>
+                            Supprimer
+                          </button>
+                        </div>
+                      </div>
+                      <p className="text-blue-600 font-semibold mb-3 text-sm">{entry.university || 'Universite'}</p>
+                      <p className="text-slate-500 text-[13px] leading-relaxed mb-4">{entry.fieldOfStudy || 'Domaine'}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : (
               <p className="text-slate-500 text-sm">Aucun parcours enregistre.</p>
@@ -314,12 +547,22 @@ export default function StudentProfilePage() {
                   <span className="material-symbols-outlined">psychology</span>
                   Competences
                 </h3>
-                <button className="text-white/60 hover:bg-white/10 p-2 rounded-xl transition-all">
-                  <span className="material-symbols-outlined !text-xl">edit</span>
+                <button className="text-white/60 hover:bg-white/10 p-2 rounded-xl transition-all" onClick={handleOpenSkillForm}>
+                  <span className="material-symbols-outlined !text-xl">add</span>
                 </button>
               </div>
 
               <div className="space-y-6">
+                {showSkillForm && (
+                  <form className="rounded-2xl bg-white/10 p-4" onSubmit={handleSubmitSkill}>
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-blue-100">Nouvelle competence</label>
+                    <div className="mt-2 flex flex-wrap gap-3">
+                      <input className="flex-1 rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm text-white placeholder:text-blue-200" value={newSkill} onChange={(event) => setNewSkill(event.target.value)} placeholder="Ex: React, Excel..." />
+                      <button className="rounded-xl bg-white px-4 py-2 text-xs font-bold text-primary" type="submit">Ajouter</button>
+                      <button className="rounded-xl border border-white/30 px-4 py-2 text-xs font-bold text-white" type="button" onClick={() => setShowSkillForm(false)}>Annuler</button>
+                    </div>
+                  </form>
+                )}
                 {skills.length > 0 ? (
                   <div>
                     <span className="text-[10px] font-bold text-blue-200 uppercase tracking-widest block mb-3">Competences</span>
@@ -345,7 +588,7 @@ export default function StudentProfilePage() {
               {student?.cvUrl ? (
                 <a
                   className="group flex items-center justify-between p-4 rounded-2xl bg-slate-50 hover:bg-white hover:shadow-md transition-all duration-300 border border-transparent hover:border-slate-100 cursor-pointer"
-                  href={student.cvUrl}
+                  href={resolveFileUrl(student.cvUrl)}
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -362,9 +605,31 @@ export default function StudentProfilePage() {
                     <span className="material-symbols-outlined !text-[20px]">download</span>
                   </span>
                 </a>
-              ) : (
+              ) : null}
+              {student?.coverLetterUrl ? (
+                <a
+                  className="group flex items-center justify-between p-4 rounded-2xl bg-slate-50 hover:bg-white hover:shadow-md transition-all duration-300 border border-transparent hover:border-slate-100 cursor-pointer"
+                  href={resolveFileUrl(student.coverLetterUrl)}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center">
+                      <span className="material-symbols-outlined !text-xl">description</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">Lettre de motivation</p>
+                      <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mt-0.5">Disponible</p>
+                    </div>
+                  </div>
+                  <span className="text-slate-300 group-hover:text-primary group-hover:bg-blue-50 p-2 rounded-lg transition-colors">
+                    <span className="material-symbols-outlined !text-[20px]">download</span>
+                  </span>
+                </a>
+              ) : null}
+              {!student?.cvUrl && !student?.coverLetterUrl ? (
                 <p className="text-slate-500 text-sm">Aucun document ajoute.</p>
-              )}
+              ) : null}
             </div>
           </div>
 
@@ -378,11 +643,28 @@ export default function StudentProfilePage() {
               <div className="h-full bg-primary rounded-full" style={{ width: `${completion}%` }}></div>
             </div>
             <p className="text-[12px] text-slate-600 mt-4 leading-relaxed relative z-10">
-              ComplÃ©tez votre profil pour atteindre 100% et booster votre visibilitÃ© auprÃ¨s des recruteurs.
+              Completez votre profil pour atteindre 100% et booster votre visibilite aupres des recruteurs.
             </p>
           </div>
         </div>
       </div>
+
+      {deleteAcademicIndex !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 px-4">
+          <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-xl">
+            <h4 className="text-lg font-bold text-slate-900">Supprimer ce parcours ?</h4>
+            <p className="mt-2 text-sm text-slate-500">Cette action retirera l'entree selectionnee.</p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <button className="rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white" type="button" onClick={handleConfirmDeleteAcademic}>
+                Supprimer
+              </button>
+              <button className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600" type="button" onClick={() => setDeleteAcademicIndex(null)}>
+                Annuler
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </StudentDashboardLayout>
   );
 }

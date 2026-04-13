@@ -34,7 +34,11 @@ export default function LoginPage() {
       else if (user.role === 'ENTERPRISE') navigate('/entreprise/dashboard');
       else navigate('/etudiant/dashboard');
     } catch (err) {
-      setErrorMsg(err.response?.data?.message || 'Erreur lors de la connexion. Vérifiez vos identifiants.');
+      if (err.response?.status === 503) {
+        setErrorMsg('Plateforme en maintenance. Connexion reservee aux administrateurs.');
+      } else {
+        setErrorMsg(err.response?.data?.message || 'Erreur lors de la connexion. Vérifiez vos identifiants.');
+      }
     } finally {
       setLoading(false);
     }

@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import ProtectedRoute from './components/ProtectedRoute';
 import LandingPage from './pages/LandingPage';
 import InternshipsPage from './pages/InternshipsPage';
 import JobsPage from './pages/JobsPage';
@@ -32,6 +33,8 @@ import AdminNotificationsPage from './pages/AdminNotificationsPage';
 import AdminReportsPage from './pages/AdminReportsPage';
 import AdminSettingsPage from './pages/AdminSettingsPage';
 import AdminLogsPage from './pages/AdminLogsPage';
+import AdminUserProfilePage from './pages/AdminUserProfilePage';
+import AdminEnterpriseProfilePage from './pages/AdminEnterpriseProfilePage';
 import OfferDetailPage from './pages/OfferDetailPage';
 import InternshipDetailPage from './pages/InternshipDetailPage';
 import EnterpriseDetailPage from './pages/EnterpriseDetailPage';
@@ -46,7 +49,14 @@ function App() {
         <Route path="/emplois" element={<JobsPage />} />
         <Route path="/emplois/:id" element={<OfferDetailPage />} />
         <Route path="/stages/:id" element={<InternshipDetailPage />} />
-        <Route path="/postuler/:id" element={<ApplicationFormPage />} />
+        <Route
+          path="/postuler/:id"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <ApplicationFormPage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/entreprises" element={<EnterprisesPage />} />
         <Route path="/entreprises/:id" element={<EnterpriseDetailPage />} />
         <Route path="/conseils" element={<AdvicePage />} />
@@ -54,31 +64,222 @@ function App() {
         <Route path="/inscription" element={<RegisterSelectionPage />} />
         <Route path="/inscription/etudiant" element={<StudentRegisterPage />} />
         <Route path="/inscription/entreprise" element={<EnterpriseRegisterPage />} />
-        <Route path="/etudiant/dashboard" element={<StudentDashboardPage />} />
-        <Route path="/etudiant/stages" element={<StudentOffersSearchPage offerType="stage" />} />
-        <Route path="/etudiant/emplois" element={<StudentOffersSearchPage offerType="emploi" />} />
-        <Route path="/etudiant/candidatures" element={<StudentApplicationsPage />} />
-        <Route path="/etudiant/favoris" element={<StudentFavoritesPage />} />
-        <Route path="/etudiant/profil" element={<StudentProfilePage />} />
-        <Route path="/etudiant/parametres" element={<StudentSettingsPage />} />
-        <Route path="/etudiant/messages" element={<StudentMessagesPage />} />
-        <Route path="/entreprise/dashboard" element={<EnterpriseDashboardPage />} />
-        <Route path="/entreprise/offres" element={<EnterpriseOffersPage />} />
-        <Route path="/entreprise/offres/nouvelle" element={<EnterpriseCreateOfferPage />} />
-        <Route path="/entreprise/candidats" element={<EnterpriseCandidatesPage />} />
-        <Route path="/entreprise/messages" element={<EnterpriseMessagesPage />} />
-        <Route path="/entreprise/profil" element={<EnterpriseDashboardProfilePage />} />
-        <Route path="/entreprise/parametres" element={<EnterpriseSettingsPage />} />
-        <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-        <Route path="/admin/utilisateurs" element={<AdminUsersPage />} />
-        <Route path="/admin/entreprises" element={<AdminEnterprisesPage />} />
-        <Route path="/admin/offres" element={<AdminOffersPage />} />
-        <Route path="/admin/candidatures" element={<AdminApplicationsPage />} />
-        <Route path="/admin/moderation" element={<AdminModerationPage />} />
-        <Route path="/admin/notifications" element={<AdminNotificationsPage />} />
-        <Route path="/admin/rapports" element={<AdminReportsPage />} />
-        <Route path="/admin/parametres" element={<AdminSettingsPage />} />
-        <Route path="/admin/logs" element={<AdminLogsPage />} />
+        <Route
+          path="/etudiant/dashboard"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <StudentDashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/etudiant/stages"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <StudentOffersSearchPage offerType="stage" />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/etudiant/emplois"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <StudentOffersSearchPage offerType="emploi" />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/etudiant/candidatures"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <StudentApplicationsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/etudiant/favoris"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <StudentFavoritesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/etudiant/profil"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <StudentProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/etudiant/parametres"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <StudentSettingsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/etudiant/messages"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <StudentMessagesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/entreprise/dashboard"
+          element={
+            <ProtectedRoute allowedRoles={['ENTERPRISE']}>
+              <EnterpriseDashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/entreprise/offres"
+          element={
+            <ProtectedRoute allowedRoles={['ENTERPRISE']}>
+              <EnterpriseOffersPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/entreprise/offres/nouvelle"
+          element={
+            <ProtectedRoute allowedRoles={['ENTERPRISE']}>
+              <EnterpriseCreateOfferPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/entreprise/candidats"
+          element={
+            <ProtectedRoute allowedRoles={['ENTERPRISE']}>
+              <EnterpriseCandidatesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/entreprise/messages"
+          element={
+            <ProtectedRoute allowedRoles={['ENTERPRISE']}>
+              <EnterpriseMessagesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/entreprise/profil"
+          element={
+            <ProtectedRoute allowedRoles={['ENTERPRISE']}>
+              <EnterpriseDashboardProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/entreprise/parametres"
+          element={
+            <ProtectedRoute allowedRoles={['ENTERPRISE']}>
+              <EnterpriseSettingsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminDashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/utilisateurs"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminUsersPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/utilisateurs/:id"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminUserProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/entreprises"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminEnterprisesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/entreprises/:id"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminEnterpriseProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/offres"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminOffersPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/candidatures"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminApplicationsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/moderation"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminModerationPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/notifications"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminNotificationsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/rapports"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminReportsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/parametres"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminSettingsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/logs"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminLogsPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

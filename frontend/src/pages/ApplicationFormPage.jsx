@@ -10,6 +10,7 @@ export default function ApplicationFormPage() {
   const [offer, setOffer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({ fullName: '', email: '', phone: '', cvUrl: '', coverLetterText: '', portfolioUrl: '' });
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -37,11 +38,22 @@ export default function ApplicationFormPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage('');
     try {
       await api.post(`/applications/${id}`, formData);
       navigate('/etudiant/candidatures');
     } catch (err) {
-      alert('Erreur lors de la candidature: ' + (err.response?.data?.message || err.message));
+      const status = err.response?.status;
+      const apiMessage = err.response?.data?.message;
+      if (status === 403) {
+        setErrorMessage('Votre compte est suspendu. Vous ne pouvez plus postuler.');
+        return;
+      }
+      if (status === 400 && apiMessage === 'Offre non disponible') {
+        setErrorMessage('Cette offre n\'est pas disponible pour candidature.');
+        return;
+      }
+      setErrorMessage(`Erreur lors de la candidature: ${apiMessage || err.message}`);
     }
   };
 
@@ -71,6 +83,12 @@ export default function ApplicationFormPage() {
               <h1 className="text-3xl font-black text-slate-900 mb-3 tracking-tight">Postuler à cette offre</h1>
               <p className="text-slate-500 max-w-lg mx-auto font-medium">Complétez les informations ci-dessous pour soumettre votre candidature au poste de <strong className="text-slate-700">{offer.title}</strong> chez <strong className="text-primary">{offer.enterprise?.companyName || 'L\'entreprise'}</strong>.</p>
             </header>
+
+            {errorMessage && (
+              <div className="mb-8 rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-[14px] font-semibold text-rose-700">
+                {errorMessage}
+              </div>
+            )}
 
             <form className="space-y-12" onSubmit={handleSubmit}>
               {/* Section 1: Informations Personnelles */}

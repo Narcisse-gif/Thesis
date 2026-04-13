@@ -33,7 +33,7 @@ export default function StudentDashboardLayout({ children }) {
 
   const student = profile?.studentProfile;
   const displayName = [student?.firstName, student?.lastName].filter(Boolean).join(' ') || profile?.email || 'Etudiant';
-  const displayLevel = student?.studyLevel || 'Profil';
+  const displayLevel = 'Profil';
   const apiBaseUrl = api.defaults.baseURL || '';
   const resolveAvatarUrl = (value) => {
     if (!value) return '';
@@ -41,8 +41,14 @@ export default function StudentDashboardLayout({ children }) {
     if (value.startsWith('/uploads/')) return `${apiBaseUrl}${value}`;
     return value;
   };
-  const resolvedAvatarUrl = resolveAvatarUrl(profile?.avatarUrl);
-  const avatarUrl = resolvedAvatarUrl || 'https://lh3.googleusercontent.com/aida-public/AB6AXuBbbE-29oZxa5cMvLOSguw34yhMmR6k-l6kty-ha3n4cO0a-Rr3tm4IACV3toqwlXBtMFEY0xzaO6Owa0AaFvUvVbJmEFToZw6H9XrvkdNl10Jf-rGMTO7IeVPAqh5COd1VvBsvIxb4jW6lW8h41vtmJZ7T8ujSQTpMGvx8YOOpcGBmDOQNGwF-INVPA1Rw9CbNqoby3lb41b5ah_3XkEzQWdQmy6XzN-b9Q4Eq5ZePWCbnr4v8jG6AqBFRNh0eBGQJ9hKg1CytV6pF';
+  const avatarUrl = resolveAvatarUrl(profile?.avatarUrl);
+  const initials = displayName
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase() || 'ET';
 
   const isActive = (path) => currentPath === path;
 
@@ -148,11 +154,17 @@ export default function StudentDashboardLayout({ children }) {
                 <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mt-1.5">{displayLevel}</p>
               </div>
               <Link to="/etudiant/profil" className="relative group cursor-pointer">
-                <img 
-                  alt={displayName}
-                  className="h-11 w-11 rounded-xl object-cover ring-4 ring-slate-100/50 group-hover:ring-primary/10 transition-all" 
-                  src={avatarUrl}
-                />
+                {avatarUrl ? (
+                  <img
+                    alt={displayName}
+                    className="h-11 w-11 rounded-xl object-cover ring-4 ring-slate-100/50 group-hover:ring-primary/10 transition-all"
+                    src={avatarUrl}
+                  />
+                ) : (
+                  <div className="h-11 w-11 rounded-xl bg-slate-200 text-slate-600 ring-4 ring-slate-100/50 group-hover:ring-primary/10 transition-all flex items-center justify-center text-xs font-bold">
+                    {initials}
+                  </div>
+                )}
               </Link>
             </div>
           </div>

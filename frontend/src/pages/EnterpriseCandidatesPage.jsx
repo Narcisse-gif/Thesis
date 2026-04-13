@@ -5,6 +5,23 @@ import EnterpriseDashboardLayout from '../components/EnterpriseDashboardLayout';
 export default function EnterpriseCandidatesPage() {
   const [candidates, setCandidates] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [offers, setOffers] = useState([]);
+  const [selectedOfferId, setSelectedOfferId] = useState('');
+  const apiBaseUrl = api.defaults.baseURL || '';
+
+  const resolveAvatarUrl = (value) => {
+    if (!value) return '';
+    if (value.startsWith('http')) return value;
+    if (value.startsWith('/uploads/')) return `${apiBaseUrl}${value}`;
+    return value;
+  };
+
+  const getStudentName = (student) => {
+    const first = student?.firstName || '';
+    const last = student?.lastName || '';
+    const full = `${first} ${last}`.trim();
+    return full || 'Candidat';
+  };
 
   const fetchCandidates = async () => {
     try {
@@ -17,11 +34,23 @@ export default function EnterpriseCandidatesPage() {
     }
   };
 
+  const fetchOffers = async () => {
+    try {
+      const res = await api.get('/offers/mine');
+      setOffers(res.data);
+    } catch (err) {
+      console.error('Failed to load offers', err);
+    }
+  };
+
   useEffect(() => {
     fetchCandidates();
+    fetchOffers();
   }, []);
 
-  if (loading) return <div className="text-center py-20 text-slate-500 font-bold">Chargement des candidats...</div>;
+  const visibleCandidates = selectedOfferId
+    ? candidates.filter((app) => app.offer?.id === selectedOfferId)
+    : candidates;
 
   const handleStatusChange = async (id, status) => {
     try {
@@ -33,6 +62,10 @@ export default function EnterpriseCandidatesPage() {
   };
   return (
     <EnterpriseDashboardLayout>
+      {loading ? (
+        <div className="text-center py-20 text-slate-500 font-bold">Chargement des candidats...</div>
+      ) : (
+      <>
       {/* Hero Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6 text-center sm:text-left">
         <div>
@@ -49,11 +82,15 @@ export default function EnterpriseCandidatesPage() {
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100/50">
           <label className="text-[10px] font-bold uppercase text-slate-400 block mb-3">Filtrer par Offre</label>
           <div className="relative">
-            <select className="w-full bg-slate-50 border-none rounded-xl text-[13px] font-semibold focus:ring-2 focus:ring-primary/20 appearance-none py-3 px-4 text-slate-700 cursor-pointer outline-none">
-              <option>Toutes les offres actives</option>
-              <option>Développeur Fullstack Junior</option>
-              <option>Assistant Marketing Digital</option>
-              <option>Analyste Financier (Stage)</option>
+            <select
+              className="w-full bg-slate-50 border-none rounded-xl text-[13px] font-semibold focus:ring-2 focus:ring-primary/20 appearance-none py-3 px-4 text-slate-700 cursor-pointer outline-none"
+              value={selectedOfferId}
+              onChange={(event) => setSelectedOfferId(event.target.value)}
+            >
+              <option value="">Toutes les offres</option>
+              {offers.map((offer) => (
+                <option key={offer.id} value={offer.id}>{offer.title}</option>
+              ))}
             </select>
             <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none !text-[20px]">expand_more</span>
           </div>
@@ -77,20 +114,20 @@ export default function EnterpriseCandidatesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-    {candidates.map((app) => (
+    {visibleCandidates.map((app) => (
       <tr key={app.id} className="hover:bg-slate-50/50 transition-colors group">
         <td className="px-6 py-5">
           <div className="flex items-center gap-4">
-            <img alt="Candidat" className="w-10 h-10 rounded-full object-cover" src={"https://ui-avatars.com/api/?name=" + encodeURIComponent(app.student?.user?.firstName || 'C')} />
+            <img alt="Candidat" className="w-10 h-10 rounded-full object-cover" src={resolveAvatarUrl(app.student?.user?.avatarUrl) || "https://ui-avatars.com/api/?name=" + encodeURIComponent(getStudentName(app.student))} />
             <div>
-              <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">{app.student?.user?.firstName} {app.student?.user?.lastName}</p>
+              <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">{getStudentName(app.student)}</p>
               <p className="text-[12px] text-slate-400 mt-0.5">{app.student?.user?.email}</p>
             </div>
           </div>
         </td>
         <td className="px-6 py-5">
-          <p className="text-[14px] text-slate-700 font-medium">{app.student?.university}</p>
-          <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mt-1">{app.student?.fieldOfStudy}</p>
+          <p className="text-[14px] text-slate-700 font-medium">{app.student?.university || 'Universite non renseignee'}</p>
+          <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mt-1">{app.student?.fieldOfStudy || 'Domaine non renseigne'}</p>
         </td>
         <td className="px-6 py-5">
           <span className="px-3 py-1 bg-slate-100 text-slate-600 border border-slate-200/50 rounded-full text-[10px] font-bold uppercase tracking-wider">{app.offer?.title}</span>
@@ -127,7 +164,7 @@ export default function EnterpriseCandidatesPage() {
 
         {/* Pagination Section */}
         <div className="p-6 bg-slate-50/50 flex flex-col sm:flex-row items-center justify-between border-t border-slate-100 gap-4">
-          <p className="text-[13px] text-slate-500 font-medium">Affichage de <span className="text-slate-900 font-bold">{candidates.length}</span> candidatures</p>
+          <p className="text-[13px] text-slate-500 font-medium">Affichage de <span className="text-slate-900 font-bold">{visibleCandidates.length}</span> candidatures</p>
           <div className="flex items-center gap-1.5">
             <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-white shadow-sm border border-slate-100 text-slate-400 hover:text-primary transition-all">
               <span className="material-symbols-outlined !text-[18px]">chevron_left</span>
@@ -142,6 +179,8 @@ export default function EnterpriseCandidatesPage() {
         </div>
       </div>
 
+      </>
+      )}
       </EnterpriseDashboardLayout>
   );
 }

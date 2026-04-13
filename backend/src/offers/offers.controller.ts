@@ -20,6 +20,12 @@ export class OffersController {
     return this.offersService.findAll(query);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('mine')
+  findMine(@Request() req) {
+    return this.offersService.findMine(req.user.userId);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.offersService.findOne(id);

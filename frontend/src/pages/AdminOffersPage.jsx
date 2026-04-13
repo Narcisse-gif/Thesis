@@ -1,21 +1,75 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AdminDashboardLayout from '../components/AdminDashboardLayout';
+import api from '../services/api';
 
 export default function AdminOffersPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('Tous');
   const [dropdownOpen, setDropdownOpen] = useState(null);
 
-  const [offers, setOffers] = useState([
-    { id: 'OFF-101', title: 'Développeur Fullstack React/Node', company: 'Burkina Tech Solutions', type: 'Emploi', date: 'Oct 12, 2023', status: 'Active', applies: 45, logo: 'https://ui-avatars.com/api/?name=Burkina+Tech+Solutions&background=3b82f6&color=fff' },
-    { id: 'OFF-204', title: 'Stagiaire Assistant RH', company: 'Coris Bank', type: 'Stage', date: 'Nov 02, 2023', status: 'Active', applies: 120, logo: 'https://ui-avatars.com/api/?name=Coris+Bank&background=1e40af&color=fff' },
-    { id: 'OFF-405', title: 'Responsable Marketing Digital', company: 'Orange Burkina', type: 'Emploi', date: 'Dec 15, 2023', status: 'Expirée', applies: 12, logo: 'https://ui-avatars.com/api/?name=Orange+Burkina&background=f97316&color=fff' },
-    { id: 'OFF-550', title: 'Designer Graphique UX/UI', company: 'Agence Crea', type: 'Stage', date: 'Jan 10, 2024', status: 'Expirée', applies: 8, logo: 'https://ui-avatars.com/api/?name=Agence+Crea&background=8b5cf6&color=fff' },
-    { id: 'OFF-712', title: 'Ingénieur DevOps Junior', company: 'Data Systems', type: 'Emploi', date: 'Fev 05, 2024', status: 'En attente', applies: 0, logo: 'https://ui-avatars.com/api/?name=Data+Systems&background=0f766e&color=fff' },
-  ]);
+  const [offers, setOffers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleStatusChange = (id, newStatus) => {
-    setOffers(offers.map(o => o.id === id ? { ...o, status: newStatus } : o));
+  useEffect(() => {
+    const fetchOffers = async () => {
+      try {
+        const response = await api.get('/admin/offers');
+        const apiBaseUrl = api.defaults.baseURL || '';
+        const resolveLogoUrl = (value) => {
+          if (!value) return '';
+          if (value.startsWith('http')) return value;
+          if (value.startsWith('/uploads/')) return `${apiBaseUrl}${value}`;
+          return value;
+        };
+
+        const mapped = (response.data || []).map((offer) => {
+          const company = offer.enterprise?.companyName || 'Entreprise';
+          const type = offer.contractType === 'STAGE' ? 'Stage' : 'Emploi';
+          const status = offer.status === 'ACTIVE'
+            ? 'Active'
+            : offer.status === 'EXPIREE'
+              ? 'Expirée'
+              : offer.status === 'SIGNALEE'
+                ? 'Signalée'
+                : 'En attente';
+          const logo = resolveLogoUrl(offer.enterprise?.logoUrl) || `https://ui-avatars.com/api/?name=${encodeURIComponent(company)}&background=3b82f6&color=fff`;
+
+          return {
+            id: offer.id,
+            title: offer.title,
+            company,
+            type,
+            date: offer.createdAt ? new Date(offer.createdAt).toLocaleDateString('fr-FR') : '—',
+            status,
+            applies: Array.isArray(offer.applications) ? offer.applications.length : 0,
+            logo,
+          };
+        });
+
+        setOffers(mapped);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOffers();
+  }, []);
+
+  const handleStatusChange = async (id, newStatus) => {
+    const mappedStatus = newStatus === 'Active'
+      ? 'ACTIVE'
+      : newStatus === 'Expirée'
+        ? 'EXPIREE'
+        : 'EN_ATTENTE';
+
+    try {
+      await api.patch(`/admin/moderate/${id}`, { status: mappedStatus });
+      setOffers(offers.map(o => o.id === id ? { ...o, status: newStatus } : o));
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const filteredOffers = offers.filter(o => {
@@ -77,7 +131,13 @@ export default function AdminOffersPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {filteredOffers.length > 0 ? filteredOffers.map(o => (
+              {loading ? (
+                <tr>
+                  <td colSpan="6" className="px-6 py-8 text-center text-slate-500 text-[13px]">
+                    Chargement...
+                  </td>
+                </tr>
+              ) : filteredOffers.length > 0 ? filteredOffers.map(o => (
                 <tr key={o.id} className="hover:bg-slate-50/50 transition-colors group">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
@@ -186,7 +246,7 @@ export default function AdminOffersPage() {
                     </div>
                   </td>
                 </tr>
-              )) : (
+                )) : (
                 <tr>
                    <td colSpan="6" className="px-6 py-8 text-center text-slate-500 text-[13px]">
                       Aucune offre trouvée.

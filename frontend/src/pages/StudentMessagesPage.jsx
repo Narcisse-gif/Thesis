@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import StudentDashboardLayout from '../components/StudentDashboardLayout';
 import api from '../services/api';
 
 export default function StudentMessagesPage() {
-  const [isComposeOpen, setIsComposeOpen] = useState(false);
   const [threads, setThreads] = useState([]);
   const [selectedThread, setSelectedThread] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -11,12 +10,23 @@ export default function StudentMessagesPage() {
   const [currentUserId, setCurrentUserId] = useState('');
   const [loadingThreads, setLoadingThreads] = useState(true);
   const [loadingMessages, setLoadingMessages] = useState(false);
-  const [composeReceiverId, setComposeReceiverId] = useState('');
-  const [composeContent, setComposeContent] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [pendingDeleteId, setPendingDeleteId] = useState(null);
 
   const formatTime = (value) => {
     if (!value) return '';
     return new Date(value).toLocaleString('fr-FR');
+  };
+
+  const getDisplayName = (user) => {
+    if (!user) return 'Utilisateur';
+    const companyName = user.enterpriseProfile?.companyName || '';
+    const firstName = user.studentProfile?.firstName || '';
+    const lastName = user.studentProfile?.lastName || '';
+    const fullName = `${firstName} ${lastName}`.trim();
+    return companyName || fullName || user.email || 'Utilisateur';
   };
 
   const loadConversation = async (otherUserId) => {
@@ -49,6 +59,35 @@ export default function StudentMessagesPage() {
     }
   };
 
+  const searchEnterprises = async (query) => {
+    const trimmed = query.trim();
+    if (!trimmed) {
+      setSearchResults([]);
+      return;
+    }
+    try {
+      setIsSearching(true);
+      const response = await api.get('/users/search', {
+        params: { q: trimmed, role: 'ENTERPRISE' },
+      });
+      setSearchResults(response.data || []);
+    } catch (error) {
+      console.error('Failed to search users:', error);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const uniqueMessages = useMemo(() => {
+    const seen = new Set();
+    return messages.filter((message) => {
+      if (!message?.id || seen.has(message.id)) return false;
+      seen.add(message.id);
+      return true;
+    });
+  }, [messages]);
+
   useEffect(() => {
     const loadProfile = async () => {
       try {
@@ -74,21 +113,28 @@ export default function StudentMessagesPage() {
       await loadInbox();
     } catch (error) {
       console.error('Failed to send message:', error);
+      alert(error.response?.data?.message || 'Erreur lors de l\'envoi du message.');
     }
   };
 
-  const handleComposeSend = async () => {
-    if (!composeReceiverId.trim() || !composeContent.trim()) {
-      return;
-    }
+  const handleDeleteMessage = (messageId) => {
+    if (!messageId) return;
+    setPendingDeleteId(messageId);
+  };
+
+  const confirmDelete = async () => {
+    if (!pendingDeleteId) return;
     try {
-      await api.post(`/messages/${composeReceiverId.trim()}`, { content: composeContent.trim() });
-      setComposeReceiverId('');
-      setComposeContent('');
-      setIsComposeOpen(false);
+      await api.delete(`/messages/${pendingDeleteId}`);
+      if (selectedThread?.otherUser?.id) {
+        await loadConversation(selectedThread.otherUser.id);
+      }
       await loadInbox();
     } catch (error) {
-      console.error('Failed to send message:', error);
+      console.error('Failed to delete message:', error);
+      alert(error.response?.data?.message || 'Erreur lors de la suppression.');
+    } finally {
+      setPendingDeleteId(null);
     }
   };
 
@@ -100,10 +146,6 @@ export default function StudentMessagesPage() {
             <h2 className="text-2xl font-bold text-slate-900 mb-1">Messages</h2>
             <p className="text-slate-500 text-sm font-medium">Suivez vos échanges avec les entreprises et démarrez de nouvelles discussions.</p>
           </div>
-          <button onClick={() => setIsComposeOpen(true)} className="px-6 py-3 bg-primary text-white rounded-xl font-bold shadow-lg shadow-primary/25 hover:bg-blue-800 transition-all flex items-center gap-2 shrink-0">
-            <span className="material-symbols-outlined !text-[18px]">edit_square</span>
-            Nouveau message
-          </button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-6 items-start flex-1 min-h-0">
@@ -113,32 +155,69 @@ export default function StudentMessagesPage() {
                 className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:ring-4 focus:ring-primary/10"
                 placeholder="Rechercher une entreprise..."
                 type="text"
+                value={searchQuery}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  setSearchQuery(value);
+                  searchEnterprises(value);
+                }}
               />
             </div>
             <div className="divide-y divide-slate-100 overflow-y-auto flex-1">
-              {loadingThreads ? (
+              {searchQuery.trim() ? (
+                isSearching ? (
+                  <div className="p-4 text-sm text-slate-500">Recherche...</div>
+                ) : searchResults.length === 0 ? (
+                  <div className="p-4 text-sm text-slate-500">Aucune entreprise trouvee.</div>
+                ) : (
+                  searchResults.map((user) => (
+                    <button
+                      key={user.id}
+                      className="w-full text-left p-4 hover:bg-slate-50 transition-colors"
+                      onClick={() => {
+                        setSelectedThread({ otherUser: user });
+                        loadConversation(user.id);
+                      }}
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="font-bold text-slate-900 text-sm">{getDisplayName(user)}</p>
+                        <span className="text-xs text-slate-400">Nouveau</span>
+                      </div>
+                      <p className="text-xs text-slate-500 mt-1">{user.email}</p>
+                    </button>
+                  ))
+                )
+              ) : loadingThreads ? (
                 <div className="p-4 text-sm text-slate-500">Chargement des conversations...</div>
               ) : threads.length === 0 ? (
                 <div className="p-4 text-sm text-slate-500">Aucune conversation.</div>
               ) : (
-                threads.map((thread) => (
-                  <button
-                    key={thread.otherUser.id}
-                    className="w-full text-left p-4 hover:bg-slate-50 transition-colors"
-                    onClick={() => {
-                      setSelectedThread(thread);
-                      loadConversation(thread.otherUser.id);
-                    }}
-                  >
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="font-bold text-slate-900 text-sm">{thread.otherUser.email || 'Utilisateur'}</p>
-                      <span className="text-xs text-slate-400">{formatTime(thread.lastMessage?.createdAt)}</span>
-                    </div>
-                    <p className="text-xs font-semibold text-primary mt-1">{thread.lastMessage?.content?.slice(0, 40) || '...'}</p>
-                    <p className="text-xs text-slate-500 mt-1 line-clamp-2">{thread.lastMessage?.content || ''}</p>
-                    {thread.unreadCount > 0 && <span className="inline-flex mt-2 w-2.5 h-2.5 rounded-full bg-blue-600" />}
-                  </button>
-                ))
+                threads.map((thread) => {
+                  const subject = thread.lastMessage?.subject?.trim() || '';
+                  const content = thread.lastMessage?.content?.trim() || '';
+                  const showSubject = subject && subject !== content;
+                  const preview = (showSubject ? subject : content).slice(0, 60) || '...';
+                  return (
+                    <button
+                      key={thread.otherUser.id}
+                      className="w-full text-left p-4 hover:bg-slate-50 transition-colors"
+                      onClick={() => {
+                        setSelectedThread(thread);
+                        loadConversation(thread.otherUser.id);
+                      }}
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="font-bold text-slate-900 text-sm">{getDisplayName(thread.otherUser)}</p>
+                        <span className="text-xs text-slate-400">{formatTime(thread.lastMessage?.createdAt)}</span>
+                      </div>
+                      <p className="text-xs font-semibold text-primary mt-1">{preview}</p>
+                      {showSubject && (
+                        <p className="text-xs text-slate-500 mt-1 line-clamp-2">{content}</p>
+                      )}
+                      {thread.unreadCount > 0 && <span className="inline-flex mt-2 w-2.5 h-2.5 rounded-full bg-blue-600" />}
+                    </button>
+                  );
+                })
               )}
             </div>
           </aside>
@@ -146,12 +225,9 @@ export default function StudentMessagesPage() {
           <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 flex flex-col h-full overflow-hidden">
             <div className="pb-4 border-b border-slate-100 flex items-center justify-between shrink-0">
               <div>
-                <h3 className="text-lg font-bold text-slate-900">{selectedThread?.otherUser?.email || 'Conversation'}</h3>
+                <h3 className="text-lg font-bold text-slate-900">{getDisplayName(selectedThread?.otherUser)}</h3>
                 <p className="text-sm text-slate-500 font-medium mt-0.5">{selectedThread?.otherUser?.role || ''}</p>
               </div>
-              <button className="h-10 w-10 text-slate-400 hover:bg-slate-50 hover:text-slate-700 rounded-full flex items-center justify-center transition-colors" title="Plus d'options">
-                <span className="material-symbols-outlined">more_vert</span>
-              </button>
             </div>
 
             <div className="py-6 space-y-4 overflow-y-auto flex-1 scrollbar-hide pr-2">
@@ -160,13 +236,23 @@ export default function StudentMessagesPage() {
               ) : messages.length === 0 ? (
                 <div className="text-sm text-slate-500">Aucun message dans cette conversation.</div>
               ) : (
-                messages.map((message) => {
+                uniqueMessages.map((message) => {
                   const isMine = message.sender?.id === currentUserId;
                   return (
                     <div
                       key={message.id}
-                      className={`max-w-[75%] ${isMine ? 'ml-auto bg-primary text-white' : 'bg-slate-100 text-slate-700'} rounded-2xl px-4 py-3 text-sm`}
+                      className={`max-w-[75%] ${isMine ? 'ml-auto bg-primary text-white' : 'bg-slate-100 text-slate-700'} rounded-2xl px-4 py-3 text-sm relative group shadow-sm`}
                     >
+                      <div className={`absolute -top-3 ${isMine ? 'left-3' : 'right-3'} opacity-0 group-hover:opacity-100 transition`}>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteMessage(message.id)}
+                          className="w-7 h-7 rounded-full bg-white shadow-md border border-rose-100 text-rose-500 hover:text-white hover:bg-rose-500 transition flex items-center justify-center"
+                          title="Supprimer"
+                        >
+                          <span className="material-symbols-outlined !text-[16px]">delete</span>
+                        </button>
+                      </div>
                       {message.content}
                     </div>
                   );
@@ -192,64 +278,46 @@ export default function StudentMessagesPage() {
             </div>
           </div>
         </div>
-      </section>
 
-      {/* Compose Message Modal */}
-      {isComposeOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col">
-            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-              <h3 className="text-lg font-bold text-slate-900">Nouveau message</h3>
-              <button
-                onClick={() => setIsComposeOpen(false)}
-                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-200 text-slate-500 transition-colors"
-              >
-                <span className="material-symbols-outlined !text-[20px]">close</span>
-              </button>
-            </div>
-
-            <div className="p-6 space-y-5">
-              <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1.5">Destinataire (ID utilisateur)</label>
-                <input
-                  type="text"
-                  placeholder="UUID de l'utilisateur"
-                  value={composeReceiverId}
-                  onChange={(event) => setComposeReceiverId(event.target.value)}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-4 focus:ring-primary/10 transition-all font-medium text-[15px]"
-                />
+        {pendingDeleteId && (
+          <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+              <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                <h3 className="text-lg font-bold text-slate-900">Supprimer le message</h3>
+                <button
+                  onClick={() => setPendingDeleteId(null)}
+                  className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-500 transition-colors"
+                  type="button"
+                >
+                  <span className="material-symbols-outlined !text-[20px]">close</span>
+                </button>
               </div>
-
-              <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1.5">Message</label>
-                <textarea
-                  rows="5"
-                  placeholder="Rédigez votre message ici..."
-                  value={composeContent}
-                  onChange={(event) => setComposeContent(event.target.value)}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-4 focus:ring-primary/10 transition-all font-medium text-[15px] resize-none"
-                ></textarea>
+              <div className="px-6 py-5">
+                <p className="text-sm text-slate-600">
+                  Cette action est definitive. Voulez-vous vraiment supprimer ce message ?
+                </p>
               </div>
-            </div>
-
-            <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
-              <button
-                onClick={() => setIsComposeOpen(false)}
-                className="px-5 py-2.5 text-slate-600 font-bold hover:bg-slate-200 rounded-xl transition-colors text-sm"
-              >
-                Annuler
-              </button>
-              <button
-                onClick={handleComposeSend}
-                className="px-6 py-2.5 bg-primary text-white rounded-xl font-bold shadow-lg shadow-primary/25 hover:bg-blue-800 transition-all flex items-center justify-center gap-2 text-sm"
-              >
-                Envoyer le message
-                <span className="material-symbols-outlined !text-[16px]">send</span>
-              </button>
+              <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
+                <button
+                  onClick={() => setPendingDeleteId(null)}
+                  className="px-4 py-2 text-slate-600 font-bold hover:bg-slate-200 rounded-xl transition-colors text-sm"
+                  type="button"
+                >
+                  Annuler
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  className="px-4 py-2 bg-rose-600 text-white font-bold rounded-xl hover:bg-rose-700 transition-colors text-sm"
+                  type="button"
+                >
+                  Supprimer
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </section>
+
     </StudentDashboardLayout>
   );
 }

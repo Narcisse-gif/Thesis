@@ -42,11 +42,24 @@ export class UsersService {
       const student = this.studentRepository.create({
         firstName: profileData.firstName || '',
         lastName: profileData.lastName || '',
+        fieldOfStudy: profileData.fieldOfStudy || '',
+        studyLevel: profileData.studyLevel || '',
+        university: profileData.university || '',
+        phoneNumber: profileData.phoneNumber || '',
+        location: profileData.location || '',
       });
       user.studentProfile = student;
     } else if (user.role === UserRole.ENTERPRISE) {
       const enterprise = this.enterpriseRepository.create({
         companyName: profileData.companyName || '',
+        industry: profileData.industry || '',
+        companySize: profileData.companySize || '',
+        website: profileData.website || '',
+        location: profileData.location || '',
+        shortDescription: profileData.shortDescription || '',
+        phoneNumber: profileData.phoneNumber || '',
+        address: profileData.address || '',
+        postalCode: profileData.postalCode || '',
       });
       user.enterpriseProfile = enterprise;
     }
@@ -118,5 +131,45 @@ export class UsersService {
 
   async findByResetToken(token: string) {
     return this.usersRepository.findOne({ where: { resetPasswordToken: token } });
+  }
+
+  async searchUsers(query: string, role: UserRole, limit = 10) {
+    const trimmed = (query || '').trim();
+    if (!trimmed) return [];
+
+    const qb = this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.studentProfile', 'studentProfile')
+      .leftJoinAndSelect('user.enterpriseProfile', 'enterpriseProfile')
+      .where('user.role = :role', { role })
+      .take(limit);
+
+    const pattern = `%${trimmed}%`;
+    if (role === UserRole.STUDENT) {
+      qb.andWhere(
+        '(user.email ILIKE :pattern OR studentProfile.firstName ILIKE :pattern OR studentProfile.lastName ILIKE :pattern)',
+        { pattern },
+      );
+    } else if (role === UserRole.ENTERPRISE) {
+      qb.andWhere(
+        '(user.email ILIKE :pattern OR enterpriseProfile.companyName ILIKE :pattern)',
+        { pattern },
+      );
+    }
+
+    const users = await qb.getMany();
+    return users.map((user) => {
+      const displayName =
+        user.role === UserRole.STUDENT
+          ? `${user.studentProfile?.firstName || ''} ${user.studentProfile?.lastName || ''}`.trim()
+          : user.enterpriseProfile?.companyName || '';
+
+      return {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        displayName,
+      };
+    });
   }
 }

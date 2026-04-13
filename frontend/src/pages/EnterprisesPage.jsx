@@ -1,53 +1,58 @@
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { useNavigate } from 'react-router-dom';
+import api from '../services/api';
 
 export default function EnterprisesPage() {
   const navigate = useNavigate();
-  const companies = [
-    {
-      name: 'Orange Burkina',
-      sector: 'Télécoms',
-      sectorColor: 'bg-blue-50 text-primary border-blue-100',
-      location: 'Ouagadougou, Zone Commerciale',
-      offers: 12
-    },
-    {
-      name: 'Coris Bank International',
-      sector: 'Finance',
-      sectorColor: 'bg-blue-50 text-primary border-blue-100',
-      location: 'Ouagadougou, Koulouba',
-      offers: 8
-    },
-    {
-      name: 'Moov Africa',
-      sector: 'Télécoms',
-      sectorColor: 'bg-blue-50 text-primary border-blue-100',
-      location: 'Bobo-Dioulasso, Centre-ville',
-      offers: 5
-    },
-    {
-      name: 'SONABEL',
-      sector: 'Énergie',
-      sectorColor: 'bg-blue-50 text-primary border-blue-100',
-      location: 'Ouagadougou, Gounghin',
-      offers: 3
-    },
-    {
-      name: 'Onatel',
-      sector: 'Télécoms',
-      sectorColor: 'bg-blue-50 text-primary border-blue-100',
-      location: 'Ouagadougou, Zone Industrielle',
-      offers: 7
-    },
-    {
-      name: 'Wendkuni Bank',
-      sector: 'Finance',
-      sectorColor: 'bg-blue-50 text-primary border-blue-100',
-      location: 'Ouagadougou, Projet ZACA',
-      offers: 4
-    }
-  ];
+  const [companies, setCompanies] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchInput, setSearchInput] = useState('');
+  const [query, setQuery] = useState('');
+
+  const apiBaseUrl = api.defaults.baseURL || '';
+  const resolveLogoUrl = (value) => {
+    if (!value) return '';
+    if (value.startsWith('http')) return value;
+    if (value.startsWith('/uploads/')) return `${apiBaseUrl}${value}`;
+    return value;
+  };
+
+  useEffect(() => {
+    let isMounted = true;
+    const handler = setTimeout(async () => {
+      try {
+        if (isMounted) {
+          setLoading(true);
+        }
+        const response = await api.get('/enterprises', {
+          params: query ? { search: query } : undefined,
+        });
+        if (isMounted) {
+          setCompanies(response.data || []);
+        }
+      } catch (error) {
+        console.error('Failed to load enterprises:', error);
+        if (isMounted) {
+          setCompanies([]);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }, 300);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(handler);
+    };
+  }, [query]);
+
+  const handleSearch = () => {
+    setQuery(searchInput.trim());
+  };
 
   return (
     <div className="relative flex min-h-screen flex-col overflow-x-hidden bg-background-light dark:bg-background-dark">
@@ -70,8 +75,18 @@ export default function EnterprisesPage() {
             <div className="text-slate-400 flex items-center justify-center pl-4 pr-2">
               <span className="material-symbols-outlined">search</span>
             </div>
-            <input className="flex-1 border-none focus:ring-0 bg-transparent outline-none text-slate-900 dark:text-white px-2 text-base placeholder:text-slate-500" placeholder="Rechercher une entreprise, un secteur..." />
-            <button className="bg-primary text-white font-bold px-8 md:px-12 rounded-xl hover:bg-blue-800 transition-colors">
+            <input
+              className="flex-1 border-none focus:ring-0 bg-transparent outline-none text-slate-900 dark:text-white px-2 text-base placeholder:text-slate-500"
+              placeholder="Rechercher une entreprise, un secteur..."
+              value={searchInput}
+              onChange={(event) => setSearchInput(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  handleSearch();
+                }
+              }}
+            />
+            <button className="bg-primary text-white font-bold px-8 md:px-12 rounded-xl hover:bg-blue-800 transition-colors" onClick={handleSearch}>
               Rechercher
             </button>
           </div>
@@ -92,43 +107,61 @@ export default function EnterprisesPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {companies.map((company, index) => (
-            <div key={index} className="group hover-card-effect bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/60 dark:border-slate-800 p-6 flex flex-col h-full shadow-sm">
-              <div className="flex items-start justify-between mb-5">
-                <div className="w-16 h-16 rounded-2xl bg-white border border-slate-100 p-2 shadow-sm flex items-center justify-center overflow-hidden font-bold text-primary text-xl">
-                  {company.name.substring(0, 2).toUpperCase()}
+          {loading ? (
+            <div className="col-span-full text-center text-slate-500">Chargement des entreprises...</div>
+          ) : companies.length === 0 ? (
+            <div className="col-span-full text-center text-slate-500">Aucune entreprise disponible.</div>
+          ) : (
+            companies.map((company) => {
+              const companyName = company.companyName || 'Entreprise';
+              const offersCount = company.activeOffersCount ?? company.offersCount ?? 0;
+              const sector = company.industry || 'Secteur';
+              const sectorClasses = 'bg-blue-50 text-primary border-blue-100';
+              const logoUrl = resolveLogoUrl(company.logoUrl);
+
+              return (
+                <div key={company.id} className="group hover-card-effect bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/60 dark:border-slate-800 p-6 flex flex-col h-full shadow-sm">
+                  <div className="flex items-start justify-between mb-5">
+                    <div className="w-16 h-16 rounded-2xl bg-white border border-slate-100 p-2 shadow-sm flex items-center justify-center overflow-hidden font-bold text-primary text-xl">
+                      {logoUrl ? (
+                        <img alt={companyName} className="w-full h-full object-contain" src={logoUrl} />
+                      ) : (
+                        companyName.substring(0, 2).toUpperCase()
+                      )}
+                    </div>
+                    <span className={`px-3 py-1 text-[10px] font-bold rounded-full uppercase tracking-widest border ${sectorClasses}`}>
+                      {sector}
+                    </span>
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-primary transition-colors">{companyName}</h4>
+                    <div className="flex items-center gap-1.5 text-slate-500 text-sm mb-4">
+                      <span className="material-symbols-outlined text-base">location_on</span>
+                      <span>{company.location || 'Localisation non specifiee'}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-primary bg-primary/5 px-3 py-2 rounded-lg inline-flex mb-6">
+                      <span className="material-symbols-outlined text-base">work</span>
+                      <span className="font-bold text-xs">{offersCount} offres disponibles</span>
+                    </div>
+                  </div>
+                  <button
+                    className="w-full py-3 bg-slate-50 dark:bg-slate-800 group-hover:bg-primary text-slate-700 dark:text-slate-300 group-hover:text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-sm mt-auto"
+                    onClick={() => navigate(`/entreprises/${company.id}`)}
+                  >
+                    Voir le profil
+                    <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                  </button>
                 </div>
-                <span className={`px-3 py-1 text-[10px] font-bold rounded-full uppercase tracking-widest border ${company.sectorColor}`}>
-                  {company.sector}
-                </span>
-              </div>
-              <div className="flex-1">
-                <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-primary transition-colors">{company.name}</h4>
-                <div className="flex items-center gap-1.5 text-slate-500 text-sm mb-4">
-                  <span className="material-symbols-outlined text-base">location_on</span>
-                  <span>{company.location}</span>
-                </div>
-                <div className="flex items-center gap-2 text-primary bg-primary/5 px-3 py-2 rounded-lg inline-flex mb-6">
-                  <span className="material-symbols-outlined text-base">work</span>
-                  <span className="font-bold text-xs">{company.offers} offres disponibles</span>
-                </div>
-              </div>
-              <button 
-                className="w-full py-3 bg-slate-50 dark:bg-slate-800 group-hover:bg-primary text-slate-700 dark:text-slate-300 group-hover:text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-sm mt-auto"
-                onClick={() => navigate('/entreprises/1')}
-              >
-                Voir le profil
-                <span className="material-symbols-outlined text-sm">arrow_forward</span>
-              </button>
-            </div>
-          ))}
+              );
+            })
+          )}
         </div>
 
         {/* Load more */}
         <div className="mt-20 flex justify-center">
-          <button className="px-10 py-4 border-2 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 transition-all flex items-center gap-3">
+          <button className="px-10 py-4 border-2 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 transition-all flex items-center gap-3" onClick={() => handleSearch()}>
             <span className="material-symbols-outlined text-xl">sync</span>
-            Charger plus d'entreprises
+            Recharger les entreprises
           </button>
         </div>
       </main>

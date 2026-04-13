@@ -3,17 +3,109 @@ import api from '../services/api';
 import AdminDashboardLayout from '../components/AdminDashboardLayout';
 
 export default function AdminDashboardPage() {
-  const [stats, setStats] = useState({ users: 0, offers: 0, candidatures: 0, flags: 5 });
+  const [stats, setStats] = useState({
+    students: 0,
+    enterprises: 0,
+    offersStage: 0,
+    offersJob: 0,
+  });
+  const [pendingOffers, setPendingOffers] = useState([]);
+  const [activityItems, setActivityItems] = useState([]);
+  const [monthlySeries, setMonthlySeries] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
       try {
-        const usersReq = api.get('/users/all').catch(() => ({ data: [] }));
-        const offersReq = api.get('/offers').catch(() => ({ data: [] }));
-        const [uRes, oRes] = await Promise.all([usersReq, offersReq]);
-        setStats(s => ({ ...s, users: uRes.data?.length || 0, offers: oRes.data?.length || 0 }));
-      } catch (e) {
-        console.error(e);
+        const statsReq = api.get('/admin/dashboard/stats');
+        const offersReq = api.get('/admin/offers');
+        const usersReq = api.get('/admin/users');
+        const [statsRes, offersRes, usersRes] = await Promise.all([statsReq, offersReq, usersReq]);
+
+        const offers = offersRes.data || [];
+        const users = usersRes.data || [];
+        const offersStage = offers.filter((offer) => offer.contractType === 'STAGE').length;
+        const offersJob = offers.filter((offer) => offer.contractType !== 'STAGE').length;
+        const pending = offers.filter((offer) => offer.status === 'EN_ATTENTE');
+        const apiBaseUrl = api.defaults.baseURL || '';
+        const resolveLogoUrl = (value) => {
+          if (!value) return '';
+          if (value.startsWith('http')) return value;
+          if (value.startsWith('/uploads/')) return `${apiBaseUrl}${value}`;
+          return value;
+        };
+
+        const recentUsers = users
+          .filter((user) => user.createdAt && user.role !== 'ADMIN')
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .slice(0, 3)
+          .map((user) => ({
+            id: user.id,
+            type: user.role === 'ENTERPRISE' ? 'enterprise' : 'student',
+            name: user.role === 'ENTERPRISE'
+              ? user.enterpriseProfile?.companyName || user.email
+              : `${user.studentProfile?.firstName || ''} ${user.studentProfile?.lastName || ''}`.trim() || user.email,
+            description: user.role === 'ENTERPRISE'
+              ? 'Nouveau compte entreprise cree.'
+              : 'Nouveau compte etudiant cree.',
+            date: new Date(user.createdAt),
+            avatar: resolveLogoUrl(user.enterpriseProfile?.logoUrl) || resolveLogoUrl(user.avatarUrl),
+          }));
+
+        const recentOffers = offers
+          .filter((offer) => offer.createdAt)
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .slice(0, 3)
+          .map((offer) => ({
+            id: offer.id,
+            type: 'offer',
+            name: offer.title,
+            description: `Nouvelle offre publiee par ${offer.enterprise?.companyName || 'Entreprise'}.`,
+            date: new Date(offer.createdAt),
+            avatar: resolveLogoUrl(offer.enterprise?.logoUrl),
+          }));
+
+        const activity = [...recentUsers, ...recentOffers]
+          .sort((a, b) => b.date - a.date)
+          .slice(0, 5);
+
+        const months = Array.from({ length: 6 }, (_, index) => {
+          const date = new Date();
+          date.setMonth(date.getMonth() - (5 - index));
+          return {
+            key: `${date.getFullYear()}-${date.getMonth()}`,
+            label: date.toLocaleDateString('fr-FR', { month: 'short' }),
+          };
+        });
+
+        const userByMonth = months.map((month) => {
+          const count = users.filter((user) => {
+            if (!user.createdAt) return false;
+            const date = new Date(user.createdAt);
+            return `${date.getFullYear()}-${date.getMonth()}` === month.key;
+          }).length;
+          return { label: month.label, count };
+        });
+
+        const maxCount = Math.max(...userByMonth.map((item) => item.count), 1);
+        const normalized = userByMonth.map((item) => ({
+          ...item,
+          percentage: Math.round((item.count / maxCount) * 100),
+        }));
+
+        setStats({
+          students: statsRes.data?.students || 0,
+          enterprises: statsRes.data?.enterprises || 0,
+          offersStage,
+          offersJob,
+        });
+        setPendingOffers(pending);
+        setActivityItems(activity);
+        setMonthlySeries(normalized);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
       }
     })();
   }, []);
@@ -45,8 +137,8 @@ export default function AdminDashboardPage() {
               </div>
               
             </div>
-            <p className="text-slate-400 text-[11px] font-extrabold uppercase tracking-widest mb-1.5">�tudiants</p>
-            <h3 className="text-[28px] leading-none font-bold text-slate-900">12,482</h3>
+            <p className="text-slate-400 text-[11px] font-extrabold uppercase tracking-widest mb-1.5">Etudiants</p>
+            <h3 className="text-[28px] leading-none font-bold text-slate-900">{stats.students}</h3>
           </div>
         </div>
 
@@ -59,7 +151,7 @@ export default function AdminDashboardPage() {
               
             </div>
             <p className="text-slate-400 text-[11px] font-extrabold uppercase tracking-widest mb-1.5">Entreprises</p>
-            <h3 className="text-[28px] leading-none font-bold text-slate-900">846</h3>
+            <h3 className="text-[28px] leading-none font-bold text-slate-900">{stats.enterprises}</h3>
           </div>
         </div>
 
@@ -72,7 +164,7 @@ export default function AdminDashboardPage() {
               
             </div>
             <p className="text-slate-400 text-[11px] font-extrabold uppercase tracking-widest mb-1.5">Offres de stage</p>
-            <h3 className="text-[28px] leading-none font-bold text-slate-900">2,194</h3>
+            <h3 className="text-[28px] leading-none font-bold text-slate-900">{stats.offersStage}</h3>
           </div>
         </div>
 
@@ -85,7 +177,7 @@ export default function AdminDashboardPage() {
               
             </div>
             <p className="text-slate-400 text-[11px] font-extrabold uppercase tracking-widest mb-1.5">Offres d'emploi</p>
-            <h3 className="text-[28px] leading-none font-bold text-slate-900">145</h3>
+            <h3 className="text-[28px] leading-none font-bold text-slate-900">{stats.offersJob}</h3>
           </div>
         </div>
 
@@ -98,45 +190,32 @@ export default function AdminDashboardPage() {
         <div className="lg:col-span-2 bg-white p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col">
           <div className="flex justify-between items-center mb-8 border-b border-slate-100 pb-4">
             <div>
-              <h4 className="text-[18px] font-bold text-slate-900">Évolution Utilisateurs &amp; Offres</h4>
-              <p className="text-[13px] font-medium text-slate-500 mt-1">Monthly trend analysis for the current year</p>
+              <h4 className="text-[18px] font-bold text-slate-900">Évolution des inscriptions</h4>
+              <p className="text-[13px] font-medium text-slate-500 mt-1">Tendance des 6 derniers mois</p>
             </div>
             <div className="flex gap-5">
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-primary shadow-sm"></span>
-                <span className="text-[12px] font-bold text-slate-600">Étudiants</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-blue-300 shadow-sm"></span>
-                <span className="text-[12px] font-bold text-slate-600">Offers</span>
+                <span className="text-[12px] font-bold text-slate-600">Utilisateurs</span>
               </div>
             </div>
           </div>
           
-          {/* Mock Chart Area */}
-          <div className="relative flex-1 min-h-[250px] w-full mt-2 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden group">
-             {/* Decorative Grid Lines */}
-             <div className="absolute inset-0 flex flex-col justify-between py-6 opacity-50">
-                <div className="w-full h-px bg-slate-200"></div>
-                <div className="w-full h-px bg-slate-200"></div>
-                <div className="w-full h-px bg-slate-200"></div>
-                <div className="w-full h-px bg-slate-200"></div>
-             </div>
-             {/* Fake Line Chart Representation using SVG */}
-             <svg className="w-full h-full absolute inset-0 text-primary drop-shadow-xl" preserveAspectRatio="none" viewBox="0 0 800 300">
-               <defs>
-                 <linearGradient id="userGrad" x1="0" x2="0" y1="0" y2="1">
-                   <stop offset="0%" stopColor="#1e40af" stopOpacity="0.2" />
-                   <stop offset="100%" stopColor="#1e40af" stopOpacity="0" />
-                 </linearGradient>
-               </defs>
-               <path d="M0,250 Q100,220 200,180 T400,140 T600,100 T800,60 L800,300 L0,300 Z" fill="url(#userGrad)" />
-               <path d="M0,250 Q100,220 200,180 T400,140 T600,100 T800,60" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="4" />
-               <path d="M0,280 Q100,260 200,230 T400,200 T600,160 T800,120" fill="none" stroke="#93c5fd" strokeDasharray="8 6" strokeLinecap="round" strokeWidth="4" />
-             </svg>
-             <div className="absolute bottom-4 left-0 right-0 flex justify-between px-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest z-10">
-                <span>Jan</span><span>Mar</span><span>May</span><span>Jul</span><span>Sep</span><span>Nov</span>
-             </div>
+          <div className="relative flex-1 min-h-[250px] w-full mt-2 rounded-xl bg-slate-50 border border-slate-100 overflow-hidden">
+            <div className="absolute inset-0 flex flex-col justify-between py-6 opacity-50">
+              <div className="w-full h-px bg-slate-200"></div>
+              <div className="w-full h-px bg-slate-200"></div>
+              <div className="w-full h-px bg-slate-200"></div>
+              <div className="w-full h-px bg-slate-200"></div>
+            </div>
+            <div className="relative z-10 h-full flex items-end justify-between gap-4 px-6 pb-6">
+              {monthlySeries.map((item) => (
+                <div key={item.label} className="flex-1 flex flex-col items-center gap-3">
+                  <div className="w-full max-w-[32px] rounded-t-lg bg-primary/20" style={{ height: `${item.percentage}%` }}></div>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{item.label}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -147,57 +226,31 @@ export default function AdminDashboardPage() {
             Activité Récente
           </h4>
           <div className="space-y-6 flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
-            
-            {/* Activity Item */}
-            <div className="flex gap-4 items-start group">
-              <div className="w-10 h-10 rounded-xl bg-slate-100 overflow-hidden flex-shrink-0 border border-slate-200 group-hover:border-primary/50 transition-colors">
-                <img alt="Company" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJbvL4YccplYBX8TX3rPtdkHdbLio81xSJyIXFxPKmon2_vVyeMbG4gfen-F6y74iAcwgu0sICszmB0xpJgcaFU0N7UrPFUruG6nw4KDfWYa1uDifAGClUV9sdZT7BhzhaWg1rLE8t2PeKkOM-iTHs9NMEsuYJIXdsBd9Z5yPKroD-edqgk60Czhk79csgq_i6LOS_Wic-qNJKtMkueb7JtxN-Q52e6moVVkUlktdAzdTjRYVJ4fCX3VZhnY4J-e_VrKmSJt9P7_Ym" />
-              </div>
-              <div>
-                <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">TechSolutions SARL</p>
-                <p className="text-[13px] text-slate-500 font-medium leading-tight mt-1">Submitted 3 new internship offers for moderation.</p>
-                <span className="text-[10px] font-black tracking-widest text-amber-600 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-md mt-2 inline-block">PENDING</span>
-              </div>
-            </div>
-
-            {/* Activity Item */}
-            <div className="flex gap-4 items-start group">
-              <div className="w-10 h-10 rounded-xl bg-slate-100 overflow-hidden flex-shrink-0 border border-slate-200 group-hover:border-primary/50 transition-colors">
-                <img alt="User" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgESvMY-v_4Rt43ZAfVwE5eyu9EDcNn1SRMG5gubaZb--MwzhwKe40H7rTHijWqK6MLxcRKbbX9fwElIfJHU2gyaolrVRL7VQpOkvAIz4jjg2rw7z8YkTfuYY8vqVTsskjUoi8ZqTTDF19YUhCtoSBWuS32VAsclvexgrU50v1ibjzBcERTE_OjuutxVozpuz72_eMeStIYLBWKYDOln16CUTr5Lo0MBWe7YaNjU-zX3X3u4G_HNBTe1v8DSPFno1qFzYOGtLvsmgB" />
-              </div>
-              <div>
-                <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">Moussa Traor├®</p>
-                <p className="text-[13px] text-slate-500 font-medium leading-tight mt-1">A vérifié son compte étudiant avec sa carte universitaire.</p>
-                <span className="text-[10px] font-bold tracking-widest text-slate-400 bg-slate-50 border border-slate-100 px-2 py-0.5 rounded-md mt-2 inline-block uppercase">2 Hours Ago</span>
-              </div>
-            </div>
-
-            {/* Activity Item */}
-            <div className="flex gap-4 items-start group">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center flex-shrink-0 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                <span className="material-symbols-outlined !text-[20px]">verified</span>
-              </div>
-              <div>
-                <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">New Verification</p>
-                <p className="text-[13px] text-slate-500 font-medium leading-tight mt-1">Bank of Africa (BOA) completed identity verification.</p>
-                <span className="text-[10px] font-bold tracking-widest text-slate-400 bg-slate-50 border border-slate-100 px-2 py-0.5 rounded-md mt-2 inline-block uppercase">4 Hours Ago</span>
-              </div>
-            </div>
-            
-            {/* Activity Item */}
-            <div className="flex gap-4 items-start group">
-              <div className="w-10 h-10 rounded-xl bg-slate-100 overflow-hidden flex-shrink-0 border border-slate-200 group-hover:border-primary/50 transition-colors">
-                <img alt="User" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnqzy96NoOu2EFbi_UXoDM3hHBKdgwoAc8dIzEyHbiLntrkNYjLLZI7Rne9dINnJnWwu8TakzgsD0onCldfRbO90Qyv3z4E73HKlNoXJZFLx-On6KZM2zN7YZVB4SrkoyxL6iiK-hCz26nfbe1I85sWdTQ8-dG5BoV_dCdzLFF4jH9aILwL29wHBzYWJRB5eut0VlXzbaVtuvtk-8FbPEYrl_-nZ06ZQv8Zt_j8rVu7VPNrj2xt96AXebhhyQve4zNULYbzwo6ICIj" />
-              </div>
-              <div>
-                <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">Awa Coulibaly</p>
-                <p className="text-[13px] text-slate-500 font-medium leading-tight mt-1">Updated profile with new certification in Project Mgmt.</p>
-                <span className="text-[10px] font-bold tracking-widest text-slate-400 bg-slate-50 border border-slate-100 px-2 py-0.5 rounded-md mt-2 inline-block uppercase">Yesterday</span>
-              </div>
-            </div>
-
+            {loading ? (
+              <div className="text-slate-500 text-sm">Chargement...</div>
+            ) : activityItems.length === 0 ? (
+              <div className="text-slate-500 text-sm">Aucune activite recente.</div>
+            ) : (
+              activityItems.map((item) => (
+                <div key={item.id} className="flex gap-4 items-start group">
+                  <div className="w-10 h-10 rounded-xl bg-slate-100 overflow-hidden flex-shrink-0 border border-slate-200 group-hover:border-primary/50 transition-colors flex items-center justify-center">
+                    {item.avatar ? (
+                      <img alt={item.name} className="w-full h-full object-cover" src={item.avatar} />
+                    ) : (
+                      <span className="material-symbols-outlined text-slate-400">notifications</span>
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">{item.name}</p>
+                    <p className="text-[13px] text-slate-500 font-medium leading-tight mt-1">{item.description}</p>
+                    <span className="text-[10px] font-bold tracking-widest text-slate-400 bg-slate-50 border border-slate-100 px-2 py-0.5 rounded-md mt-2 inline-block uppercase">
+                      {item.date.toLocaleDateString('fr-FR')}
+                    </span>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
-          <button className="mt-6 w-full py-3 bg-slate-50 hover:bg-slate-100 rounded-xl text-[11px] font-extrabold text-blue-600 transition-colors uppercase tracking-widest border border-slate-100 focus:outline-none">View All Activity</button>
         </div>
       </div>
 
@@ -209,101 +262,63 @@ export default function AdminDashboardPage() {
           <div className="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
             <h4 className="text-[18px] font-bold text-slate-900 flex items-center gap-2">
               <span className="material-symbols-outlined text-slate-400">admin_panel_settings</span>
-              En attente de modération
+              Offres en attente de modération
             </h4>
             <span className="px-3 py-1 bg-amber-50 border border-amber-200/50 text-amber-700 text-[10px] font-black tracking-widest rounded-lg flex items-center gap-1.5 shadow-sm shadow-amber-100/50">
                 <span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></span>
-                12 ACTIONS REQUIRED
+                {pendingOffers.length} ACTIONS REQUISES
             </span>
           </div>
           <div className="overflow-x-auto min-w-full">
             <table className="w-full text-left whitespace-nowrap">
               <thead className="bg-white border-b border-slate-100 text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">
                 <tr>
-                  <th className="px-8 py-5">Title / Name</th>
-                  <th className="px-8 py-5">Category</th>
+                  <th className="px-8 py-5">Offre</th>
+                  <th className="px-8 py-5">Secteur</th>
                   <th className="px-8 py-5">Date de soumission</th>
-                  <th className="px-8 py-5">Risk Level</th>
+                  <th className="px-8 py-5">Niveau</th>
                   <th className="px-8 py-5 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
-                
-                <tr className="hover:bg-slate-50/50 transition-colors group">
-                  <td className="px-8 py-4">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 border border-blue-100 shadow-sm group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                        <span className="material-symbols-outlined !text-[20px]">description</span>
-                      </div>
-                      <div>
-                        <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">Cloud Architect Intern</p>
-                        <p className="text-[12px] font-medium text-slate-500 mt-0.5">Orange Burkina</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-8 py-4 text-[13px] font-semibold text-slate-600">IT &amp; Engineering</td>
-                  <td className="px-8 py-4 text-[13px] font-medium text-slate-500">Oct 24, 2023</td>
-                  <td className="px-8 py-4">
-                    <span className="inline-flex items-center gap-2 text-[11px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100/50">
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                      LOW
-                    </span>
-                  </td>
-                  <td className="px-8 py-4 text-right">
-                    <button className="px-4 py-2 bg-slate-50 text-blue-600 hover:bg-blue-50 border border-slate-200 hover:border-blue-100 rounded-xl font-bold text-[12px] transition-all">Review</button>
-                  </td>
-                </tr>
-
-                <tr className="hover:bg-slate-50/50 transition-colors group">
-                  <td className="px-8 py-4">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 border border-blue-100 shadow-sm group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                        <span className="material-symbols-outlined !text-[20px]">description</span>
-                      </div>
-                      <div>
-                        <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">Marketing Associate</p>
-                        <p className="text-[12px] font-medium text-slate-500 mt-0.5">Burkina Gaz</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-8 py-4 text-[13px] font-semibold text-slate-600">Business</td>
-                  <td className="px-8 py-4 text-[13px] font-medium text-slate-500">Oct 23, 2023</td>
-                  <td className="px-8 py-4">
-                    <span className="inline-flex items-center gap-2 text-[11px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100/50">
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                      LOW
-                    </span>
-                  </td>
-                  <td className="px-8 py-4 text-right">
-                    <button className="px-4 py-2 bg-slate-50 text-blue-600 hover:bg-blue-50 border border-slate-200 hover:border-blue-100 rounded-xl font-bold text-[12px] transition-all">Review</button>
-                  </td>
-                </tr>
-
-                <tr className="hover:bg-slate-50/50 transition-colors group">
-                  <td className="px-8 py-4">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center text-rose-600 border border-rose-100 shadow-sm group-hover:bg-rose-600 group-hover:text-white transition-colors">
-                        <span className="material-symbols-outlined !text-[20px]">assignment_ind</span>
-                      </div>
-                      <div>
-                        <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">Profile: Ibrahim Sanou</p>
-                        <p className="text-[12px] font-medium text-slate-500 mt-0.5">KYC Verification</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-8 py-4 text-[13px] font-semibold text-slate-600">Identité Utilisateur</td>
-                  <td className="px-8 py-4 text-[13px] font-medium text-slate-500">Oct 22, 2023</td>
-                  <td className="px-8 py-4">
-                    <span className="inline-flex items-center gap-2 text-[11px] font-bold text-rose-600 bg-rose-50 px-2.5 py-1 rounded-md border border-rose-100/50">
-                      <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
-                      HIGH
-                    </span>
-                  </td>
-                  <td className="px-8 py-4 text-right">
-                    <button className="px-4 py-2 bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white border border-rose-200 hover:border-rose-600 rounded-xl font-bold text-[12px] transition-all">Urgent Review</button>
-                  </td>
-                </tr>
-
+                {loading ? (
+                  <tr>
+                    <td className="px-8 py-6 text-slate-500 text-sm" colSpan="5">Chargement...</td>
+                  </tr>
+                ) : pendingOffers.length === 0 ? (
+                  <tr>
+                    <td className="px-8 py-6 text-slate-500 text-sm" colSpan="5">Aucune offre en attente.</td>
+                  </tr>
+                ) : (
+                  pendingOffers.map((offer) => (
+                    <tr key={offer.id} className="hover:bg-slate-50/50 transition-colors group">
+                      <td className="px-8 py-4">
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 border border-blue-100 shadow-sm group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                            <span className="material-symbols-outlined !text-[20px]">description</span>
+                          </div>
+                          <div>
+                            <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">{offer.title}</p>
+                            <p className="text-[12px] font-medium text-slate-500 mt-0.5">{offer.enterprise?.companyName || 'Entreprise'}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-8 py-4 text-[13px] font-semibold text-slate-600">{offer.enterprise?.industry || 'Non defini'}</td>
+                      <td className="px-8 py-4 text-[13px] font-medium text-slate-500">
+                        {offer.createdAt ? new Date(offer.createdAt).toLocaleDateString('fr-FR') : 'Non renseigne'}
+                      </td>
+                      <td className="px-8 py-4">
+                        <span className="inline-flex items-center gap-2 text-[11px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100/50">
+                          <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                          FAIBLE
+                        </span>
+                      </td>
+                      <td className="px-8 py-4 text-right">
+                        <button className="px-4 py-2 bg-slate-50 text-blue-600 hover:bg-blue-50 border border-slate-200 hover:border-blue-100 rounded-xl font-bold text-[12px] transition-all">Examiner</button>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

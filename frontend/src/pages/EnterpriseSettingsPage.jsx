@@ -13,7 +13,9 @@ export default function EnterpriseSettingsPage() {
     companySize: '',
     website: '',
     location: '',
-    logoUrl: '',
+    phoneNumber: '',
+    address: '',
+    postalCode: '',
     shortDescription: '',
   });
   const [passwordData, setPasswordData] = useState({
@@ -25,6 +27,7 @@ export default function EnterpriseSettingsPage() {
   const [status, setStatus] = useState('');
   const [emailStatus, setEmailStatus] = useState('');
   const [passwordStatus, setPasswordStatus] = useState('');
+  const [logoUploading, setLogoUploading] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -39,7 +42,9 @@ export default function EnterpriseSettingsPage() {
           companySize: enterprise.companySize || '',
           website: enterprise.website || '',
           location: enterprise.location || '',
-          logoUrl: enterprise.logoUrl || '',
+          phoneNumber: enterprise.phoneNumber || '',
+          address: enterprise.address || '',
+          postalCode: enterprise.postalCode || '',
           shortDescription: enterprise.shortDescription || '',
         });
       } catch (error) {
@@ -70,9 +75,14 @@ export default function EnterpriseSettingsPage() {
         companySize: formData.companySize,
         website: formData.website,
         location: formData.location,
-        logoUrl: formData.logoUrl,
+        phoneNumber: formData.phoneNumber,
+        address: formData.address,
+        postalCode: formData.postalCode,
         shortDescription: formData.shortDescription,
       });
+      const refreshed = await api.get('/users/profile');
+      setProfile(refreshed.data);
+      window.dispatchEvent(new CustomEvent('profile:updated', { detail: refreshed.data }));
       setStatus('Informations mises a jour.');
     } catch (error) {
       console.error('Failed to update enterprise profile:', error);
@@ -125,6 +135,39 @@ export default function EnterpriseSettingsPage() {
     }
   };
 
+  const handleLogoChange = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setLogoUploading(true);
+    setStatus('');
+    try {
+      const payload = new FormData();
+      payload.append('file', file);
+      await api.post('/users/logo', payload, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      const refreshed = await api.get('/users/profile');
+      setProfile(refreshed.data);
+      window.dispatchEvent(new CustomEvent('profile:updated', { detail: refreshed.data }));
+      setStatus('Logo mis a jour.');
+    } catch (error) {
+      console.error('Failed to upload logo:', error);
+      setStatus('Erreur lors du chargement du logo.');
+    } finally {
+      setLogoUploading(false);
+    }
+  };
+
+  const apiBaseUrl = api.defaults.baseURL || '';
+  const resolveFileUrl = (value) => {
+    if (!value) return '';
+    if (value.startsWith('http')) return value;
+    if (value.startsWith('/uploads/')) return `${apiBaseUrl}${value}`;
+    return value;
+  };
+
+
   return (
     <EnterpriseDashboardLayout>
       <section className="space-y-6 max-w-4xl mx-auto">
@@ -145,7 +188,16 @@ export default function EnterpriseSettingsPage() {
               <input className="rounded-xl border border-slate-200 px-4 py-3 text-[15px] font-medium outline-none focus:ring-4 focus:ring-primary/10 transition-all" name="companySize" value={formData.companySize} onChange={handleChange} placeholder="Taille" />
               <input className="rounded-xl border border-slate-200 px-4 py-3 text-[15px] font-medium outline-none focus:ring-4 focus:ring-primary/10 transition-all" name="website" value={formData.website} onChange={handleChange} placeholder="Site web" />
               <input className="rounded-xl border border-slate-200 px-4 py-3 text-[15px] font-medium outline-none focus:ring-4 focus:ring-primary/10 transition-all" name="location" value={formData.location} onChange={handleChange} placeholder="Ville" />
-              <input className="rounded-xl border border-slate-200 px-4 py-3 text-[15px] font-medium outline-none focus:ring-4 focus:ring-primary/10 transition-all" name="logoUrl" value={formData.logoUrl} onChange={handleChange} placeholder="Logo URL" />
+              <input className="rounded-xl border border-slate-200 px-4 py-3 text-[15px] font-medium outline-none focus:ring-4 focus:ring-primary/10 transition-all" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="Telephone" />
+              <input className="rounded-xl border border-slate-200 px-4 py-3 text-[15px] font-medium outline-none focus:ring-4 focus:ring-primary/10 transition-all" name="address" value={formData.address} onChange={handleChange} placeholder="Adresse" />
+              <input className="rounded-xl border border-slate-200 px-4 py-3 text-[15px] font-medium outline-none focus:ring-4 focus:ring-primary/10 transition-all" name="postalCode" value={formData.postalCode} onChange={handleChange} placeholder="Code postal" />
+            </div>
+            <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50 p-4">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Logo entreprise</label>
+              <input className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-[15px] font-medium outline-none focus:ring-4 focus:ring-primary/10 transition-all bg-white" type="file" accept="image/*" onChange={handleLogoChange} disabled={logoUploading} />
+              {resolveFileUrl(profile?.enterpriseProfile?.logoUrl) && (
+                <img src={resolveFileUrl(profile?.enterpriseProfile?.logoUrl)} alt="Logo" className="mt-3 h-20 w-full rounded-xl object-contain border border-slate-200 bg-white" />
+              )}
             </div>
             <textarea className="w-full rounded-xl border border-slate-200 px-4 py-3 text-[15px] font-medium outline-none focus:ring-4 focus:ring-primary/10 transition-all" name="shortDescription" value={formData.shortDescription} onChange={handleChange} placeholder="Description courte" rows={3}></textarea>
             {status && <p className="text-sm text-slate-500">{status}</p>}

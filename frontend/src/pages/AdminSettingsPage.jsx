@@ -1,8 +1,86 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import AdminDashboardLayout from '../components/AdminDashboardLayout';
+import api from '../services/api';
 
 export default function AdminSettingsPage() {
   const [activeTab, setActiveTab] = useState('general');
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [status, setStatus] = useState('');
+  const [settings, setSettings] = useState({
+    platformName: 'StageLink Burkina',
+    supportEmail: 'support@stagelink.bf',
+    seoDescription: 'La plateforme de reference pour connecter les talents du Burkina Faso avec les entreprises.',
+    maintenanceMode: false,
+    enable2faForAdmins: false,
+    sessionExpiryHours: 24,
+    notificationPreferences: {
+      newStudent: true,
+      newEnterprise: true,
+      reportedOffer: true,
+      applicationSubmitted: false,
+      systemUpdate: true,
+    },
+  });
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const response = await api.get('/admin/settings');
+        if (response.data) {
+          setSettings((prev) => ({
+            ...prev,
+            ...response.data,
+            notificationPreferences: response.data.notificationPreferences || prev.notificationPreferences,
+          }));
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSettings();
+  }, []);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setSettings((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleToggle = (name) => {
+    setSettings((prev) => ({ ...prev, [name]: !prev[name] }));
+  };
+
+  const handleNotificationToggle = (key) => {
+    setSettings((prev) => ({
+      ...prev,
+      notificationPreferences: {
+        ...prev.notificationPreferences,
+        [key]: !prev.notificationPreferences?.[key],
+      },
+    }));
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    setStatus('');
+    try {
+      const response = await api.patch('/admin/settings', settings);
+      setSettings((prev) => ({
+        ...prev,
+        ...response.data,
+        notificationPreferences: response.data?.notificationPreferences || prev.notificationPreferences,
+      }));
+      setStatus('Parametres sauvegardes.');
+    } catch (error) {
+      console.error(error);
+      setStatus('Erreur lors de la sauvegarde.');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <AdminDashboardLayout>
@@ -11,11 +89,21 @@ export default function AdminSettingsPage() {
           <h2 className="text-3xl font-bold tracking-tight text-slate-900">Paramètres de la plateforme</h2>
           <p className="text-slate-500 mt-1.5 text-[15px]">Configurez les règles globales, la sécurité et les notifications.</p>
         </div>
-        <button className="px-5 py-2.5 bg-primary text-white text-[13px] font-bold rounded-xl shadow-sm hover:bg-primary/90 transition-colors flex items-center gap-2">
+        <button
+          className="px-5 py-2.5 bg-primary text-white text-[13px] font-bold rounded-xl shadow-sm hover:bg-primary/90 transition-colors flex items-center gap-2 disabled:opacity-70"
+          onClick={handleSave}
+          disabled={saving}
+        >
           <span className="material-symbols-outlined !text-[18px]">save</span>
-          Enregistrer les modifications
+          {saving ? 'Enregistrement...' : 'Enregistrer les modifications'}
         </button>
       </div>
+
+      {status && (
+        <div className="mb-6 rounded-2xl border border-slate-100 bg-white px-6 py-4 text-sm font-semibold text-slate-600">
+          {status}
+        </div>
+      )}
 
       <div className="flex flex-col lg:flex-row gap-8 w-full">
         {/* Sidebar Menu */}
@@ -64,16 +152,34 @@ export default function AdminSettingsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-[12px] font-extrabold text-slate-500 uppercase tracking-wider mb-2">Nom de la plateforme</label>
-                    <input type="text" defaultValue="StageLink Burkina" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-[14px] font-semibold text-slate-900 focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none" />
+                    <input
+                      type="text"
+                      name="platformName"
+                      value={settings.platformName}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-[14px] font-semibold text-slate-900 focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none"
+                    />
                   </div>
                   <div>
                     <label className="block text-[12px] font-extrabold text-slate-500 uppercase tracking-wider mb-2">Email de contact (Support)</label>
-                    <input type="email" defaultValue="support@stagelink.bf" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-[14px] font-semibold text-slate-900 focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none" />
+                    <input
+                      type="email"
+                      name="supportEmail"
+                      value={settings.supportEmail}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-[14px] font-semibold text-slate-900 focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none"
+                    />
                   </div>
                 </div>
                 <div>
                   <label className="block text-[12px] font-extrabold text-slate-500 uppercase tracking-wider mb-2">Description globale (SEO)</label>
-                  <textarea rows="3" defaultValue="La plateforme de référence pour connecter les talents du Burkina Faso avec les entreprises." className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-[14px] text-slate-900 focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none resize-none"></textarea>
+                  <textarea
+                    rows="3"
+                    name="seoDescription"
+                    value={settings.seoDescription}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-[14px] text-slate-900 focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none resize-none"
+                  ></textarea>
                 </div>
                 <hr className="border-slate-100" />
                 <div>
@@ -84,7 +190,7 @@ export default function AdminSettingsPage() {
                       <p className="text-[12px] text-slate-500 mt-0.5">Seuls les administrateurs pourront accéder à la plateforme.</p>
                     </div>
                     <div className="relative inline-flex items-center cursor-pointer">
-                      <input type="checkbox" className="sr-only peer" />
+                      <input type="checkbox" className="sr-only peer" checked={settings.maintenanceMode} onChange={() => handleToggle('maintenanceMode')} />
                       <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-500"></div>
                     </div>
                   </label>
@@ -104,11 +210,7 @@ export default function AdminSettingsPage() {
                   <h4 className="text-[14px] font-bold text-slate-900 mb-4">Authentification</h4>
                   <div className="space-y-3">
                     <label className="flex items-center gap-3">
-                      <input type="checkbox" defaultChecked className="w-5 h-5 text-primary border-slate-300 rounded focus:ring-primary" />
-                      <span className="text-[14px] font-medium text-slate-700">Forcer le mot de passe fort (Min. 8 caractères, 1 chiffre, 1 majuscule)</span>
-                    </label>
-                    <label className="flex items-center gap-3">
-                      <input type="checkbox" className="w-5 h-5 text-primary border-slate-300 rounded focus:ring-primary" />
+                      <input type="checkbox" checked={settings.enable2faForAdmins} onChange={() => handleToggle('enable2faForAdmins')} className="w-5 h-5 text-primary border-slate-300 rounded focus:ring-primary" />
                       <span className="text-[14px] font-medium text-slate-700">Activer l'authentification à deux facteurs (2FA) pour les administrateurs</span>
                     </label>
                   </div>
@@ -117,7 +219,13 @@ export default function AdminSettingsPage() {
                 <div>
                    <h4 className="text-[14px] font-bold text-slate-900 mb-4">Gestion des sessions</h4>
                    <label className="block text-[12px] font-extrabold text-slate-500 uppercase tracking-wider mb-2">Expiration des sessions (Heures)</label>
-                   <input type="number" defaultValue="24" className="w-full max-w-xs px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-[14px] font-semibold text-slate-900 focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none" />
+                   <input
+                     type="number"
+                     name="sessionExpiryHours"
+                     value={settings.sessionExpiryHours}
+                     onChange={(event) => setSettings((prev) => ({ ...prev, sessionExpiryHours: Number(event.target.value) }))}
+                     className="w-full max-w-xs px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-[14px] font-semibold text-slate-900 focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all outline-none"
+                   />
                 </div>
               </div>
             </div>
@@ -131,16 +239,21 @@ export default function AdminSettingsPage() {
               </div>
               <div className="p-6 md:p-8 space-y-4">
                  {[
-                   { label: "Nouvelle inscription (Étudiant)", default: true },
-                   { label: "Nouvelle inscription (Entreprise)", default: true },
-                   { label: "Signalement d'offre", default: true },
-                   { label: "Candidature soumise", default: false },
-                   { label: "Mise à jour système requise", default: true },
+                   { key: 'newStudent', label: "Nouvelle inscription (Etudiant)", default: true },
+                   { key: 'newEnterprise', label: "Nouvelle inscription (Entreprise)", default: true },
+                   { key: 'reportedOffer', label: "Signalement d'offre", default: true },
+                   { key: 'applicationSubmitted', label: "Candidature soumise", default: false },
+                   { key: 'systemUpdate', label: "Mise a jour systeme requise", default: true },
                  ].map((item, idx) => (
                     <label key={idx} className="flex items-center justify-between p-4 border border-slate-200 rounded-2xl cursor-pointer hover:bg-slate-50 transition-colors">
                       <p className="text-[14px] font-bold text-slate-700">{item.label}</p>
                       <div className="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" className="sr-only peer" defaultChecked={item.default} />
+                        <input
+                          type="checkbox"
+                          className="sr-only peer"
+                          checked={settings.notificationPreferences?.[item.key] ?? item.default}
+                          onChange={() => handleNotificationToggle(item.key)}
+                        />
                         <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
                       </div>
                     </label>

@@ -7,6 +7,22 @@ export default function EnterpriseDashboardPage() {
   const navigate = useNavigate();
   const [stats, setStats] = useState({ totalApplicants: 0, pending: 0, accepted: 0, rejected: 0, offersCount: 0 });
   const [recentApps, setRecentApps] = useState([]);
+  const [recentOffers, setRecentOffers] = useState([]);
+  const apiBaseUrl = api.defaults.baseURL || '';
+
+  const resolveAvatarUrl = (value) => {
+    if (!value) return '';
+    if (value.startsWith('http')) return value;
+    if (value.startsWith('/uploads/')) return `${apiBaseUrl}${value}`;
+    return value;
+  };
+
+  const getStudentName = (student) => {
+    const first = student?.firstName || '';
+    const last = student?.lastName || '';
+    const full = `${first} ${last}`.trim();
+    return full || 'Candidat';
+  };
 
   useEffect(() => {
     (async () => {
@@ -15,15 +31,16 @@ export default function EnterpriseDashboardPage() {
         const apps = appsRes.data;
         setRecentApps(apps.slice(0, 4));
 
-        const offersRes = await api.get('/offers'); // need to map to my offers but let's count apps for now
-        const myOffers = offersRes.data.filter(o => apps.some(a => a.offer.id === o.id) || o.enterprise?.companyName); // simplify
+        const offersRes = await api.get('/offers/mine');
+        const myOffers = offersRes.data;
+        setRecentOffers(myOffers.slice(0, 2));
 
         setStats({
           totalApplicants: apps.length,
           pending: apps.filter(a => a.status === 'PENDING').length,
           accepted: apps.filter(a => a.status === 'ACCEPTED').length,
           rejected: apps.filter(a => a.status === 'REJECTED').length,
-          offersCount: new Set(apps.map(a => a.offer.id)).size, // count unique offers with apps
+          offersCount: myOffers.length,
         });
       } catch (err) {
         console.error(err);
@@ -46,7 +63,7 @@ export default function EnterpriseDashboardPage() {
             
           </div>
           <p className="text-slate-500 text-sm font-medium">Offres</p>
-          <h3 className="text-3xl font-bold text-slate-900 mt-1.5">24</h3>
+          <h3 className="text-3xl font-bold text-slate-900 mt-1.5">{stats.offersCount}</h3>
         </div>
 
         {/* Widget 2 */}
@@ -57,8 +74,8 @@ export default function EnterpriseDashboardPage() {
             </div>
             
           </div>
-          <p className="text-slate-500 text-sm font-medium">Candidatures re├ºues</p>
-          <h3 className="text-3xl font-bold text-slate-900 mt-1.5">148</h3>
+          <p className="text-slate-500 text-sm font-medium">Candidatures recues</p>
+          <h3 className="text-3xl font-bold text-slate-900 mt-1.5">{stats.totalApplicants}</h3>
         </div>
 
         {/* Widget 3 */}
@@ -70,7 +87,7 @@ export default function EnterpriseDashboardPage() {
             
           </div>
           <p className="text-slate-500 text-sm font-medium">Acceptée</p>
-          <h3 className="text-3xl font-bold text-slate-900 mt-1.5">8</h3>
+          <h3 className="text-3xl font-bold text-slate-900 mt-1.5">{stats.accepted}</h3>
         </div>
 
         {/* Widget 4 */}
@@ -81,7 +98,7 @@ export default function EnterpriseDashboardPage() {
             </div>
           </div>
           <p className="text-slate-500 text-sm font-medium">Rejetée</p>
-          <h3 className="text-3xl font-bold text-slate-900 mt-1.5">56</h3>
+          <h3 className="text-3xl font-bold text-slate-900 mt-1.5">{stats.rejected}</h3>
         </div>
 
       </div>
@@ -92,8 +109,8 @@ export default function EnterpriseDashboardPage() {
         {/* Candidatures R├®centes Section */}
         <div className="xl:col-span-2 space-y-6">
           <div className="flex items-center justify-between px-2">
-            <h3 className="text-[20px] font-bold text-slate-900">Candidatures R├®centes</h3>
-            <button className="text-[14px] font-semibold text-primary hover:text-blue-800 transition-colors">Voir tout</button>
+            <h3 className="text-[20px] font-bold text-slate-900">Candidatures recentes</h3>
+            <button className="text-[14px] font-semibold text-primary hover:text-blue-800 transition-colors" onClick={() => navigate('/entreprise/candidats')}>Voir tout</button>
           </div>
           
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100/50 overflow-hidden">
@@ -113,8 +130,8 @@ export default function EnterpriseDashboardPage() {
       <tr key={app.id} className="hover:bg-slate-50/50 transition-colors group cursor-pointer" onClick={() => navigate('/entreprise/candidats')}>
         <td className="px-6 py-4">
           <div className="flex items-center gap-3">
-            <img alt="User" className="w-8 h-8 rounded-full object-cover border border-slate-100" src={"https://ui-avatars.com/api/?name=" + encodeURIComponent(app.student?.user?.firstName || 'C')} />
-            <p className="text-[13px] font-bold text-slate-900">{app.student?.user?.firstName} {app.student?.user?.lastName}</p>
+            <img alt="User" className="w-8 h-8 rounded-full object-cover border border-slate-100" src={resolveAvatarUrl(app.student?.user?.avatarUrl) || "https://ui-avatars.com/api/?name=" + encodeURIComponent(getStudentName(app.student))} />
+            <p className="text-[13px] font-bold text-slate-900">{getStudentName(app.student)}</p>
           </div>
         </td>
         <td className="px-6 py-4">
@@ -147,54 +164,35 @@ export default function EnterpriseDashboardPage() {
           </div>
           
           <div className="space-y-4">
-            
-            {/* Offre Card 1 */}
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100/50 hover:shadow-md hover:border-primary/20 transition-all group">
-              <div className="flex justify-between items-start mb-5">
-                <div>
-                  <h4 className="font-bold text-slate-900 text-[16px] group-hover:text-primary transition-colors">D├®veloppeur Backend (Node.js)</h4>
-                  <p className="text-[12px] text-slate-500 mt-1">Publi├® il y a 5 jours ÔÇó Stage de 6 mois</p>
+            {recentOffers.length === 0 ? (
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100/50 text-slate-500">
+                Aucune offre active.
+              </div>
+            ) : (
+              recentOffers.map((offer) => (
+                <div key={offer.id} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100/50 hover:shadow-md hover:border-primary/20 transition-all group">
+                  <div className="flex justify-between items-start mb-5">
+                    <div>
+                      <h4 className="font-bold text-slate-900 text-[16px] group-hover:text-primary transition-colors">{offer.title}</h4>
+                      <p className="text-[12px] text-slate-500 mt-1">
+                        Publie le {new Date(offer.createdAt).toLocaleDateString('fr-FR')} • {offer.contractType === 'STAGE' ? 'Stage' : offer.contractType === 'CDD' ? 'CDD' : 'CDI'}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4 mb-5">
+                    <div className="flex -space-x-2">
+                      <div className="w-8 h-8 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">
+                        {offer.applications?.length || 0}
+                      </div>
+                    </div>
+                    <span className="text-[13px] font-semibold text-slate-600">{offer.applications?.length || 0} candidatures</span>
+                  </div>
+                  <div className="flex gap-3">
+                    <button className="flex-1 py-2.5 text-[13px] font-bold text-primary bg-primary/5 rounded-xl hover:bg-primary hover:text-white transition-all" onClick={() => navigate('/entreprise/offres')}>Gerer l'offre</button>
+                  </div>
                 </div>
-                
-              </div>
-              <div className="flex items-center gap-4 mb-5">
-                <div className="flex -space-x-2">
-                  <img className="w-8 h-8 rounded-full border-2 border-white object-cover" alt="Avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8ZZIf7i7FBnR4n_wZoFQTfLojBJG8_uEsNdV-LTUdrAEwnFNWoRxgb8fIqM74o3amhfCJzDWr77c8FTqhAygqCuUaIxWwajRmks_LfJPZJ0F708qnWip9fKpHZ0uikqrIOdf6hR2i4beI_1KAVVZXlJCq_XZQjX44Y_mlyEQXsu3LV1g5LBQhNJ6zpPMN3PA7TX9OPtD50On442P6FF1MNrl_QxdZ-uR4DnhFJszP1r2p-uVl6kMVtFprWiF7cXrH9cTRAiJn_rZJ" />
-                  <img className="w-8 h-8 rounded-full border-2 border-white object-cover" alt="Avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBL65T_Loqg8ZeyfT62d_6-H80msIG4wppIAL2iv4DBdvZcse_6IkphbgyY1DdXmNn81a7u4-6IYY0IV7dpl-DTQxqqK5LtOU9x6AxpuRQYtgbzXiBpIqGkkyqlAcamQVb07OZPY8vDWC4y0nugZ2IH6iM-z2KWzZbaLfB3gUYzyaZJuLGqRg2WbbAJ5kH3kwAZ7OfA6Icas0LUH-rI0kuB9-umEhAIX1oueSrHWKYHhs2QO1IPsQgansqDnV2GUB8X4ojQ-9xTIxN1" />
-                  <div className="w-8 h-8 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">+12</div>
-                </div>
-                <span className="text-[13px] font-semibold text-slate-600">15 candidatures</span>
-              </div>
-              <div className="flex gap-3">
-                <button className="flex-1 py-2.5 text-[13px] font-bold text-primary bg-primary/5 rounded-xl hover:bg-primary hover:text-white transition-all">G├®rer l'offre</button>
-                
-              </div>
-            </div>
-
-            {/* Offre Card 2 */}
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100/50 hover:shadow-md hover:border-primary/20 transition-all group">
-              <div className="flex justify-between items-start mb-5">
-                <div>
-                  <h4 className="font-bold text-slate-900 text-[16px] group-hover:text-primary transition-colors">Assistant Marketing Digital</h4>
-                  <p className="text-[12px] text-slate-500 mt-1">Publi├® il y a 10 jours ÔÇó Stage de 3 mois</p>
-                </div>
-                
-              </div>
-              <div className="flex items-center gap-4 mb-5">
-                <div className="flex -space-x-2">
-                  <img className="w-8 h-8 rounded-full border-2 border-white object-cover" alt="Avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7Edy12oajXz-EEyONo6WuLYX6AA4lSMhqnyrmRgfJozKAG101A_5021-2DgpsBLVgvTQcqD4LkovGWfi0_4wfBV72K2EOEpySJjhfBgqnmYAzCLySqPwEWzeWh88Uga1ucvr0b6BEGH3yM6wcWPHDgJlFsCxDURHtIdF1wmMP14AP0Lg3GBg_W5rsfoqmRfCIhxioUeqyT-oYxUxUp3FGSgk10zZlvnSb-GHCyGbBacdPi-jEX1Z4NR68alZme2T4Kpmd1o4G8LOf" />
-                  <div className="w-8 h-8 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">+8</div>
-                </div>
-                <span className="text-[13px] font-semibold text-slate-600">9 candidatures</span>
-              </div>
-              <div className="flex gap-3">
-                <button className="flex-1 py-2.5 text-[13px] font-bold text-primary bg-primary/5 rounded-xl hover:bg-primary hover:text-white transition-all">G├®rer l'offre</button>
-                
-              </div>
-            </div>
-
-            
-
+              ))
+            )}
           </div>
         </div>
 

@@ -28,6 +28,9 @@ export class User {
   @Column({ default: false })
   isVerified: boolean;
 
+  @Column({ default: false })
+  isSuspended: boolean;
+
   @Column({ type: 'varchar', nullable: true })
   resetPasswordToken: string | null;
 

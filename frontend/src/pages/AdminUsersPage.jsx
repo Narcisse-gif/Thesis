@@ -1,18 +1,57 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AdminDashboardLayout from '../components/AdminDashboardLayout';
+import api from '../services/api';
 
 export default function AdminUsersPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('Tous');
   const [dropdownOpen, setDropdownOpen] = useState(null);
+  const navigate = useNavigate();
 
-  const [users, setUsers] = useState([
-    { id: 'SLB-2934-21', name: 'Idrissa Barry', email: 'idrissa.barry@univ-ouaga.bf', joinedDate: 'Oct 12, 2023', status: 'Actif', avatar: 'https://ui-avatars.com/api/?name=Idrissa+Barry&background=e0e7ff&color=1e40af' },
-    { id: 'SLB-4552-88', name: 'Moussa Diallo', email: 'moussa.d@outlook.com', joinedDate: 'Jan 22, 2024', status: 'Suspendu', avatar: 'https://ui-avatars.com/api/?name=Moussa+Diallo&background=fee2e2&color=b91c1c' },
-    { id: 'SLB-9912-01', name: 'Alain Sanou', email: 'alain.sanou11@gmail.com', joinedDate: 'Mar 10, 2024', status: 'En attente', avatar: 'https://ui-avatars.com/api/?name=Alain+Sanou&background=f3f4f6&color=475569' },
-    { id: 'SLB-0019-21', name: 'Fatimata Ouedraogo', email: 'fatim.o@yahoo.fr', joinedDate: 'Apr 02, 2024', status: 'Actif', avatar: 'https://ui-avatars.com/api/?name=Fatimata+Ouedraogo&background=e0e7ff&color=1e40af' },
-    { id: 'SLB-3451-12', name: 'Kader Ilboudo', email: 'kader.ilb@gmail.com', joinedDate: 'Sep 18, 2023', status: 'Actif', avatar: 'https://ui-avatars.com/api/?name=Kader+Ilboudo&background=fef3c7&color=b45309' }
-  ]);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await api.get('/admin/users');
+        const apiBaseUrl = api.defaults.baseURL || '';
+        const resolveAvatarUrl = (value) => {
+          if (!value) return '';
+          if (value.startsWith('http')) return value;
+          if (value.startsWith('/uploads/')) return `${apiBaseUrl}${value}`;
+          return value;
+        };
+
+        const mapped = (response.data || [])
+          .filter((user) => user.role === 'STUDENT')
+          .map((user) => {
+            const profile = user.studentProfile || {};
+            const name = `${profile.firstName || ''} ${profile.lastName || ''}`.trim() || user.email;
+            const status = 'Actif';
+            const avatar = resolveAvatarUrl(user.avatarUrl) || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=e0e7ff&color=1e40af`;
+            const joinedDate = user.createdAt ? new Date(user.createdAt).toLocaleDateString('fr-FR') : '—';
+            return {
+              id: user.id,
+              name,
+              email: user.email,
+              joinedDate,
+              status,
+              avatar,
+            };
+          });
+
+        setUsers(mapped);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const handleStatusChange = (id, newStatus) => {
     setUsers(users.map(u => u.id === id ? { ...u, status: newStatus } : u));
@@ -55,7 +94,6 @@ export default function AdminUsersPage() {
               >
                 <option value="Tous">Tous les statuts</option>
                 <option value="Actif">Actif</option>
-                <option value="En attente">En attente</option>
                 <option value="Suspendu">Suspendu</option>
               </select>
               <span className="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 pointer-events-none text-[18px]">expand_more</span>
@@ -75,7 +113,13 @@ export default function AdminUsersPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {filteredUsers.length > 0 ? filteredUsers.map(u => (
+              {loading ? (
+                <tr>
+                  <td colSpan="4" className="px-6 py-8 text-center text-slate-500 text-[13px]">
+                    Chargement...
+                  </td>
+                </tr>
+              ) : filteredUsers.length > 0 ? filteredUsers.map(u => (
                 <tr key={u.id} className="hover:bg-slate-50/50 transition-colors group">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
@@ -105,7 +149,10 @@ export default function AdminUsersPage() {
                         <>
                           <div className="fixed inset-0 z-0" onClick={() => setDropdownOpen(null)}></div>
                           <div className="absolute right-0 top-full mt-1 w-44 bg-white rounded-xl shadow-lg border border-slate-100 py-1.5 z-10 text-[13px] font-medium">
-                            <button onClick={() => setDropdownOpen(null)} className="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 flex items-center gap-2">
+                            <button
+                              onClick={() => { setDropdownOpen(null); navigate(`/admin/utilisateurs/${u.id}`); }}
+                              className="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 flex items-center gap-2"
+                            >
                               <span className="material-symbols-outlined !text-[18px]">visibility</span>
                               Voir le profil
                             </button>
@@ -132,7 +179,7 @@ export default function AdminUsersPage() {
                     </div>
                   </td>
                 </tr>
-              )) : (
+                )) : (
                 <tr>
                    <td colSpan="4" className="px-6 py-8 text-center text-slate-500 text-[13px]">
                       Aucun étudiant trouvé.

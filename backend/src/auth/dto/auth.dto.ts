@@ -6,7 +6,7 @@ export class RegisterDto {
   email: string;
 
   @IsString()
-  @MinLength(6)
+  @MinLength(8)
   password: string;
 
   @IsEnum(UserRole)
@@ -21,10 +21,54 @@ export class RegisterDto {
   @IsString()
   lastName?: string;
 
+  @IsOptional()
+  @IsString()
+  fieldOfStudy?: string;
+
+  @IsOptional()
+  @IsString()
+  studyLevel?: string;
+
+  @IsOptional()
+  @IsString()
+  university?: string;
+
+  @IsOptional()
+  @IsString()
+  phoneNumber?: string;
+
+  @IsOptional()
+  @IsString()
+  location?: string;
+
   // Spécifique Entreprise
   @IsOptional()
   @IsString()
   companyName?: string;
+
+  @IsOptional()
+  @IsString()
+  industry?: string;
+
+  @IsOptional()
+  @IsString()
+  companySize?: string;
+
+  @IsOptional()
+  @IsString()
+  website?: string;
+
+  @IsOptional()
+  @IsString()
+  shortDescription?: string;
+
+  @IsOptional()
+  @IsString()
+  address?: string;
+
+  @IsOptional()
+  @IsString()
+  postalCode?: string;
 }
 
 export class LoginDto {

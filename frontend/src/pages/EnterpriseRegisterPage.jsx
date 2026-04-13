@@ -1,7 +1,78 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import api from '../services/api';
 
 export default function EnterpriseRegisterPage() {
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    company_name: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
+    postal_code: '',
+    sector: '',
+    password: '',
+    password_confirmation: '',
+    description: '',
+  });
+  const [logoFile, setLogoFile] = useState(null);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleRegister = async (event) => {
+    event.preventDefault();
+    if (formData.password !== formData.password_confirmation) {
+      setErrorMsg('Les mots de passe ne correspondent pas.');
+      return;
+    }
+
+    setLoading(true);
+    setErrorMsg('');
+
+    try {
+      const payload = {
+        email: formData.email,
+        password: formData.password,
+        role: 'ENTERPRISE',
+        companyName: formData.company_name,
+        industry: formData.sector,
+        location: formData.city,
+        phoneNumber: formData.phone,
+        address: formData.address,
+        postalCode: formData.postal_code,
+        shortDescription: formData.description,
+      };
+
+      const response = await api.post('/auth/register', payload);
+      const token = response.data.access_token;
+      localStorage.setItem('token', token);
+      localStorage.setItem('user_role', 'ENTERPRISE');
+
+      if (logoFile) {
+        const payload = new FormData();
+        payload.append('file', logoFile);
+        await api.post('/users/logo', payload, {
+          headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
+        });
+      }
+
+      navigate('/entreprise/dashboard');
+    } catch (error) {
+      if (error.response?.status === 503) {
+        setErrorMsg('Plateforme en maintenance. Inscription reservee aux administrateurs.');
+      } else {
+        setErrorMsg(error.response?.data?.message || 'Erreur lors de l\'inscription');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <main className="grid grid-cols-1 lg:grid-cols-2 h-screen overflow-hidden bg-white text-gray-900 font-display">
@@ -36,26 +107,31 @@ export default function EnterpriseRegisterPage() {
             <p className="text-gray-500">Veuillez renseigner vos informations pour vous inscrire.</p>
           </header>
 
-          <form className="space-y-6" onSubmit={(e) => e.preventDefault()} encType="multipart/form-data">
+          <form className="space-y-6" onSubmit={handleRegister} encType="multipart/form-data">
+            {errorMsg && (
+              <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm mb-4">
+                {errorMsg}
+              </div>
+            )}
             {/* Informations Générales Section */}
             <div>
               <h3 className="text-xs font-bold uppercase tracking-widest mb-4 border-b pb-2 text-primary">Informations Générales</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4">
                 <div className="col-span-1 md:col-span-2">
                   <label className="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" htmlFor="company_name">Nom de l'entreprise</label>
-                  <input className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-800 focus:border-slate-800 transition-colors text-sm outline-none" id="company_name" name="company_name" placeholder="Ex: Faso Tech Solutions" required type="text" />
+                  <input className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-800 focus:border-slate-800 transition-colors text-sm outline-none" id="company_name" name="company_name" placeholder="Ex: Faso Tech Solutions" required type="text" value={formData.company_name} onChange={handleChange} />
                 </div>
                 <div className="col-span-1">
                   <label className="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" htmlFor="email">Email Professionnel</label>
-                  <input className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-800 focus:border-slate-800 transition-colors text-sm outline-none" id="email" name="email" placeholder="contact@entreprise.bf" required type="email" />
+                  <input className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-800 focus:border-slate-800 transition-colors text-sm outline-none" id="email" name="email" placeholder="contact@entreprise.bf" required type="email" value={formData.email} onChange={handleChange} />
                 </div>
                 <div className="col-span-1">
                   <label className="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" htmlFor="phone">Téléphone</label>
-                  <input className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-800 focus:border-slate-800 transition-colors text-sm outline-none" id="phone" name="phone" placeholder="+226 XX XX XX XX" required type="tel" />
+                  <input className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-800 focus:border-slate-800 transition-colors text-sm outline-none" id="phone" name="phone" placeholder="+226 XX XX XX XX" required type="tel" value={formData.phone} onChange={handleChange} />
                 </div>
                 <div className="col-span-1 md:col-span-2">
                   <label className="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" htmlFor="logo">Logo de l'entreprise</label>
-                  <input accept="image/*" className="w-full px-3 py-1.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-800 focus:border-slate-800 transition-colors text-sm file:mr-4 file:py-1 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-800 hover:file:bg-slate-200 cursor-pointer" id="logo" name="logo" type="file" />
+                  <input accept="image/*" className="w-full px-3 py-1.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-800 focus:border-slate-800 transition-colors text-sm file:mr-4 file:py-1 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-800 hover:file:bg-slate-200 cursor-pointer" id="logo" name="logo" type="file" onChange={(event) => setLogoFile(event.target.files?.[0] || null)} />
                 </div>
               </div>
             </div>
@@ -66,22 +142,22 @@ export default function EnterpriseRegisterPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4">
                 <div className="col-span-1 md:col-span-2">
                   <label className="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" htmlFor="address">Adresse</label>
-                  <input className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-800 focus:border-slate-800 transition-colors text-sm outline-none" id="address" name="address" placeholder="Rue ou Avenue, Secteur..." required type="text" />
+                  <input className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-800 focus:border-slate-800 transition-colors text-sm outline-none" id="address" name="address" placeholder="Rue ou Avenue, Secteur..." required type="text" value={formData.address} onChange={handleChange} />
                 </div>
                 <div className="col-span-1">
                   <label className="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" htmlFor="city">Ville</label>
-                  <select className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-800 focus:border-slate-800 transition-colors appearance-none bg-white text-sm outline-none cursor-pointer" defaultValue="" id="city" name="city" required>
+                  <select className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-800 focus:border-slate-800 transition-colors appearance-none bg-white text-sm outline-none cursor-pointer" value={formData.city} id="city" name="city" required onChange={handleChange}>
                     <option disabled value="">Sélectionner</option>
-                    <option value="ouagadougou">Ouagadougou</option>
-                    <option value="bobo">Bobo-Dioulasso</option>
-                    <option value="koudougou">Koudougou</option>
-                    <option value="banfora">Banfora</option>
-                    <option value="ouahigouya">Ouahigouya</option>
+                    <option value="Ouagadougou">Ouagadougou</option>
+                    <option value="Bobo-Dioulasso">Bobo-Dioulasso</option>
+                    <option value="Koudougou">Koudougou</option>
+                    <option value="Banfora">Banfora</option>
+                    <option value="Ouahigouya">Ouahigouya</option>
                   </select>
                 </div>
                 <div className="col-span-1">
                   <label className="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" htmlFor="postal_code">Code Postal</label>
-                  <input className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-800 focus:border-slate-800 transition-colors text-sm outline-none" id="postal_code" name="postal_code" placeholder="BP / Code" type="text" />
+                  <input className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-800 focus:border-slate-800 transition-colors text-sm outline-none" id="postal_code" name="postal_code" placeholder="BP / Code" type="text" value={formData.postal_code} onChange={handleChange} />
                 </div>
               </div>
             </div>
@@ -92,39 +168,39 @@ export default function EnterpriseRegisterPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4">
                 <div className="col-span-1 md:col-span-2">
                   <label className="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" htmlFor="sector">Secteur d'activité</label>
-                  <select className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-800 focus:border-slate-800 transition-colors appearance-none bg-white text-sm outline-none cursor-pointer" defaultValue="" id="sector" name="sector" required>
+                  <select className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-800 focus:border-slate-800 transition-colors appearance-none bg-white text-sm outline-none cursor-pointer" value={formData.sector} id="sector" name="sector" required onChange={handleChange}>
                     <option disabled value="">Sélectionner</option>
-                    <option value="it">Informatique / Technologie</option>
-                    <option value="finance">Banque / Finance</option>
-                    <option value="agro">Agro-industrie</option>
-                    <option value="com">Communication / Marketing</option>
-                    <option value="other">Autre</option>
+                    <option value="Informatique / Technologie">Informatique / Technologie</option>
+                    <option value="Banque / Finance">Banque / Finance</option>
+                    <option value="Agro-industrie">Agro-industrie</option>
+                    <option value="Communication / Marketing">Communication / Marketing</option>
+                    <option value="Autre">Autre</option>
                   </select>
                 </div>
                 <div className="col-span-1">
                   <label className="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" htmlFor="password">Mot de passe</label>
-                  <input className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-800 focus:border-slate-800 transition-colors text-sm outline-none" id="password" name="password" placeholder="••••••••" required type="password" />
+                  <input className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-800 focus:border-slate-800 transition-colors text-sm outline-none" id="password" name="password" placeholder="••••••••" required type="password" value={formData.password} onChange={handleChange} />
                 </div>
                 <div className="col-span-1">
                   <label className="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" htmlFor="password_confirmation">Confirmer le mot de passe</label>
-                  <input className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-800 focus:border-slate-800 transition-colors text-sm outline-none" id="password_confirmation" name="password_confirmation" placeholder="••••••••" required type="password" />
+                  <input className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-800 focus:border-slate-800 transition-colors text-sm outline-none" id="password_confirmation" name="password_confirmation" placeholder="••••••••" required type="password" value={formData.password_confirmation} onChange={handleChange} />
                 </div>
                 <div className="col-span-1 md:col-span-2">
                   <label className="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1" htmlFor="description">Description de l'entreprise</label>
-                  <textarea className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-800 focus:border-slate-800 transition-colors text-sm outline-none" id="description" name="description" placeholder="Parlez-nous brièvement de votre activité..." rows="2"></textarea>
+                  <textarea className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-slate-800 focus:border-slate-800 transition-colors text-sm outline-none" id="description" name="description" placeholder="Parlez-nous brièvement de votre activité..." rows="2" value={formData.description} onChange={handleChange}></textarea>
                 </div>
               </div>
             </div>
 
             {/* Submit Button */}
             <div className="pt-4">
-              <button 
-                className="w-full bg-primary hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-lg flex items-center justify-center space-x-2 shadow-lg transition-transform active:scale-95" 
-                type="button" 
-                onClick={() => navigate('/entreprise/dashboard')}
+              <button
+                className={`w-full bg-primary hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-lg flex items-center justify-center space-x-2 shadow-lg transition-transform active:scale-95 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                type="submit"
+                disabled={loading}
               >
-                <span className="text-sm">Créer mon compte entreprise</span>
-                <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                <span className="text-sm">{loading ? 'Creation du compte...' : 'Creer mon compte entreprise'}</span>
+                {!loading && <span className="material-symbols-outlined text-sm">arrow_forward</span>}
               </button>
             </div>
           </form>

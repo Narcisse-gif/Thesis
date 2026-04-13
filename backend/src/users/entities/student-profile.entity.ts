@@ -30,6 +30,18 @@ export class StudentProfile {
   @Column({ nullable: true })
   cvUrl: string;
 
+  @Column({ nullable: true })
+  coverLetterUrl: string;
+
+  @Column({ nullable: true })
+  languages: string;
+
+  @Column({ nullable: true })
+  availability: string;
+
+  @Column({ type: 'jsonb', nullable: true })
+  academicEntries: { studyLevel: string; university: string; fieldOfStudy: string; status: 'En cours' | 'Termine' | 'En pause' }[];
+
   @Column('simple-array', { nullable: true })
   skills: string[];
 

@@ -19,4 +19,9 @@ export class AppController {
   clearOffersData() {
     return this.appService.clearOffersData();
   }
+
+  @Post('dev/clear-users')
+  clearUsersData() {
+    return this.appService.clearUsersData();
+  }
 }

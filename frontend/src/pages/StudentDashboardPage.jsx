@@ -34,17 +34,23 @@ export default function StudentDashboardPage() {
 
   const completion = useMemo(() => {
     const student = profile?.studentProfile;
+    const hasAcademic = Array.isArray(student?.academicEntries) && student.academicEntries.length > 0
+      ? 'academic'
+      : (student?.studyLevel || student?.university || student?.fieldOfStudy)
+        ? 'academic'
+        : null;
     const fields = [
       student?.firstName,
       student?.lastName,
-      student?.university,
-      student?.fieldOfStudy,
-      student?.studyLevel,
+      hasAcademic,
       student?.location,
       student?.phoneNumber,
       profile?.avatarUrl,
       student?.skills?.length ? 'skills' : null,
       student?.cvUrl,
+      student?.coverLetterUrl,
+      student?.languages,
+      student?.availability,
     ];
     const filled = fields.filter(Boolean).length;
     return Math.round((filled / fields.length) * 100);
