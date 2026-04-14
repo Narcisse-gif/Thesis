@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import api from '../services/api';
+import { setAuthSession } from '../utils/authStorage';
 
 export default function StudentRegisterPage() {
   const navigate = useNavigate();
@@ -51,8 +52,7 @@ export default function StudentRegisterPage() {
       
       // Update additional profile info if needed (city, phone, field)
       const token = response.data.access_token;
-      localStorage.setItem('token', token);
-      localStorage.setItem('user_role', 'STUDENT');
+      setAuthSession(token, 'STUDENT');
 
       navigate('/etudiant/dashboard');
     } catch (err) {

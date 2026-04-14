@@ -13,6 +13,13 @@ const statusStyle = {
 export default function StudentApplicationsPage() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const apiBaseUrl = api.defaults.baseURL || '';
+  const resolveMediaUrl = (value) => {
+    if (!value) return '';
+    if (value.startsWith('http')) return value;
+    if (value.startsWith('/uploads/')) return `${apiBaseUrl}${value}`;
+    return value;
+  };
 
   useEffect(() => {
     api.get('/applications/my').then(res => {
@@ -102,7 +109,7 @@ export default function StudentApplicationsPage() {
                         <img
                           alt={`Logo ${row.offer.enterprise?.companyName}`}
                           className="w-full h-full object-contain"
-                          src={row.offer.enterprise?.logoUrl}
+                          src={resolveMediaUrl(row.offer.enterprise?.logoUrl)}
                           onError={(event) => {
                             event.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent((row.offer.enterprise?.companyName || 'Ent').substring(0, 2))}&background=e0ecff&color=1d4ed8&bold=true`;
                           }}
@@ -113,7 +120,7 @@ export default function StudentApplicationsPage() {
                   </td>
                   <td className="px-6 py-4 text-sm text-slate-600">{row.offer.contractType === 'STAGE' ? 'Stage' : 'Emploi'}</td>
                   <td className="px-6 py-4 text-sm text-slate-500">{row.offer.location}</td>
-                  <td className="px-6 py-4 text-sm text-slate-500">{new Date(row.createdAt).toLocaleDateString('fr-FR')}</td>
+                  <td className="px-6 py-4 text-sm text-slate-500">{row.appliedAt ? new Date(row.appliedAt).toLocaleDateString('fr-FR') : 'Date inconnue'}</td>
                   <td className="px-6 py-4 text-sm">
                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${statusStyle[row.status === 'PENDING' ? 'En attente' : row.status === 'ACCEPTED' ? 'Acceptee' : 'Rejetee']}`}>
                       {row.status === 'PENDING' ? 'En attente' : row.status === 'ACCEPTED' ? 'Acceptee' : 'Rejetee'}

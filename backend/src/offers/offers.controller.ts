@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, UseGuards, Request, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, UseGuards, Request, Query, Delete } from '@nestjs/common';
 import { OffersService } from './offers.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { OfferStatus } from './entities/offer.entity';
@@ -36,5 +36,17 @@ export class OffersController {
   @Patch(':id/status')
   updateStatus(@Param('id') id: string, @Body('status') status: OfferStatus) {
     return this.offersService.updateStatus(id, status);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  updateOffer(@Param('id') id: string, @Body() updateOfferDto: any, @Request() req) {
+    return this.offersService.updateOffer(id, updateOfferDto, req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  removeOffer(@Param('id') id: string, @Request() req) {
+    return this.offersService.removeOffer(id, req.user.userId);
   }
 }

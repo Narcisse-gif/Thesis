@@ -20,11 +20,38 @@ export class Application {
   @Column({ nullable: true })
   cvUrl: string;
 
+  @Column({ type: 'bytea', nullable: true, select: false })
+  cvFile: Buffer;
+
+  @Column({ nullable: true })
+  cvFileName: string;
+
+  @Column({ nullable: true })
+  cvFileType: string;
+
   @Column({ type: 'text', nullable: true })
   coverLetterText: string;
 
+  @Column({ type: 'bytea', nullable: true, select: false })
+  coverLetterFile: Buffer;
+
+  @Column({ nullable: true })
+  coverLetterFileName: string;
+
+  @Column({ nullable: true })
+  coverLetterFileType: string;
+
   @Column({ nullable: true })
   portfolioUrl: string;
+
+  @Column({ type: 'bytea', nullable: true, select: false })
+  referencesFile: Buffer;
+
+  @Column({ nullable: true })
+  referencesFileName: string;
+
+  @Column({ nullable: true })
+  referencesFileType: string;
 
   @ManyToOne(() => StudentProfile)
   student: StudentProfile;

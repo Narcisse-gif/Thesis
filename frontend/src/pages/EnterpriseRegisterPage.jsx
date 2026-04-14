@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import api from '../services/api';
+import { setAuthSession } from '../utils/authStorage';
 
 export default function EnterpriseRegisterPage() {
   const navigate = useNavigate();
@@ -51,8 +52,7 @@ export default function EnterpriseRegisterPage() {
 
       const response = await api.post('/auth/register', payload);
       const token = response.data.access_token;
-      localStorage.setItem('token', token);
-      localStorage.setItem('user_role', 'ENTERPRISE');
+      setAuthSession(token, 'ENTERPRISE');
 
       if (logoFile) {
         const payload = new FormData();

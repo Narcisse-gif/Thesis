@@ -1,8 +1,10 @@
 ﻿import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import AdminDashboardLayout from '../components/AdminDashboardLayout';
 
 export default function AdminDashboardPage() {
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     students: 0,
     enterprises: 0,
@@ -15,7 +17,7 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    (async () => {
+    const fetchDashboard = async () => {
       try {
         const statsReq = api.get('/admin/dashboard/stats');
         const offersReq = api.get('/admin/offers');
@@ -87,8 +89,15 @@ export default function AdminDashboardPage() {
           return { label: month.label, count };
         });
 
-        const maxCount = Math.max(...userByMonth.map((item) => item.count), 1);
-        const normalized = userByMonth.map((item) => ({
+        const cumulativeUsers = [];
+        userByMonth.reduce((total, item) => {
+          const nextTotal = total + item.count;
+          cumulativeUsers.push({ label: item.label, count: nextTotal });
+          return nextTotal;
+        }, 0);
+
+        const maxCount = Math.max(...cumulativeUsers.map((item) => item.count), 1);
+        const normalized = cumulativeUsers.map((item) => ({
           ...item,
           percentage: Math.round((item.count / maxCount) * 100),
         }));
@@ -107,7 +116,17 @@ export default function AdminDashboardPage() {
       } finally {
         setLoading(false);
       }
-    })();
+    };
+
+    fetchDashboard();
+    const intervalId = setInterval(fetchDashboard, 30000);
+    const handleFocus = () => fetchDashboard();
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      clearInterval(intervalId);
+      window.removeEventListener('focus', handleFocus);
+    };
   }, []);
   return (
     <AdminDashboardLayout>
@@ -210,8 +229,16 @@ export default function AdminDashboardPage() {
             </div>
             <div className="relative z-10 h-full flex items-end justify-between gap-4 px-6 pb-6">
               {monthlySeries.map((item) => (
-                <div key={item.label} className="flex-1 flex flex-col items-center gap-3">
-                  <div className="w-full max-w-[32px] rounded-t-lg bg-primary/20" style={{ height: `${item.percentage}%` }}></div>
+                <div key={item.label} className="flex-1 flex flex-col items-center gap-3 group">
+                  <div className="relative w-full max-w-[32px]">
+                    <div
+                      className="w-full rounded-t-lg bg-primary/20 group-hover:bg-primary/50 transition-colors"
+                      style={{ height: `${item.percentage}%` }}
+                    ></div>
+                    <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[11px] font-bold py-1 px-2 rounded-md transition-opacity pointer-events-none">
+                      {item.count}
+                    </div>
+                  </div>
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{item.label}</span>
                 </div>
               ))}
@@ -314,7 +341,12 @@ export default function AdminDashboardPage() {
                         </span>
                       </td>
                       <td className="px-8 py-4 text-right">
-                        <button className="px-4 py-2 bg-slate-50 text-blue-600 hover:bg-blue-50 border border-slate-200 hover:border-blue-100 rounded-xl font-bold text-[12px] transition-all">Examiner</button>
+                        <button
+                          onClick={() => navigate('/admin/moderation?tab=offres')}
+                          className="px-4 py-2 bg-slate-50 text-blue-600 hover:bg-blue-50 border border-slate-200 hover:border-blue-100 rounded-xl font-bold text-[12px] transition-all"
+                        >
+                          Examiner
+                        </button>
                       </td>
                     </tr>
                   ))

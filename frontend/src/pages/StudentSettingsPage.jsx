@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import StudentDashboardLayout from '../components/StudentDashboardLayout';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import { clearAuthSession, setAuthSession } from '../utils/authStorage';
 
 export default function StudentSettingsPage() {
   const navigate = useNavigate();
@@ -74,7 +75,7 @@ export default function StudentSettingsPage() {
     setEmailStatus('');
     try {
       const response = await api.post('/auth/change-email', { email: formData.email });
-      localStorage.setItem('token', response.data.access_token);
+      setAuthSession(response.data.access_token, 'STUDENT');
       setProfile((prev) => ({ ...prev, email: formData.email }));
       setEmailStatus('Email mis a jour.');
     } catch (error) {
@@ -183,8 +184,7 @@ export default function StudentSettingsPage() {
               <button
                 className="mt-4 w-full px-4 py-3 rounded-xl bg-red-50 text-red-600 text-sm font-bold hover:bg-red-100 transition-all"
                 onClick={() => {
-                  localStorage.removeItem('token');
-                  localStorage.removeItem('user_role');
+                  clearAuthSession();
                   navigate('/connexion');
                 }}
               >

@@ -1,14 +1,24 @@
 ﻿import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import AdminDashboardLayout from '../components/AdminDashboardLayout';
 import api from '../services/api';
 
 export default function AdminModerationPage() {
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState('offres');
 
   const [offers, setOffers] = useState([]);
   const [profiles, setProfiles] = useState([]);
   const [loadingOffers, setLoadingOffers] = useState(true);
   const [loadingProfiles, setLoadingProfiles] = useState(true);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tab = params.get('tab');
+    if (tab === 'offres' || tab === 'kyc') {
+      setActiveTab(tab);
+    }
+  }, [location.search]);
 
   useEffect(() => {
     const fetchPending = async () => {
@@ -80,6 +90,15 @@ export default function AdminModerationPage() {
     }
   };
 
+  const handleModerateOffer = async (offerId, status) => {
+    try {
+      await api.patch(`/admin/moderate/${offerId}`, { status });
+      setOffers((prev) => prev.filter((offer) => offer.id !== offerId));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <AdminDashboardLayout>
       <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 w-full">
@@ -128,10 +147,16 @@ export default function AdminModerationPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <button className="px-5 py-2.5 bg-white border border-rose-200 text-rose-600 font-bold text-[13px] rounded-xl hover:bg-rose-50 transition-colors flex items-center gap-2">
+                  <button
+                    onClick={() => handleModerateOffer(o.id, 'EXPIREE')}
+                    className="px-5 py-2.5 bg-white border border-rose-200 text-rose-600 font-bold text-[13px] rounded-xl hover:bg-rose-50 transition-colors flex items-center gap-2"
+                  >
                     <span className="material-symbols-outlined !text-[18px]">close</span> Rejeter
                   </button>
-                  <button className="px-5 py-2.5 bg-emerald-50 border border-emerald-200 text-emerald-700 font-bold text-[13px] rounded-xl hover:bg-emerald-100 transition-colors flex items-center gap-2 flex-1 md:flex-auto justify-center">
+                  <button
+                    onClick={() => handleModerateOffer(o.id, 'ACTIVE')}
+                    className="px-5 py-2.5 bg-emerald-50 border border-emerald-200 text-emerald-700 font-bold text-[13px] rounded-xl hover:bg-emerald-100 transition-colors flex items-center gap-2 flex-1 md:flex-auto justify-center"
+                  >
                     <span className="material-symbols-outlined !text-[18px]">check</span> Approuver
                   </button>
                 </div>

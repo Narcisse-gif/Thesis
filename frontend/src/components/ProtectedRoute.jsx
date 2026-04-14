@@ -1,4 +1,5 @@
 import { Navigate, useLocation } from 'react-router-dom';
+import { getToken, getUserRole } from '../utils/authStorage';
 
 const ROLE_HOME = {
   STUDENT: '/etudiant/dashboard',
@@ -8,8 +9,8 @@ const ROLE_HOME = {
 
 export default function ProtectedRoute({ allowedRoles, children }) {
   const location = useLocation();
-  const token = localStorage.getItem('token');
-  const role = localStorage.getItem('user_role');
+  const token = getToken();
+  const role = getUserRole();
 
   if (!token) {
     return <Navigate to="/connexion" state={{ from: location }} replace />;

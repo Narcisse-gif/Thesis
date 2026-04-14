@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getToken } from '../utils/authStorage';
 
 const api = axios.create({
   baseURL: 'http://localhost:8081', // Adresse de ton backend NestJS
@@ -10,7 +11,7 @@ const api = axios.create({
 // Intercepteur pour ajouter le token JWT à chaque requête si l'utilisateur est connecté
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = getToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

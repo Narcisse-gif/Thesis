@@ -71,17 +71,32 @@ export default function AdminReportsPage() {
           applications.filter((app) => app.status === 'ACCEPTED'),
           'appliedAt',
         );
+
+        const cumulativeOffers = [];
+        offersSeries.reduce((total, item) => {
+          const nextTotal = total + item.count;
+          cumulativeOffers.push({ label: item.label, count: nextTotal });
+          return nextTotal;
+        }, 0);
+
+        const cumulativeHires = [];
+        hiresSeries.reduce((total, item) => {
+          const nextTotal = total + item.count;
+          cumulativeHires.push({ label: item.label, count: nextTotal });
+          return nextTotal;
+        }, 0);
+
         const maxValue = Math.max(
-          ...offersSeries.map((item) => item.count),
-          ...hiresSeries.map((item) => item.count),
+          ...cumulativeOffers.map((item) => item.count),
+          ...cumulativeHires.map((item) => item.count),
           1,
         );
-        const normalizedChart = offersSeries.map((item, index) => ({
+        const normalizedChart = cumulativeOffers.map((item, index) => ({
           label: item.label,
           offersCount: item.count,
           offersPct: Math.round((item.count / maxValue) * 100),
-          hiresCount: hiresSeries[index]?.count || 0,
-          hiresPct: Math.round(((hiresSeries[index]?.count || 0) / maxValue) * 100),
+          hiresCount: cumulativeHires[index]?.count || 0,
+          hiresPct: Math.round(((cumulativeHires[index]?.count || 0) / maxValue) * 100),
         }));
 
         const currentStudents = students.filter((user) => user.createdAt && monthKey(new Date(user.createdAt)) === currentKey).length;

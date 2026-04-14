@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import { setAuthSession } from '../utils/authStorage';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -26,8 +27,7 @@ export default function LoginPage() {
       const { access_token, user } = response.data;
       
       // Stocker le token pour axios
-      localStorage.setItem('token', access_token);
-      localStorage.setItem('user_role', user.role);
+      setAuthSession(access_token, user.role);
       
       // Redirection dynamique
       if (user.role === 'ADMIN') navigate('/admin/dashboard');

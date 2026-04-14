@@ -1,4 +1,4 @@
-import { Controller, Get, Patch, Body, UseGuards, Req, Post, UploadedFile, UseInterceptors, BadRequestException, Query } from '@nestjs/common';
+import { Controller, Get, Patch, Body, UseGuards, Req, Post, UploadedFile, UseInterceptors, BadRequestException, Query, Param, ForbiddenException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -28,6 +28,14 @@ export class UsersController {
       throw new BadRequestException('Role invalide');
     }
     return this.usersService.searchUsers(q, role);
+  }
+
+  @Get('students/:id')
+  getStudentProfile(@Param('id') id: string, @Req() req) {
+    if (req.user?.role !== UserRole.ENTERPRISE && req.user?.role !== UserRole.ADMIN) {
+      throw new ForbiddenException('Acces refuse');
+    }
+    return this.usersService.getStudentProfileByIdentifier(id);
   }
 
   @Post('avatar')

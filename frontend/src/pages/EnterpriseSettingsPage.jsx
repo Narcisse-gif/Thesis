@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import EnterpriseDashboardLayout from '../components/EnterpriseDashboardLayout';
 import api from '../services/api';
+import { clearAuthSession, setAuthSession } from '../utils/authStorage';
 
 export default function EnterpriseSettingsPage() {
   const navigate = useNavigate();
@@ -97,7 +98,7 @@ export default function EnterpriseSettingsPage() {
     setEmailStatus('');
     try {
       const response = await api.post('/auth/change-email', { email: formData.email });
-      localStorage.setItem('token', response.data.access_token);
+      setAuthSession(response.data.access_token, 'ENTERPRISE');
       setProfile((prev) => ({ ...prev, email: formData.email }));
       setEmailStatus('Email mis a jour.');
     } catch (error) {
@@ -234,8 +235,7 @@ export default function EnterpriseSettingsPage() {
               <button
                 className="px-6 py-3.5 rounded-xl bg-red-50 text-red-600 text-[15px] font-bold hover:bg-red-100 transition-all shrink-0 flex items-center gap-2"
                 onClick={() => {
-                  localStorage.removeItem('token');
-                  localStorage.removeItem('user_role');
+                  clearAuthSession();
                   navigate('/connexion');
                 }}
               >

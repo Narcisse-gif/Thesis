@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AdminDashboardLayout from '../components/AdminDashboardLayout';
 import api from '../services/api';
 
 export default function AdminOffersPage() {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('Tous');
   const [dropdownOpen, setDropdownOpen] = useState(null);
@@ -66,7 +68,7 @@ export default function AdminOffersPage() {
 
     try {
       await api.patch(`/admin/moderate/${id}`, { status: mappedStatus });
-      setOffers(offers.map(o => o.id === id ? { ...o, status: newStatus } : o));
+      setOffers((prev) => prev.map((offer) => (offer.id === id ? { ...offer, status: newStatus } : offer)));
     } catch (error) {
       console.error(error);
     }
@@ -144,7 +146,7 @@ export default function AdminOffersPage() {
                       <img src={o.logo} alt="logo company" className="w-10 h-10 rounded-xl object-cover border border-slate-100" />
                       <div>
                         <p className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">{o.title}</p>
-                        <p className="text-[12px] font-medium text-slate-500">{o.company} • {o.id}</p>
+                        <p className="text-[12px] font-medium text-slate-500">{o.company}</p>
                       </div>
                     </div>
                   </td>
@@ -180,7 +182,13 @@ export default function AdminOffersPage() {
                         <>
                           <div className="fixed inset-0 z-0" onClick={() => setDropdownOpen(null)}></div>
                           <div className="absolute right-0 top-full mt-1 w-44 bg-white rounded-xl shadow-lg border border-slate-100 py-1.5 z-10 text-[13px] font-medium">
-                            <button onClick={() => setDropdownOpen(null)} className="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 flex items-center gap-2">
+                            <button
+                              onClick={() => {
+                                setDropdownOpen(null);
+                                navigate(`/admin/offres/${o.id}`);
+                              }}
+                              className="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 flex items-center gap-2"
+                            >
                               <span className="material-symbols-outlined !text-[18px]">visibility</span>
                               Voir l'offre
                             </button>
@@ -233,13 +241,6 @@ export default function AdminOffersPage() {
                               </button>
                             )}
 
-                            <button 
-                                onClick={() => { setDropdownOpen(null); }}
-                                className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 flex items-center gap-2 mt-1 border-t border-slate-100"
-                            >
-                              <span className="material-symbols-outlined !text-[18px]">delete</span>
-                              Supprimer
-                            </button>
                           </div>
                         </>
                       )}

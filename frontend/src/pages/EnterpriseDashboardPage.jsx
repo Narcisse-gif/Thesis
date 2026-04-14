@@ -8,6 +8,7 @@ export default function EnterpriseDashboardPage() {
   const [stats, setStats] = useState({ totalApplicants: 0, pending: 0, accepted: 0, rejected: 0, offersCount: 0 });
   const [recentApps, setRecentApps] = useState([]);
   const [recentOffers, setRecentOffers] = useState([]);
+  const [updatingId, setUpdatingId] = useState(null);
   const apiBaseUrl = api.defaults.baseURL || '';
 
   const resolveAvatarUrl = (value) => {
@@ -24,6 +25,37 @@ export default function EnterpriseDashboardPage() {
     return full || 'Candidat';
   };
 
+  const getOfferRoute = (offer) => {
+    if (!offer?.id) return '/entreprise/offres';
+    return `/entreprise/offres/${offer.id}`;
+  };
+
+
+  const handleUpdateStatus = async (applicationId, status) => {
+    try {
+      setUpdatingId(applicationId);
+      await api.patch(`/applications/${applicationId}/status`, { status });
+      setRecentApps((prev) => prev.map((app) => (
+        app.id === applicationId ? { ...app, status } : app
+      )));
+      setStats((prev) => {
+        const next = { ...prev };
+        if (status === 'ACCEPTED') {
+          next.accepted += 1;
+          next.pending = Math.max(0, next.pending - 1);
+        } else if (status === 'REJECTED') {
+          next.rejected += 1;
+          next.pending = Math.max(0, next.pending - 1);
+        }
+        return next;
+      });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
   useEffect(() => {
     (async () => {
       try {
@@ -33,7 +65,8 @@ export default function EnterpriseDashboardPage() {
 
         const offersRes = await api.get('/offers/mine');
         const myOffers = offersRes.data;
-        setRecentOffers(myOffers.slice(0, 2));
+        const activeOffers = myOffers.filter((offer) => offer.status === 'ACTIVE');
+        setRecentOffers(activeOffers.slice(0, 2));
 
         setStats({
           totalApplicants: apps.length,
@@ -188,7 +221,24 @@ export default function EnterpriseDashboardPage() {
                     <span className="text-[13px] font-semibold text-slate-600">{offer.applications?.length || 0} candidatures</span>
                   </div>
                   <div className="flex gap-3">
-                    <button className="flex-1 py-2.5 text-[13px] font-bold text-primary bg-primary/5 rounded-xl hover:bg-primary hover:text-white transition-all" onClick={() => navigate('/entreprise/offres')}>Gerer l'offre</button>
+                    <button
+                      className="flex-1 py-2.5 text-[13px] font-bold text-slate-600 bg-slate-50 rounded-xl hover:bg-slate-100 transition-all"
+                      onClick={() => navigate(getOfferRoute(offer))}
+                    >
+                      Voir l'offre
+                    </button>
+                    <button
+                      className="flex-1 py-2.5 text-[13px] font-bold text-blue-700 bg-blue-50 rounded-xl hover:bg-blue-100 transition-all"
+                      onClick={() => navigate(`/entreprise/candidats?offerId=${offer.id}`)}
+                    >
+                      Candidats
+                    </button>
+                    <button
+                      className="flex-1 py-2.5 text-[13px] font-bold text-primary bg-primary/5 rounded-xl hover:bg-primary hover:text-white transition-all"
+                      onClick={() => navigate('/entreprise/offres')}
+                    >
+                      Gerer l'offre
+                    </button>
                   </div>
                 </div>
               ))

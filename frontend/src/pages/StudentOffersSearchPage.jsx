@@ -3,19 +3,38 @@ import { useNavigate } from 'react-router-dom';
 import StudentDashboardLayout from '../components/StudentDashboardLayout';
 import api from '../services/api';
 
-const cities = ['Ouagadougou', 'Bobo-Dioulasso', 'Koudougou'];
-const domains = ['Informatique / IT', 'Gestion & Finance', 'Marketing & Com', 'Ingénierie & BTP'];
+const normalizeText = (value) => (value || '').toString().trim().toLowerCase();
+const uniqueValues = (items) => Array.from(new Set(items.filter(Boolean)));
 
 export default function StudentOffersSearchPage({ offerType = 'stage' }) {
   const navigate = useNavigate();
   const isJob = offerType === 'emploi';
   const [offersData, setOffersData] = useState({ stage: [], job: [] });
   const [loading, setLoading] = useState(true);
+  const [keyword, setKeyword] = useState('');
+  const [cityFilter, setCityFilter] = useState('Toutes');
+  const [domainFilter, setDomainFilter] = useState('Tous');
+  const [typeFilter, setTypeFilter] = useState('Tous');
+  const [sortBy, setSortBy] = useState('recent');
+  const apiBaseUrl = api.defaults.baseURL || '';
+  const resolveMediaUrl = (value) => {
+    if (!value) return '';
+    if (value.startsWith('http')) return value;
+    if (value.startsWith('/uploads/')) return `${apiBaseUrl}${value}`;
+    return value;
+  };
 
   useEffect(() => {
     const fetchOffers = async () => {
       try {
-        const response = await api.get('/offers');
+        const params = {};
+        if (keyword.trim()) params.q = keyword.trim();
+        if (cityFilter !== 'Toutes') params.location = cityFilter;
+        if (domainFilter !== 'Tous') params.industry = domainFilter;
+        if (typeFilter !== 'Tous') params.contractType = typeFilter;
+        if (sortBy === 'oldest') params.sort = 'oldest';
+
+        const response = await api.get('/offers', { params });
         const mapped = response.data.map((offer) => {
           const badgeColors = offer.contractType === 'CDD'
             ? 'bg-blue-100 text-blue-700'
@@ -23,17 +42,22 @@ export default function StudentOffersSearchPage({ offerType = 'stage' }) {
               ? 'bg-blue-50 text-primary'
               : 'bg-blue-50 text-primary';
 
+          const salary = offer.salaryOrStipend;
+          const compensation = salary !== null && salary !== undefined && salary !== ''
+            ? `${new Intl.NumberFormat('fr-FR').format(Number(salary))} FCFA`
+            : 'Non specifie';
+
           return {
             id: offer.id,
             initials: (offer.enterprise?.companyName || offer.title || 'OF').slice(0, 2).toUpperCase(),
             company: offer.enterprise?.companyName || 'Confidentiel',
-            logo: offer.enterprise?.logoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(offer.title || 'OF')}&background=e0ecff&color=1d4ed8&bold=true`,
+            logo: resolveMediaUrl(offer.enterprise?.logoUrl) || `https://ui-avatars.com/api/?name=${encodeURIComponent(offer.title || 'OF')}&background=e0ecff&color=1d4ed8&bold=true`,
             title: offer.title,
             location: offer.location || offer.enterprise?.location || 'Non specifie',
             domain: offer.enterprise?.industry || 'Autre',
             duration: offer.durationMonths ? `${offer.durationMonths} mois` : 'Non specifie',
             workType: offer.contractType || 'Non specifie',
-            compensation: offer.salaryOrStipend ? `${offer.salaryOrStipend} FCFA` : 'Non specifie',
+            compensation,
             contractType: offer.contractType,
             badge: offer.contractType || 'Offre',
             badgeColors,
@@ -55,15 +79,12 @@ export default function StudentOffersSearchPage({ offerType = 'stage' }) {
     };
 
     fetchOffers();
-  }, []);
+  }, [keyword, cityFilter, domainFilter, typeFilter, sortBy]);
 
   const offers = isJob ? offersData.job : offersData.stage;
 
-  const [keyword, setKeyword] = useState('');
-  const [cityFilter, setCityFilter] = useState('Toutes');
-  const [domainFilter, setDomainFilter] = useState('Tous');
-  const [typeFilter, setTypeFilter] = useState('Tous');
-  const [sortBy, setSortBy] = useState('recent');
+  const cityOptions = uniqueValues(offers.map((offer) => offer.location)).sort((a, b) => a.localeCompare(b, 'fr'));
+  const domainOptions = uniqueValues(offers.map((offer) => offer.domain)).sort((a, b) => a.localeCompare(b, 'fr'));
 
   const typeOptions = isJob ? ['CDI', 'CDD'] : ['STAGE'];
 
@@ -74,21 +95,29 @@ export default function StudentOffersSearchPage({ offerType = 'stage' }) {
         offer.company.toLowerCase().includes(keyword.toLowerCase()) ||
         offer.domain.toLowerCase().includes(keyword.toLowerCase());
 
-      const cityMatch = cityFilter === 'Toutes' ? true : offer.location === cityFilter;
-      const domainMatch = domainFilter === 'Tous' ? true : offer.domain === domainFilter;
+      const cityMatch = cityFilter === 'Toutes'
+        ? true
+        : normalizeText(offer.location).includes(normalizeText(cityFilter));
+      const domainMatch = domainFilter === 'Tous'
+        ? true
+        : normalizeText(offer.domain).includes(normalizeText(domainFilter));
       const typeMatch = typeFilter === 'Tous' ? true : offer.contractType === typeFilter;
 
       return keywordMatch && cityMatch && domainMatch && typeMatch;
     });
 
     if (sortBy === 'applicants') {
-      return [...filtered].sort((a, b) => Number.parseInt(b.applicants, 10) - Number.parseInt(a.applicants, 10));
+      return [...filtered].sort((a, b) => {
+        const left = Number.parseInt(b.applicants, 10) || 0;
+        const right = Number.parseInt(a.applicants, 10) || 0;
+        return left - right;
+      });
     }
 
     return filtered;
   }, [offers, keyword, cityFilter, domainFilter, typeFilter, sortBy]);
 
-  const detailsBasePath = isJob ? '/emplois' : '/stages';
+  const detailsBasePath = isJob ? '/etudiant/emplois' : '/etudiant/stages';
 
   return (
     <StudentDashboardLayout>
@@ -126,13 +155,13 @@ export default function StudentOffersSearchPage({ offerType = 'stage' }) {
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
               <select className="rounded-xl border border-blue-200 px-4 py-2.5 text-sm" value={cityFilter} onChange={(event) => setCityFilter(event.target.value)}>
                 <option>Toutes</option>
-                {cities.map((city) => (
+                {cityOptions.map((city) => (
                   <option key={city}>{city}</option>
                 ))}
               </select>
               <select className="rounded-xl border border-blue-200 px-4 py-2.5 text-sm" value={domainFilter} onChange={(event) => setDomainFilter(event.target.value)}>
                 <option>Tous</option>
-                {domains.map((domain) => (
+                {domainOptions.map((domain) => (
                   <option key={domain}>{domain}</option>
                 ))}
               </select>
@@ -203,7 +232,7 @@ export default function StudentOffersSearchPage({ offerType = 'stage' }) {
                   <div className="flex items-center gap-3 mb-6 mt-auto">
                     <button
                       className="flex-1 py-2.5 bg-slate-50 hover:bg-primary text-slate-700 hover:text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-sm"
-                      onClick={() => navigate(`/postuler/${offer.id}`)}
+                      onClick={() => navigate(`/etudiant/postuler/${offer.id}`)}
                     >
                       Postuler
                       <span className="material-symbols-outlined text-sm">send</span>

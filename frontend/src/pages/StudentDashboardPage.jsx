@@ -9,6 +9,13 @@ export default function StudentDashboardPage() {
   const [applications, setApplications] = useState([]);
   const [offers, setOffers] = useState([]);
   const [profile, setProfile] = useState(null);
+  const apiBaseUrl = api.defaults.baseURL || '';
+  const resolveMediaUrl = (value) => {
+    if (!value) return '';
+    if (value.startsWith('http')) return value;
+    if (value.startsWith('/uploads/')) return `${apiBaseUrl}${value}`;
+    return value;
+  };
 
   useEffect(() => {
     api.get('/applications/my').then(res => {
@@ -119,6 +126,11 @@ export default function StudentDashboardPage() {
               applications.map((application) => {
                 const offer = application.offer;
                 const status = application.status || 'PENDING';
+                const statusLabel = status === 'PENDING'
+                  ? 'En attente'
+                  : status === 'ACCEPTED'
+                    ? 'Acceptee'
+                    : 'Rejetee';
                 const badgeColor = status === 'ACCEPTED'
                   ? 'bg-blue-50 text-primary border-blue-100/50'
                   : status === 'REJECTED'
@@ -128,10 +140,12 @@ export default function StudentDashboardPage() {
                   ? new Date(application.appliedAt).toLocaleDateString('fr-FR')
                   : 'Date inconnue';
 
+                const offerDetailPath = offer?.contractType === 'STAGE' ? `/etudiant/stages/${offer?.id}` : `/etudiant/emplois/${offer?.id}`;
+
                 return (
-                  <div key={application.id} className="bg-white p-7 rounded-[2rem] shadow-sm hover:shadow-md transition-all duration-500 border border-slate-50 flex flex-col sm:flex-row items-start sm:items-center gap-4 group cursor-pointer" onClick={() => navigate(`/emplois/${offer?.id}`)}>
+                  <div key={application.id} className="bg-white p-7 rounded-[2rem] shadow-sm hover:shadow-md transition-all duration-500 border border-slate-50 flex flex-col sm:flex-row items-start sm:items-center gap-4 group cursor-pointer" onClick={() => navigate(offerDetailPath)}>
                     <div className="h-16 w-16 rounded-2xl bg-slate-50 p-3 flex items-center justify-center shrink-0 border border-slate-100 group-hover:border-primary/20 transition-colors duration-500">
-                      <img alt={offer?.enterprise?.companyName || 'Entreprise'} className="w-full h-full object-contain" src={offer?.enterprise?.logoUrl || 'https://ui-avatars.com/api/?name=Entreprise&background=e0ecff&color=1d4ed8&bold=true'} />
+                      <img alt={offer?.enterprise?.companyName || 'Entreprise'} className="w-full h-full object-contain" src={resolveMediaUrl(offer?.enterprise?.logoUrl) || 'https://ui-avatars.com/api/?name=Entreprise&background=e0ecff&color=1d4ed8&bold=true'} />
                     </div>
                     <div className="flex-1">
                       <h4 className="font-bold text-slate-900 text-[16px] group-hover:text-primary transition-colors">{offer?.title || 'Offre'}</h4>
@@ -146,10 +160,7 @@ export default function StudentDashboardPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end mt-2 sm:mt-0">
-                      <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border ${badgeColor}`}>{status}</span>
-                      <button className="p-2 text-slate-300 hover:text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
-                        <span className="material-symbols-outlined">more_horiz</span>
-                      </button>
+                      <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border ${badgeColor}`}>{statusLabel}</span>
                     </div>
                   </div>
                 );
@@ -203,12 +214,12 @@ export default function StudentDashboardPage() {
                 </div>
               ) : (
                 offers.map((offer) => {
-                  const detailPath = offer.contractType === 'STAGE' ? `/stages/${offer.id}` : `/emplois/${offer.id}`;
+                  const detailPath = offer.contractType === 'STAGE' ? `/etudiant/stages/${offer.id}` : `/etudiant/emplois/${offer.id}`;
                   return (
                     <div key={offer.id} className="bg-white p-5 rounded-3xl shadow-sm border border-slate-100/50 hover:border-primary/20 transition-all duration-300 group cursor-pointer" onClick={() => navigate(detailPath)}>
                       <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-5">
                         <div className="h-12 w-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center p-2 shrink-0 group-hover:scale-105 transition-transform duration-500">
-                          <img alt={offer.enterprise?.companyName || 'Entreprise'} className="w-full h-full object-contain" src={offer.enterprise?.logoUrl || 'https://ui-avatars.com/api/?name=Entreprise&background=e0ecff&color=1d4ed8&bold=true'} />
+                          <img alt={offer.enterprise?.companyName || 'Entreprise'} className="w-full h-full object-contain" src={resolveMediaUrl(offer.enterprise?.logoUrl) || 'https://ui-avatars.com/api/?name=Entreprise&background=e0ecff&color=1d4ed8&bold=true'} />
                         </div>
                         <div className="flex-1 w-full">
                           <h4 className="font-bold text-[14px] text-slate-900 group-hover:text-primary transition-colors">{offer.title}</h4>

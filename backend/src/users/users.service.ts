@@ -76,6 +76,30 @@ export class UsersService {
     return safeUser;
   }
 
+  async getStudentProfileByIdentifier(identifier: string) {
+    const user = await this.usersRepository.findOne({
+      where: { id: identifier },
+      relations: ['studentProfile'],
+    });
+    if (user && user.role === UserRole.STUDENT) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { passwordHash, ...safeUser } = user;
+      return safeUser;
+    }
+
+    const student = await this.studentRepository.findOne({
+      where: { id: identifier },
+      relations: ['user'],
+    });
+    if (!student?.user || student.user.role !== UserRole.STUDENT) {
+      throw new NotFoundException('Student not found');
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { passwordHash, ...safeUser } = student.user;
+    return safeUser;
+  }
+
   async updateProfile(userId: string, updateData: any) {
     const user = await this.findById(userId);
     if (!user) throw new NotFoundException('User not found');

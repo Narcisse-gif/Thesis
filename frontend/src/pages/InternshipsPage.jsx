@@ -1,32 +1,93 @@
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import api from '../services/api';
+import Popup from '../components/Popup';
+import { getToken, getUserRole } from '../utils/authStorage';
 
-export default function InternshipsPage() {
+const normalizeText = (value) => (value || '').toString().trim().toLowerCase();
+
+const uniqueValues = (items) => Array.from(new Set(items.filter(Boolean)));
+
+const getDurationBucket = (value) => {
+  const text = normalizeText(value);
+  if (!text) return '';
+  if (text.includes('moins')) return '1 - 2 mois';
+  if (text.includes('3') && text.includes('6')) return '3 mois';
+  if (text.includes('plus')) return '+6 mois';
+  const numeric = Number.parseInt(text, 10);
+  if (Number.isNaN(numeric)) return '';
+  if (numeric <= 2) return '1 - 2 mois';
+  if (numeric <= 3) return '3 mois';
+  if (numeric <= 6) return '6 mois';
+  return '+6 mois';
+};
+
+const getStageType = (offer) => {
+  const text = normalizeText(`${offer.title || ''} ${offer.candidateProfile || ''}`);
+  if (text.includes('academique') || text.includes('académique') || text.includes('pfe')) {
+    return 'Académique';
+  }
+  return 'Professionnel';
+};
+
+function InternshipsPage() {
   const navigate = useNavigate();
   const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [keyword, setKeyword] = useState('');
+  const [cityQuery, setCityQuery] = useState('');
+  const [selectedCities, setSelectedCities] = useState([]);
+  const [selectedDomains, setSelectedDomains] = useState([]);
+  const [selectedDuration, setSelectedDuration] = useState('');
+  const [selectedStageTypes, setSelectedStageTypes] = useState([]);
+  const [popupOpen, setPopupOpen] = useState(false);
+  const [pendingApplyId, setPendingApplyId] = useState(null);
+  const apiBaseUrl = api.defaults.baseURL || '';
+
+  const resolveMediaUrl = (value) => {
+    if (!value) return '';
+    if (value.startsWith('http')) return value;
+    if (value.startsWith('/uploads/')) return `${apiBaseUrl}${value}`;
+    return value;
+  };
 
   useEffect(() => {
     const fetchOffers = async () => {
       try {
-        const response = await api.get('/offers');
+        const params = { contractType: 'STAGE' };
+        if (keyword.trim()) params.q = keyword.trim();
+        if (cityQuery.trim()) {
+          params.location = cityQuery.trim();
+        } else if (selectedCities.length === 1) {
+          params.location = selectedCities[0];
+        }
+        if (selectedDomains.length === 1) {
+          params.industry = selectedDomains[0];
+        }
+
+        const response = await api.get('/offers', { params });
         const dbOffers = response.data
           .filter((offer) => offer.contractType === 'STAGE')
           .map((offer) => ({
             id: offer.id,
             initials: (offer.enterprise?.companyName || offer.title || 'OF').slice(0, 2).toUpperCase(),
             company: offer.enterprise?.companyName || 'Confidentiel',
+            logo: resolveMediaUrl(offer.enterprise?.logoUrl),
             title: offer.title,
             location: offer.location || offer.enterprise?.location || 'Non specifie',
+            domain: offer.enterprise?.industry || 'Autre',
             duration: offer.durationMonths ? `${offer.durationMonths} mois` : 'Non specifie',
-            compensation: offer.salaryOrStipend ? `${offer.salaryOrStipend} FCFA` : 'Non specifie',
+            durationRaw: offer.durationMonths || '',
+            compensation: offer.salaryOrStipend ? `${new Intl.NumberFormat('fr-FR').format(Number(offer.salaryOrStipend))} FCFA` : 'Non specifie',
             badge: offer.contractType || 'Stage',
             badgeColors: 'bg-blue-50 text-primary',
             posted: offer.createdAt ? `Publie le ${new Date(offer.createdAt).toLocaleDateString('fr-FR')}` : 'Date inconnue',
             applicants: 'Non disponible',
+            stageType: getStageType(offer),
+            durationBucket: getDurationBucket(offer.durationMonths),
+            createdAt: offer.createdAt,
           }));
         setOffers(dbOffers);
       } catch (error) {
@@ -38,14 +99,48 @@ export default function InternshipsPage() {
     };
 
     fetchOffers();
-  }, []);
+  }, [keyword, cityQuery, selectedCities, selectedDomains, selectedDuration, selectedStageTypes]);
+
+  const cityOptions = uniqueValues(offers.map((offer) => offer.location)).sort((a, b) => a.localeCompare(b, 'fr'));
+  const domainOptions = uniqueValues(offers.map((offer) => offer.domain)).sort((a, b) => a.localeCompare(b, 'fr'));
+
+  const filteredOffers = useMemo(() => {
+    const filtered = offers.filter((offer) => {
+      const keywordMatch = !keyword
+        ? true
+        : normalizeText(offer.title).includes(normalizeText(keyword)) ||
+          normalizeText(offer.company).includes(normalizeText(keyword)) ||
+          normalizeText(offer.domain).includes(normalizeText(keyword));
+
+      const citySearchMatch = !cityQuery
+        ? true
+        : normalizeText(offer.location).includes(normalizeText(cityQuery));
+
+      const cityMatch = selectedCities.length === 0
+        ? true
+        : selectedCities.some((city) => normalizeText(offer.location).includes(normalizeText(city)));
+
+      const domainMatch = selectedDomains.length === 0
+        ? true
+        : selectedDomains.some((domain) => normalizeText(offer.domain).includes(normalizeText(domain)));
+
+      const durationMatch = !selectedDuration ? true : offer.durationBucket === selectedDuration;
+
+      const stageTypeMatch = selectedStageTypes.length === 0
+        ? true
+        : selectedStageTypes.includes(offer.stageType);
+
+      return keywordMatch && citySearchMatch && cityMatch && domainMatch && durationMatch && stageTypeMatch;
+    });
+
+    return [...filtered].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+  }, [offers, keyword, cityQuery, selectedCities, selectedDomains, selectedDuration, selectedStageTypes]);
 
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
       <div className="layout-container flex h-full grow flex-col">
         <Navbar />
         <main className="flex-1">
-          {/* Hero Search Section with Background */}
           <div className="relative w-full py-20 md:py-32 mb-12">
             <div className="absolute inset-0 z-0">
               <img alt="Office Background" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqI1ZYs989a6DlyZ6cpqAxP19iLu7FrCHKwH8G7hNdqy1RL6Fa4m5IaSOY24Bb4wtF-6kROZxJGDRTlI5J6bA5wiIBrRKO9xf4hDUHZrQr5V6qkIl2BL15-QWQMwLc13jLb6ZYty8JPXlnAXAH-GxGeyng6u7tEXu1JfIyJP7F0blJz80SkbGRWR0JxaX3G5t09vNmWWBSCFsj0wboTqWqaM8xjhLYkoYOmK51SHyzF0YJe-oRwH5g0ygSF_cUO1a_NyFESbBQDn7f" />
@@ -60,13 +155,25 @@ export default function InternshipsPage() {
                 <div className="flex flex-col sm:flex-row w-full relative gap-2 p-2 rounded-2xl bg-white/95 dark:bg-slate-800/95 backdrop-blur shadow-2xl border border-white/20">
                   <div className="flex items-center flex-[1.5] px-4 py-2 border-r border-slate-200 dark:border-slate-700">
                     <span className="material-symbols-outlined text-slate-400 mr-2">search</span>
-                    <input className="w-full bg-transparent border-none focus:ring-0 text-slate-900 dark:text-white placeholder:text-slate-400 outline-none" placeholder="Métier, domaine (ex: Informatique)..." type="text" />
+                    <input
+                      className="w-full bg-transparent border-none focus:ring-0 text-slate-900 dark:text-white placeholder:text-slate-400 outline-none"
+                      placeholder="Métier, domaine (ex: Informatique)..."
+                      type="text"
+                      value={keyword}
+                      onChange={(event) => setKeyword(event.target.value)}
+                    />
                   </div>
                   <div className="flex items-center flex-1 px-4 py-2">
                     <span className="material-symbols-outlined text-slate-400 mr-2">location_on</span>
-                    <input className="w-full bg-transparent border-none focus:ring-0 text-slate-900 dark:text-white placeholder:text-slate-400 outline-none" placeholder="Ville (ex: Ouaga)..." type="text" />
+                    <input
+                      className="w-full bg-transparent border-none focus:ring-0 text-slate-900 dark:text-white placeholder:text-slate-400 outline-none"
+                      placeholder="Ville (ex: Ouaga)..."
+                      type="text"
+                      value={cityQuery}
+                      onChange={(event) => setCityQuery(event.target.value)}
+                    />
                   </div>
-                  <button className="bg-primary text-white px-10 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
+                  <button className="bg-primary text-white px-10 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20" type="button">
                     Rechercher
                   </button>
                 </div>
@@ -75,58 +182,90 @@ export default function InternshipsPage() {
           </div>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex flex-col lg:flex-row gap-8">
-              {/* Sidebar Filters */}
               <aside className="w-full lg:w-72 space-y-6">
                 <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
-                  <div className="flex items-center justify-between mb-6">
+                  <div className="mb-6">
                     <h2 className="font-bold text-xl">Filtres</h2>
-                    <button className="text-primary hover:bg-primary/10 p-1 rounded-lg transition-colors">
-                      <span className="material-symbols-outlined text-sm">refresh</span>
-                    </button>
                   </div>
-                  {/* Ville */}
                   <div className="space-y-4 mb-8">
                     <p className="text-[11px] font-black uppercase tracking-widest text-slate-400">Ville</p>
                     <div className="flex flex-col gap-3">
-                      {['Ouagadougou', 'Bobo-Dioulasso', 'Koudougou'].map((city, i) => (
+                      {cityOptions.map((city) => (
                         <label key={city} className="flex items-center gap-3 cursor-pointer group">
-                          <input defaultChecked={i === 0} className="rounded-md text-primary focus:ring-primary h-5 w-5 border-slate-300 dark:border-slate-700 dark:bg-slate-800" type="checkbox" />
+                          <input
+                            checked={selectedCities.includes(city)}
+                            onChange={(event) => {
+                              setSelectedCities((prev) => event.target.checked
+                                ? [...prev, city]
+                                : prev.filter((value) => value !== city));
+                            }}
+                            className="rounded-md text-primary focus:ring-primary h-5 w-5 border-slate-300 dark:border-slate-700 dark:bg-slate-800"
+                            type="checkbox"
+                          />
                           <span className="text-sm font-medium group-hover:text-primary transition-colors">{city}</span>
                         </label>
                       ))}
                     </div>
                   </div>
-                  {/* Domaine d'étude */}
                   <div className="space-y-4 mb-8">
                     <p className="text-[11px] font-black uppercase tracking-widest text-slate-400">Domaine d'étude</p>
                     <div className="flex flex-col gap-3">
-                      {['Informatique / IT', 'Gestion & Finance', 'Marketing & Com', 'Ingénierie & BTP'].map((domain, i) => (
+                      {domainOptions.map((domain) => (
                         <label key={domain} className="flex items-center gap-3 cursor-pointer group">
-                          <input defaultChecked={i === 0} className="rounded-md text-primary focus:ring-primary h-5 w-5 border-slate-300 dark:border-slate-700 dark:bg-slate-800" type="checkbox" />
+                          <input
+                            checked={selectedDomains.includes(domain)}
+                            onChange={(event) => {
+                              setSelectedDomains((prev) => event.target.checked
+                                ? [...prev, domain]
+                                : prev.filter((value) => value !== domain));
+                            }}
+                            className="rounded-md text-primary focus:ring-primary h-5 w-5 border-slate-300 dark:border-slate-700 dark:bg-slate-800"
+                            type="checkbox"
+                          />
                           <span className="text-sm font-medium group-hover:text-primary transition-colors">{domain}</span>
                         </label>
                       ))}
                     </div>
                   </div>
-                  {/* Durée du stage */}
                   <div className="space-y-4 mb-8">
                     <p className="text-[11px] font-black uppercase tracking-widest text-slate-400">Durée du stage</p>
                     <div className="flex flex-col gap-3">
-                      {['1 - 2 mois', '3 mois', '6 mois', '+6 mois'].map((duree, i) => (
+                      {['1 - 2 mois', '3 mois', '6 mois', '+6 mois'].map((duree) => (
                         <label key={duree} className="flex items-center gap-3 cursor-pointer group">
-                          <input defaultChecked={i === 1} name="duree" className="text-primary focus:ring-primary h-5 w-5 border-slate-300 dark:border-slate-700 dark:bg-slate-800" type="radio" />
+                          <input
+                            name="duree"
+                            checked={selectedDuration === duree}
+                            onChange={() => setSelectedDuration(duree)}
+                            className="text-primary focus:ring-primary h-5 w-5 border-slate-300 dark:border-slate-700 dark:bg-slate-800"
+                            type="radio"
+                          />
                           <span className="text-sm font-medium group-hover:text-primary transition-colors">{duree}</span>
                         </label>
                       ))}
+                      <button
+                        type="button"
+                        className="text-xs text-slate-400 hover:text-primary text-left"
+                        onClick={() => setSelectedDuration('')}
+                      >
+                        Reinitialiser la duree
+                      </button>
                     </div>
                   </div>
-                  {/* Type de stage */}
                   <div className="space-y-4">
                     <p className="text-[11px] font-black uppercase tracking-widest text-slate-400">Type de stage</p>
                     <div className="flex flex-col gap-3">
-                      {['Académique', 'Professionnel'].map(type => (
+                      {['Académique', 'Professionnel'].map((type) => (
                         <label key={type} className="flex items-center gap-3 cursor-pointer group">
-                          <input className="rounded-md text-primary focus:ring-primary h-5 w-5 border-slate-300 dark:border-slate-700 dark:bg-slate-800" type="checkbox" />
+                          <input
+                            checked={selectedStageTypes.includes(type)}
+                            onChange={(event) => {
+                              setSelectedStageTypes((prev) => event.target.checked
+                                ? [...prev, type]
+                                : prev.filter((value) => value !== type));
+                            }}
+                            className="rounded-md text-primary focus:ring-primary h-5 w-5 border-slate-300 dark:border-slate-700 dark:bg-slate-800"
+                            type="checkbox"
+                          />
                           <span className="text-sm font-medium group-hover:text-primary transition-colors">{type}</span>
                         </label>
                       ))}
@@ -134,28 +273,33 @@ export default function InternshipsPage() {
                   </div>
                 </div>
               </aside>
-              {/* Results Grid */}
               <div className="flex-1">
-                <div className="flex items-center justify-between mb-8">
-                  <p className="text-slate-500 dark:text-slate-400 text-sm">Nous avons trouvé <span className="font-bold text-slate-900 dark:text-white">{offers.length} offres</span> de stage</p>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-slate-500">Trier par:</span>
-                    <select className="bg-transparent border-none outline-none focus:ring-0 text-sm font-bold py-1 cursor-pointer">
-                      <option>Plus récent</option>
-                      <option>Pertinence</option>
-                    </select>
-                  </div>
+                <div className="mb-8">
+                  <p className="text-slate-500 dark:text-slate-400 text-sm">Nous avons trouvé <span className="font-bold text-slate-900 dark:text-white">{filteredOffers.length} offres</span> de stage</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {loading ? (
                     <div className="col-span-full text-center text-slate-500">Chargement des offres...</div>
-                  ) : offers.length === 0 ? (
+                  ) : filteredOffers.length === 0 ? (
                     <div className="col-span-full text-center text-slate-500">Aucune offre disponible.</div>
                   ) : (
-                    offers.map((offer) => (
+                    filteredOffers.map((offer) => (
                       <div key={offer.id} className="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm hover-card-effect group flex flex-col h-full">
                         <div className="flex justify-between items-start mb-6">
-                          <div className="w-14 h-14 rounded-full bg-blue-50 dark:bg-slate-800 flex items-center justify-center font-bold text-primary text-lg border border-slate-100 dark:border-slate-700">{offer.initials}</div>
+                          <div className="w-14 h-14 rounded-full bg-blue-50 dark:bg-slate-800 flex items-center justify-center font-bold text-primary text-lg border border-slate-100 dark:border-slate-700 overflow-hidden">
+                            {offer.logo ? (
+                              <img
+                                alt={`Logo ${offer.company}`}
+                                className="w-full h-full object-contain"
+                                src={offer.logo}
+                                onError={(event) => {
+                                  event.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(offer.initials)}&background=e0ecff&color=1d4ed8&bold=true`;
+                                }}
+                              />
+                            ) : (
+                              <span>{offer.initials}</span>
+                            )}
+                          </div>
                           <span className={`${offer.badgeColors} text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full`}>{offer.badge}</span>
                         </div>
                         <h3 className="text-xl font-bold mb-1 text-primary group-hover:text-blue-700 transition-colors">{offer.title}</h3>
@@ -168,7 +312,18 @@ export default function InternshipsPage() {
                         <div className="flex items-center gap-3 mb-6 mt-auto">
                           <button
                             className="flex-1 py-2.5 bg-slate-50 dark:bg-slate-800 group-hover:bg-primary text-slate-700 dark:text-slate-300 group-hover:text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-sm"
-                            onClick={() => navigate(`/postuler/${offer.id}`)}
+                            onClick={() => {
+                              const token = getToken();
+                              const role = getUserRole();
+                              if (!token || role !== 'STUDENT') {
+                                if (!popupOpen) {
+                                  setPendingApplyId(offer.id);
+                                  setPopupOpen(true);
+                                }
+                              } else {
+                                navigate(`/postuler/${offer.id}`);
+                              }
+                            }}
                           >
                             Postuler
                             <span className="material-symbols-outlined text-sm">send</span>
@@ -189,7 +344,6 @@ export default function InternshipsPage() {
                     ))
                   )}
                 </div>
-                {/* Pagination */}
                 <div className="mt-16 flex justify-center gap-2">
                   <button className="w-12 h-12 flex items-center justify-center rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-400 hover:text-primary transition-colors"><span className="material-symbols-outlined">chevron_left</span></button>
                   <button className="w-12 h-12 flex items-center justify-center rounded-xl bg-primary text-white font-bold shadow-lg shadow-primary/20">1</button>
@@ -205,6 +359,18 @@ export default function InternshipsPage() {
         </main>
         <Footer />
       </div>
+      <Popup
+        open={popupOpen}
+        onClose={() => {
+          setPopupOpen(false);
+          setPendingApplyId(null);
+          navigate('/inscription/etudiant');
+        }}
+        title="Inscription requise"
+        message="Pour postuler à une offre, vous devez être connecté avec un compte étudiant. Cliquez sur le bouton ci-dessous pour accéder à la page d'inscription."
+      />
     </div>
   );
 }
+
+export default InternshipsPage;

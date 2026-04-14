@@ -1,13 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import Popup from '../components/Popup';
+import { getToken, getUserRole } from '../utils/authStorage';
 
-export default function LandingPage() {
+function LandingPage() {
   const navigate = useNavigate();
   const [featuredOffers, setFeaturedOffers] = useState([]);
   const [loadingOffers, setLoadingOffers] = useState(true);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchCity, setSearchCity] = useState('');
+  const searchInputRef = useRef();
+  const cityInputRef = useRef();
+  const [popupOpen, setPopupOpen] = useState(false);
+  const [pendingApplyId, setPendingApplyId] = useState(null);
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -15,7 +23,7 @@ export default function LandingPage() {
         const response = await api.get('/offers');
         const mapped = response.data
           .filter((offer) => offer.status === 'ACTIVE')
-          .slice(0, 3)
+          .slice(0, 6)
           .map((offer) => ({
             id: offer.id,
             title: offer.title,
@@ -25,6 +33,7 @@ export default function LandingPage() {
             salaryOrStipend: offer.salaryOrStipend,
             durationMonths: offer.durationMonths,
             initials: (offer.enterprise?.companyName || offer.title || 'OF').slice(0, 2).toUpperCase(),
+            logo: offer.enterprise?.logoUrl || '',
           }));
         setFeaturedOffers(mapped);
       } catch (error) {
@@ -34,9 +43,20 @@ export default function LandingPage() {
         setLoadingOffers(false);
       }
     };
-
     fetchFeatured();
   }, []);
+
+  // Fonction pour filtrer les offres à la une selon la recherche
+  const filteredOffers = featuredOffers.filter((offer) => {
+    const keywordMatch = searchKeyword.trim() === '' || (
+      offer.title.toLowerCase().includes(searchKeyword.trim().toLowerCase()) ||
+      offer.company.toLowerCase().includes(searchKeyword.trim().toLowerCase())
+    );
+    const cityMatch = searchCity.trim() === '' || (
+      offer.location.toLowerCase().includes(searchCity.trim().toLowerCase())
+    );
+    return keywordMatch && cityMatch;
+  });
 
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
@@ -61,19 +81,36 @@ export default function LandingPage() {
                       La plateforme de référence pour propulser ta carrière. Connecte-toi aux meilleures opportunités partout au pays.
                     </p>
                   </div>
-                  <div className="flex flex-col sm:flex-row w-full max-w-4xl mx-auto relative gap-2 p-2 rounded-2xl bg-white/95 dark:bg-slate-800/95 backdrop-blur shadow-2xl border border-white/20">
+                  <form
+                    className="flex flex-col sm:flex-row w-full max-w-4xl mx-auto relative gap-2 p-2 rounded-2xl bg-white/95 dark:bg-slate-800/95 backdrop-blur shadow-2xl border border-white/20"
+                    onSubmit={e => e.preventDefault()}
+                  >
                     <div className="flex items-center flex-[1.5] px-4 py-2 border-r border-slate-200 dark:border-slate-700">
                       <span className="material-symbols-outlined text-slate-400 mr-2">search</span>
-                      <input className="w-full bg-transparent border-none focus:ring-0 outline-none text-slate-900 dark:text-white placeholder:text-slate-400" placeholder="Métier, domaine (ex: Informatique)..." />
+                      <input
+                        ref={searchInputRef}
+                        value={searchKeyword}
+                        onChange={e => setSearchKeyword(e.target.value)}
+                        className="w-full bg-transparent border-none focus:ring-0 outline-none text-slate-900 dark:text-white placeholder:text-slate-400"
+                        placeholder="Métier, domaine (ex: Informatique)..."
+                        name="keyword"
+                      />
                     </div>
                     <div className="flex items-center flex-1 px-4 py-2">
                       <span className="material-symbols-outlined text-slate-400 mr-2">location_on</span>
-                      <input className="w-full bg-transparent border-none focus:ring-0 outline-none text-slate-900 dark:text-white placeholder:text-slate-400" placeholder="Ville (ex: Ouaga)..." />
+                      <input
+                        ref={cityInputRef}
+                        value={searchCity}
+                        onChange={e => setSearchCity(e.target.value)}
+                        className="w-full bg-transparent border-none focus:ring-0 outline-none text-slate-900 dark:text-white placeholder:text-slate-400"
+                        placeholder="Ville (ex: Ouaga)..."
+                        name="ville"
+                      />
                     </div>
-                    <button onClick={() => navigate('/emplois')} className="bg-primary text-white px-10 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
+                    <button type="submit" className="bg-primary text-white px-10 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
                       Rechercher
                     </button>
-                  </div>
+                  </form>
                 </div>
               </div>
             </div>
@@ -92,10 +129,10 @@ export default function LandingPage() {
             <div className="grid md:grid-cols-3 gap-8 items-stretch">
               {loadingOffers ? (
                 <div className="col-span-full text-center text-slate-500">Chargement des offres...</div>
-              ) : featuredOffers.length === 0 ? (
+              ) : filteredOffers.length === 0 ? (
                 <div className="col-span-full text-center text-slate-500">Aucune offre disponible.</div>
               ) : (
-                featuredOffers.map((offer) => {
+                filteredOffers.map((offer) => {
                   const detailPath = offer.contractType === 'STAGE' ? `/stages/${offer.id}` : `/emplois/${offer.id}`;
                   const badgeColor = offer.contractType === 'CDD' ? 'bg-indigo-50 text-indigo-600' : 'bg-blue-50 text-blue-600';
                   const secondaryInfo = offer.salaryOrStipend
@@ -104,10 +141,24 @@ export default function LandingPage() {
                       ? `${offer.durationMonths} mois`
                       : 'Non specifie';
 
+                  // Correction logo: utiliser l'URL absolue si déjà http, sinon préfixer par api.defaults.baseURL
+                  let logoUrl = '';
+                  if (offer.logo) {
+                    logoUrl = offer.logo.startsWith('http') ? offer.logo : (api.defaults.baseURL ? api.defaults.baseURL.replace(/\/$/, '') + (offer.logo.startsWith('/') ? offer.logo : '/' + offer.logo) : offer.logo);
+                  }
+
                   return (
                     <div key={offer.id} className="glass-card p-8 rounded-3xl shadow-xl hover-card-effect relative group flex flex-col h-full cursor-pointer" onClick={() => navigate(detailPath)}>
                       <div className="flex justify-between items-start mb-6">
-                        <div className="w-14 h-14 rounded-xl bg-blue-100 flex items-center justify-center font-bold text-primary text-lg">{offer.initials}</div>
+                        {logoUrl ? (
+                          <img
+                            src={logoUrl}
+                            alt={offer.company}
+                            className="w-14 h-14 rounded-xl object-cover bg-white border border-slate-200"
+                          />
+                        ) : (
+                          <div className="w-14 h-14 rounded-xl bg-blue-100 flex items-center justify-center font-bold text-primary text-lg">{offer.initials}</div>
+                        )}
                         <span className={`px-3 py-1 text-xs font-bold rounded-full ${badgeColor}`}>{offer.contractType}</span>
                       </div>
                       <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">{offer.title}</h3>
@@ -116,7 +167,22 @@ export default function LandingPage() {
                         <span className="flex items-center gap-1"><span className="material-symbols-outlined text-base">location_on</span> {offer.location}</span>
                         <span className="flex items-center gap-1"><span className="material-symbols-outlined text-base">payments</span> {secondaryInfo}</span>
                       </div>
-                      <button className="w-full py-4 bg-primary text-white rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all mt-auto" onClick={(event) => { event.stopPropagation(); navigate(`/postuler/${offer.id}`); }}>
+                      <button
+                        className="w-full py-4 bg-primary text-white rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all mt-auto"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          const token = getToken();
+                          const role = getUserRole();
+                          if (!token || role !== 'STUDENT') {
+                            if (!popupOpen) {
+                              setPendingApplyId(offer.id);
+                              setPopupOpen(true);
+                            }
+                          } else {
+                            navigate(`/postuler/${offer.id}`);
+                          }
+                        }}
+                      >
                         Postuler maintenant
                       </button>
                     </div>
@@ -208,7 +274,19 @@ export default function LandingPage() {
           </div>
         </main>
         <Footer />
+        <Popup
+          open={popupOpen}
+          onClose={() => {
+            setPopupOpen(false);
+            setPendingApplyId(null);
+            navigate('/inscription/etudiant');
+          }}
+          title="Inscription requise"
+          message="Pour postuler à une offre, vous devez être connecté avec un compte étudiant. Cliquez sur le bouton ci-dessous pour accéder à la page d'inscription."
+        />
       </div>
     </div>
   );
 }
+
+export default LandingPage;

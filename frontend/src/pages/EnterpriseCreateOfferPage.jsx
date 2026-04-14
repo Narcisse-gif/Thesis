@@ -1,12 +1,14 @@
 import EnterpriseDashboardLayout from '../components/EnterpriseDashboardLayout';
-import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import api from '../services/api';
 
 export default function EnterpriseCreateOfferPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [step, setStep] = useState(1);
   const [contractType, setContractType] = useState('CDI');
+  const [editOfferId, setEditOfferId] = useState('');
   
   const [formData, setFormData] = useState({
     title: '',
@@ -17,13 +19,60 @@ export default function EnterpriseCreateOfferPage() {
     minExperience: 'Débutant (0 - 1 an)',
     description: '',
     candidateProfile: '',
+    studyLevel: '',
     benefits: '',
     requiredSkills: '',
     applicationDeadline: ''
   });
 
+  const [requiredDocuments, setRequiredDocuments] = useState(['CV']);
+
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
+
+  const isEditing = Boolean(editOfferId);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const editId = params.get('edit') || '';
+    setEditOfferId(editId);
+  }, [location.search]);
+
+  useEffect(() => {
+    if (!editOfferId) return;
+    setLoading(true);
+    setError(null);
+    api.get(`/offers/${editOfferId}`)
+      .then((res) => {
+        const offer = res.data || {};
+        setContractType(offer.contractType || 'CDI');
+        setFormData({
+          title: offer.title || '',
+          salaryOrStipend: offer.salaryOrStipend ?? '',
+          location: offer.location || '',
+          durationMonths: offer.durationMonths || '',
+          possibleHiring: offer.possibleHiring || 'À définir',
+          minExperience: offer.minExperience || 'Débutant (0 - 1 an)',
+          description: offer.description || '',
+          candidateProfile: offer.candidateProfile || '',
+          studyLevel: offer.studyLevel || '',
+          benefits: offer.benefits || '',
+          requiredSkills: Array.isArray(offer.requiredSkills) ? offer.requiredSkills.join(', ') : (offer.requiredSkills || ''),
+          applicationDeadline: offer.applicationDeadline
+            ? new Date(offer.applicationDeadline).toISOString().slice(0, 10)
+            : '',
+        });
+        if (Array.isArray(offer.requiredDocuments) && offer.requiredDocuments.length > 0) {
+          setRequiredDocuments(offer.requiredDocuments);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        setError("Impossible de charger l'offre pour modification");
+      })
+      .finally(() => setLoading(false));
+  }, [editOfferId]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -33,20 +82,33 @@ export default function EnterpriseCreateOfferPage() {
     setFormData({ ...formData, requiredSkills: e.target.value });
   };
 
+  const toggleRequiredDocument = (value, checked) => {
+    setRequiredDocuments((prev) => {
+      if (checked) {
+        return prev.includes(value) ? prev : [...prev, value];
+      }
+      return prev.filter((item) => item !== value);
+    });
+  };
+
   const handleSubmit = async () => {
-    setLoading(true);
+    setSaving(true);
     setError(null);
     try {
       const payload = {
         ...formData,
         contractType,
         salaryOrStipend: formData.salaryOrStipend ? parseInt(formData.salaryOrStipend, 10) : null,
-        requiredSkills: formData.requiredSkills ? formData.requiredSkills.split(',').map(s => s.trim()) : [],
-        requiredDocuments: ['CV'], // Mock for now, can be updated later
+        requiredSkills: formData.requiredSkills ? formData.requiredSkills.split(',').map((s) => s.trim()).filter(Boolean) : [],
+        requiredDocuments,
         applicationDeadline: formData.applicationDeadline ? new Date(formData.applicationDeadline).toISOString() : null,
       };
       
-      await api.post('/offers', payload);
+      if (isEditing) {
+        await api.patch(`/offers/${editOfferId}`, payload);
+      } else {
+        await api.post('/offers', payload);
+      }
       navigate('/entreprise/offres');
     } catch (err) {
       console.error(err);
@@ -62,7 +124,7 @@ export default function EnterpriseCreateOfferPage() {
         setError(apiMessage || 'Erreur lors de la creation de l\'offre');
       }
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
@@ -70,8 +132,12 @@ export default function EnterpriseCreateOfferPage() {
     <EnterpriseDashboardLayout>
       {/* Header Section */}
       <div className="flex flex-col mb-10 text-center sm:text-left">
-        <span className="text-primary font-bold tracking-tight text-xl mb-1">Nouvelle Offre</span>
-        <h2 className="text-slate-600 font-medium">Création de l'annonce étape {step}/3</h2>
+        <span className="text-primary font-bold tracking-tight text-xl mb-1">
+          {isEditing ? "Modifier l'offre" : 'Nouvelle Offre'}
+        </span>
+        <h2 className="text-slate-600 font-medium">
+          {isEditing ? `Modification de l'annonce étape ${step}/3` : `Création de l'annonce étape ${step}/3`}
+        </h2>
       </div>
 
       <div className="max-w-5xl mx-auto">
@@ -125,7 +191,14 @@ export default function EnterpriseCreateOfferPage() {
                   {/* Job Title */}
                   <div className="space-y-3">
                     <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">Titre de l'offre</label>
-                    <input className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400 outline-none text-[15px] font-medium text-slate-700" placeholder="Ex: Développeur Fullstack Senior" type="text" />
+                    <input
+                      className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400 outline-none text-[15px] font-medium text-slate-700"
+                      placeholder="Ex: Développeur Fullstack Senior"
+                      type="text"
+                      name="title"
+                      value={formData.title}
+                      onChange={handleChange}
+                    />
                   </div>
                   
                   {/* Contract Type */}
@@ -134,16 +207,23 @@ export default function EnterpriseCreateOfferPage() {
                     <div className="grid grid-cols-3 gap-3">
                       <button onClick={() => setContractType('CDI')} className={`py-3 px-2 rounded-xl border-2 font-bold text-[14px] transition-all shadow-sm ${contractType === 'CDI' ? 'border-primary bg-blue-50/50 text-primary' : 'border-transparent bg-slate-50 text-slate-500 hover:bg-slate-100'}`}>CDI</button>
                       <button onClick={() => setContractType('CDD')} className={`py-3 px-2 rounded-xl border-2 font-bold text-[14px] transition-all shadow-sm ${contractType === 'CDD' ? 'border-primary bg-blue-50/50 text-primary' : 'border-transparent bg-slate-50 text-slate-500 hover:bg-slate-100'}`}>CDD</button>
-                      <button onClick={() => setContractType('Stage')} className={`py-3 px-2 rounded-xl border-2 font-bold text-[14px] transition-all shadow-sm ${contractType === 'Stage' ? 'border-primary bg-blue-50/50 text-primary' : 'border-transparent bg-slate-50 text-slate-500 hover:bg-slate-100'}`}>Stage</button>
+                      <button onClick={() => setContractType('STAGE')} className={`py-3 px-2 rounded-xl border-2 font-bold text-[14px] transition-all shadow-sm ${contractType === 'STAGE' ? 'border-primary bg-blue-50/50 text-primary' : 'border-transparent bg-slate-50 text-slate-500 hover:bg-slate-100'}`}>Stage</button>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Salary or Stipend */}
                     <div className="space-y-3">
-                      <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">{contractType === 'Stage' ? "Indemnité mensuelle (Optionnel)" : "Salaire mensuel (Optionnel)"}</label>
+                      <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">{contractType === 'STAGE' ? "Indemnité mensuelle (Optionnel)" : "Salaire mensuel (Optionnel)"}</label>
                       <div className="relative">
-                        <input className="w-full pl-5 pr-16 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400 outline-none text-[15px] font-medium text-slate-700" placeholder={contractType === 'Stage' ? "50 000" : "450 000"} type="number" />
+                        <input
+                          className="w-full pl-5 pr-16 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400 outline-none text-[15px] font-medium text-slate-700"
+                          placeholder={contractType === 'STAGE' ? "50 000" : "450 000"}
+                          type="number"
+                          name="salaryOrStipend"
+                          value={formData.salaryOrStipend}
+                          onChange={handleChange}
+                        />
                         <span className="absolute right-5 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-[13px]">FCFA</span>
                       </div>
                     </div>
@@ -152,18 +232,30 @@ export default function EnterpriseCreateOfferPage() {
                     <div className="space-y-3">
                       <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">Localisation</label>
                       <div className="relative">
-                        <input className="w-full pl-12 pr-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400 outline-none text-[15px] font-medium text-slate-700" placeholder="Ouagadougou" type="text" />
+                        <input
+                          className="w-full pl-12 pr-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400 outline-none text-[15px] font-medium text-slate-700"
+                          placeholder="Ouagadougou"
+                          type="text"
+                          name="location"
+                          value={formData.location}
+                          onChange={handleChange}
+                        />
                         <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 !text-[20px]">location_on</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Stage specifics */}
-                  {contractType === 'Stage' && (
+                  {contractType === 'STAGE' && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2 pt-6 border-t border-slate-100/60">
                       <div className="space-y-3">
                         <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">Durée du stage</label>
-                        <select className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all outline-none text-[15px] font-medium text-slate-700 cursor-pointer appearance-none">
+                        <select
+                          className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all outline-none text-[15px] font-medium text-slate-700 cursor-pointer appearance-none"
+                          name="durationMonths"
+                          value={formData.durationMonths}
+                          onChange={handleChange}
+                        >
                           <option>Moins de 3 mois</option>
                           <option>3 à 6 mois</option>
                           <option>Plus de 6 mois</option>
@@ -171,7 +263,12 @@ export default function EnterpriseCreateOfferPage() {
                       </div>
                       <div className="space-y-3">
                         <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">Embauche possible ?</label>
-                        <select className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all outline-none text-[15px] font-medium text-slate-700 cursor-pointer appearance-none">
+                        <select
+                          className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all outline-none text-[15px] font-medium text-slate-700 cursor-pointer appearance-none"
+                          name="possibleHiring"
+                          value={formData.possibleHiring}
+                          onChange={handleChange}
+                        >
                           <option>À définir</option>
                           <option>Oui</option>
                           <option>Non</option>
@@ -186,12 +283,24 @@ export default function EnterpriseCreateOfferPage() {
                       {contractType === 'CDD' && (
                         <div className="space-y-3">
                           <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">Durée du CDD (Mois)</label>
-                          <input className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400 outline-none text-[15px] font-medium text-slate-700" placeholder="Ex: 12" type="number" />
+                          <input
+                            className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400 outline-none text-[15px] font-medium text-slate-700"
+                            placeholder="Ex: 12"
+                            type="number"
+                            name="durationMonths"
+                            value={formData.durationMonths}
+                            onChange={handleChange}
+                          />
                         </div>
                       )}
                       <div className={`space-y-3 ${contractType === 'CDI' ? 'md:col-span-2' : ''}`}>
                         <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">Expérience minimale requise</label>
-                        <select className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all outline-none text-[15px] font-medium text-slate-700 cursor-pointer appearance-none">
+                        <select
+                          className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all outline-none text-[15px] font-medium text-slate-700 cursor-pointer appearance-none"
+                          name="minExperience"
+                          value={formData.minExperience}
+                          onChange={handleChange}
+                        >
                           <option>Débutant (0 - 1 an)</option>
                           <option>Junior (1 - 3 ans)</option>
                           <option>Confirmé (3 - 5 ans)</option>
@@ -206,35 +315,66 @@ export default function EnterpriseCreateOfferPage() {
 
             {step === 2 && (
               <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100/50 animate-fade-in">
-                <h3 className="text-xl font-bold text-slate-900 mb-8 border-b border-slate-100 pb-4">Description de l'offre {contractType === 'Stage' ? 'de stage' : "d'emploi"}</h3>
+                <h3 className="text-xl font-bold text-slate-900 mb-8 border-b border-slate-100 pb-4">Description de l'offre {contractType === 'STAGE' ? 'de stage' : "d'emploi"}</h3>
                 
                 <div className="grid grid-cols-1 gap-8">
                   {/* Detailed Description */}
                   <div className="space-y-3">
                     <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">
-                      {contractType === 'Stage' ? 'Objectifs pédagogiques & Missions' : 'À propos du poste & Responsabilités'}
+                      {contractType === 'STAGE' ? 'Objectifs pédagogiques & Missions' : 'À propos du poste & Responsabilités'}
                     </label>
-                    <textarea rows="5" className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400 outline-none text-[15px] font-medium text-slate-700 resize-none" placeholder={contractType === 'Stage' ? "Décrivez ce que le stagiaire va apprendre, ses tâches..." : "Décrivez les responsabilités principales, le contexte de l'équipe..."}></textarea>
+                    <textarea
+                      rows="5"
+                      className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400 outline-none text-[15px] font-medium text-slate-700 resize-none"
+                      placeholder={contractType === 'STAGE' ? "Décrivez ce que le stagiaire va apprendre, ses tâches..." : "Décrivez les responsabilités principales, le contexte de l'équipe..."}
+                      name="description"
+                      value={formData.description}
+                      onChange={handleChange}
+                    ></textarea>
                   </div>
                   
                   {/* Profil recherché */}
                   <div className="space-y-3">
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">
-                      {contractType === 'Stage' ? "Niveau d'études & Profil recherché" : 'Profil recherché (Pré-requis)'}
-                    </label>
-                    <textarea rows="4" className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400 outline-none text-[15px] font-medium text-slate-700 resize-none" placeholder={contractType === 'Stage' ? "Ex: Étudiant(e) en Licence/Master Informatique..." : "Ex: Bac+5 en Informatique, 3 ans d'expérience..."}></textarea>
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">Niveau d'etudes</label>
+                    <input
+                      className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400 outline-none text-[15px] font-medium text-slate-700"
+                      placeholder="Ex: Licence 3, Master 2"
+                      type="text"
+                      name="studyLevel"
+                      value={formData.studyLevel}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  <div className="space-y-3">
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">Profil recherche</label>
+                    <textarea
+                      rows="4"
+                      className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400 outline-none text-[15px] font-medium text-slate-700 resize-none"
+                      placeholder="Ex: Etudiant(e) en informatique, sens de l'organisation..."
+                      name="candidateProfile"
+                      value={formData.candidateProfile}
+                      onChange={handleChange}
+                    ></textarea>
                   </div>
 
                   {/* Avantages */}
-                  {contractType !== 'Stage' && (
+                  {contractType !== 'STAGE' && (
                     <div className="space-y-3 pt-6 border-t border-slate-100/60">
                       <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">Avantages & Bénéfices</label>
-                      <textarea rows="3" className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400 outline-none text-[15px] font-medium text-slate-700 resize-none" placeholder="Assurance santé, primes, télétravail..."></textarea>
+                      <textarea
+                        rows="3"
+                        className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400 outline-none text-[15px] font-medium text-slate-700 resize-none"
+                        placeholder="Assurance santé, primes, télétravail..."
+                        name="benefits"
+                        value={formData.benefits}
+                        onChange={handleChange}
+                      ></textarea>
                     </div>
                   )}
 
                   {/* Convention Info */}
-                  {contractType === 'Stage' && (
+                  {contractType === 'STAGE' && (
                     <div className="flex items-center gap-3 p-4 bg-amber-50 rounded-xl border border-amber-100/50 mt-4">
                       <span className="material-symbols-outlined text-amber-500">info</span>
                       <p className="text-[13px] font-medium text-amber-800">Une convention de stage signée par l'établissement sera exigée lors de l'embauche du candidat.</p>
@@ -253,15 +393,14 @@ export default function EnterpriseCreateOfferPage() {
                   <div className="space-y-3">
                     <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">Compétences souhaitées</label>
                     <div className="relative">
-                      <input className="w-full pl-5 pr-16 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400 outline-none text-[15px] font-medium text-slate-700" placeholder="Ex: React, Node.js, Gestion de projet..." type="text" />
-                      <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-slate-200 text-slate-600 rounded-xl hover:bg-slate-300 transition-colors">
-                        <span className="material-symbols-outlined !text-[20px]">add</span>
-                      </button>
-                    </div>
-                    <div className="flex flex-wrap gap-2 pt-3">
-                       <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 font-bold text-[13px]">React <button><span className="material-symbols-outlined !text-[14px]">close</span></button></span>
-                       <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 font-bold text-[13px]">Node.js <button><span className="material-symbols-outlined !text-[14px]">close</span></button></span>
-                       <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 font-bold text-[13px]">TypeScript <button><span className="material-symbols-outlined !text-[14px]">close</span></button></span>
+                      <input
+                        className="w-full pl-5 pr-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400 outline-none text-[15px] font-medium text-slate-700"
+                        placeholder="Ex: React, Node.js, Gestion de projet..."
+                        type="text"
+                        name="requiredSkills"
+                        value={formData.requiredSkills}
+                        onChange={handleSkillsChange}
+                      />
                     </div>
                   </div>
 
@@ -270,30 +409,35 @@ export default function EnterpriseCreateOfferPage() {
                     <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">Pièces demandées à la candidature</label>
                     <div className="flex flex-wrap gap-4">
                       {/* Standard Requirements */}
-                      <label className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors bg-white">
-                        <input type="checkbox" defaultChecked className="accent-primary w-4 h-4 rounded" />
+                      <label className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-not-allowed">
+                        <input type="checkbox" checked readOnly className="accent-primary w-4 h-4 rounded" />
                         <span className="text-[13px] font-semibold text-slate-700">CV (Obligatoire)</span>
                       </label>
                       <label className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors bg-white">
-                        <input type="checkbox" defaultChecked className="accent-primary w-4 h-4 rounded" />
+                        <input
+                          type="checkbox"
+                          checked={requiredDocuments.includes('Lettre de motivation')}
+                          onChange={(event) => toggleRequiredDocument('Lettre de motivation', event.target.checked)}
+                          className="accent-primary w-4 h-4 rounded"
+                        />
                         <span className="text-[13px] font-semibold text-slate-700">Lettre de motivation</span>
                       </label>
 
                       {/* Stage Specifics */}
-                      {contractType === 'Stage' && (
+                      {contractType === 'STAGE' && (
                         <label className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors bg-white">
-                          <input type="checkbox" className="accent-primary w-4 h-4 rounded" />
+                          <input
+                            type="checkbox"
+                            checked={requiredDocuments.includes('Portfolio')}
+                            onChange={(event) => toggleRequiredDocument('Portfolio', event.target.checked)}
+                            className="accent-primary w-4 h-4 rounded"
+                          />
                           <span className="text-[13px] font-semibold text-slate-700">Portfolio / Travaux d'école</span>
                         </label>
                       )}
 
                       {/* CDD / CDI Specifics */}
-                      {(contractType === 'CDI' || contractType === 'CDD') && (
-                         <label className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors bg-white">
-                           <input type="checkbox" className="accent-primary w-4 h-4 rounded" />
-                           <span className="text-[13px] font-semibold text-slate-700">Références ou attestations de travail</span>
-                         </label>
-                      )}
+                      {(contractType === 'CDI' || contractType === 'CDD') && null}
                     </div>
                   </div>
 
@@ -301,7 +445,13 @@ export default function EnterpriseCreateOfferPage() {
                   <div className="space-y-3 pt-4">
                     <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">Date limite de candidature</label>
                     <div className="relative">
-                      <input className="w-full pl-12 pr-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all text-slate-500 outline-none text-[15px] font-medium" type="date" />
+                      <input
+                        className="w-full pl-12 pr-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all text-slate-500 outline-none text-[15px] font-medium"
+                        type="date"
+                        name="applicationDeadline"
+                        value={formData.applicationDeadline}
+                        onChange={handleChange}
+                      />
                       <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 !text-[20px]">calendar_month</span>
                     </div>
                   </div>
@@ -326,9 +476,9 @@ export default function EnterpriseCreateOfferPage() {
                   <span className="material-symbols-outlined !text-[18px]">arrow_forward</span>
                 </button>
               ) : (
-                <button disabled={loading} className="w-full sm:w-auto px-10 py-3.5 bg-emerald-600 text-white rounded-2xl font-bold shadow-lg shadow-emerald-600/25 hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 disabled:opacity-70" onClick={handleSubmit}>
-                  <span className="material-symbols-outlined !text-[18px]">{loading ? 'sync' : 'check_circle'}</span>
-                  {loading ? 'Publication...' : "Publier l'offre"}
+                <button disabled={saving || loading} className="w-full sm:w-auto px-10 py-3.5 bg-emerald-600 text-white rounded-2xl font-bold shadow-lg shadow-emerald-600/25 hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 disabled:opacity-70" onClick={handleSubmit}>
+                  <span className="material-symbols-outlined !text-[18px]">{saving ? 'sync' : 'check_circle'}</span>
+                  {saving ? 'Enregistrement...' : isEditing ? 'Enregistrer les modifications' : "Publier l'offre"}
                 </button>
               )}
             </div>
@@ -336,5 +486,6 @@ export default function EnterpriseCreateOfferPage() {
 
         </div>
       </div>
-    </EnterpriseDashboardLayout>  );
+    </EnterpriseDashboardLayout>
+  );
 }

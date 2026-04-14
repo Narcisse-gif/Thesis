@@ -1,12 +1,17 @@
 import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import EnterpriseDashboardLayout from '../components/EnterpriseDashboardLayout';
 
 export default function EnterpriseCandidatesPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [candidates, setCandidates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [offers, setOffers] = useState([]);
   const [selectedOfferId, setSelectedOfferId] = useState('');
+  const [statusFilter, setStatusFilter] = useState('Tous');
+  const [search, setSearch] = useState('');
   const apiBaseUrl = api.defaults.baseURL || '';
 
   const resolveAvatarUrl = (value) => {
@@ -48,9 +53,26 @@ export default function EnterpriseCandidatesPage() {
     fetchOffers();
   }, []);
 
-  const visibleCandidates = selectedOfferId
-    ? candidates.filter((app) => app.offer?.id === selectedOfferId)
-    : candidates;
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const offerId = params.get('offerId');
+    if (offerId) {
+      setSelectedOfferId(offerId);
+    }
+  }, [location.search]);
+
+  const visibleCandidates = candidates.filter((app) => {
+    const offerMatch = selectedOfferId ? app.offer?.id === selectedOfferId : true;
+    const statusMatch = statusFilter === 'Tous' ? true : app.status === statusFilter;
+    const query = search.trim().toLowerCase();
+    const searchMatch = !query
+      ? true
+      : getStudentName(app.student).toLowerCase().includes(query)
+        || (app.student?.user?.email || '').toLowerCase().includes(query)
+        || (app.offer?.title || '').toLowerCase().includes(query);
+
+    return offerMatch && statusMatch && searchMatch;
+  });
 
   const handleStatusChange = async (id, status) => {
     try {
@@ -60,6 +82,7 @@ export default function EnterpriseCandidatesPage() {
       console.error('Failed to change status', err);
     }
   };
+
   return (
     <EnterpriseDashboardLayout>
       {loading ? (
@@ -78,25 +101,52 @@ export default function EnterpriseCandidatesPage() {
 
       {/* Filters Section */}
       <div className="mb-8">
-        {/* Filter: Offres */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100/50">
-          <label className="text-[10px] font-bold uppercase text-slate-400 block mb-3">Filtrer par Offre</label>
-          <div className="relative">
-            <select
-              className="w-full bg-slate-50 border-none rounded-xl text-[13px] font-semibold focus:ring-2 focus:ring-primary/20 appearance-none py-3 px-4 text-slate-700 cursor-pointer outline-none"
-              value={selectedOfferId}
-              onChange={(event) => setSelectedOfferId(event.target.value)}
-            >
-              <option value="">Toutes les offres</option>
-              {offers.map((offer) => (
-                <option key={offer.id} value={offer.id}>{offer.title}</option>
-              ))}
-            </select>
-            <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none !text-[20px]">expand_more</span>
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100/50 space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="text-[10px] font-bold uppercase text-slate-400 block mb-3">Rechercher</label>
+              <input
+                className="w-full bg-slate-50 border-none rounded-xl text-[13px] font-semibold focus:ring-2 focus:ring-primary/20 py-3 px-4 text-slate-700 outline-none"
+                placeholder="Candidat, email, offre..."
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                type="text"
+              />
+            </div>
+            <div>
+              <label className="text-[10px] font-bold uppercase text-slate-400 block mb-3">Filtrer par Offre</label>
+              <div className="relative">
+                <select
+                  className="w-full bg-slate-50 border-none rounded-xl text-[13px] font-semibold focus:ring-2 focus:ring-primary/20 appearance-none py-3 px-4 text-slate-700 cursor-pointer outline-none"
+                  value={selectedOfferId}
+                  onChange={(event) => setSelectedOfferId(event.target.value)}
+                >
+                  <option value="">Toutes les offres</option>
+                  {offers.map((offer) => (
+                    <option key={offer.id} value={offer.id}>{offer.title}</option>
+                  ))}
+                </select>
+                <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none !text-[20px]">expand_more</span>
+              </div>
+            </div>
+            <div>
+              <label className="text-[10px] font-bold uppercase text-slate-400 block mb-3">Statut</label>
+              <div className="relative">
+                <select
+                  className="w-full bg-slate-50 border-none rounded-xl text-[13px] font-semibold focus:ring-2 focus:ring-primary/20 appearance-none py-3 px-4 text-slate-700 cursor-pointer outline-none"
+                  value={statusFilter}
+                  onChange={(event) => setStatusFilter(event.target.value)}
+                >
+                  <option value="Tous">Tous</option>
+                  <option value="PENDING">En attente</option>
+                  <option value="ACCEPTED">Acceptée</option>
+                  <option value="REJECTED">Rejetée</option>
+                </select>
+                <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none !text-[20px]">expand_more</span>
+              </div>
+            </div>
           </div>
         </div>
-
-        
       </div>
 
       {/* Candidates Table Container */}
@@ -146,12 +196,30 @@ export default function EnterpriseCandidatesPage() {
               <span className="material-symbols-outlined !text-[20px]">more_vert</span>
             </button>
             <div className="absolute right-10 top-2 w-48 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-slate-100 opacity-0 invisible group-focus-within/action:opacity-100 group-focus-within/action:visible z-50 flex flex-col py-1 overflow-hidden text-left">
-              <button onClick={() => alert('Profil du candidat ' + app.id)} className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">person</span> Voir le profil</button>
+              <button
+                onClick={() => {
+                  if (!app.id) {
+                    alert('Profil etudiant indisponible pour cette candidature.');
+                    return;
+                  }
+                  navigate(`/entreprise/candidats/${app.id}`);
+                }}
+                className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors flex items-center gap-3"
+              >
+                <span className="material-symbols-outlined !text-[18px]">person</span>
+                Voir le profil
+              </button>
               {app.status === 'PENDING' && (
                 <>
                   <button onClick={() => handleStatusChange(app.id, 'ACCEPTED')} className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-green-50 hover:text-green-600 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">check_circle</span> Accepter</button>
                   <button onClick={() => handleStatusChange(app.id, 'REJECTED')} className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">cancel</span> Rejeter</button>
                 </>
+              )}
+              {app.status === 'ACCEPTED' && (
+                <button onClick={() => handleStatusChange(app.id, 'REJECTED')} className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">cancel</span> Rejeter</button>
+              )}
+              {app.status === 'REJECTED' && (
+                <button onClick={() => handleStatusChange(app.id, 'ACCEPTED')} className="px-4 py-2.5 text-[13px] font-medium text-slate-600 hover:bg-green-50 hover:text-green-600 transition-colors flex items-center gap-3"><span className="material-symbols-outlined !text-[18px]">check_circle</span> Accepter</button>
               )}
             </div>
           </div>

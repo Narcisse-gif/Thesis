@@ -16,17 +16,23 @@ import StudentProfilePage from './pages/StudentProfilePage';
 import StudentOffersSearchPage from './pages/StudentOffersSearchPage';
 import StudentSettingsPage from './pages/StudentSettingsPage';
 import StudentMessagesPage from './pages/StudentMessagesPage';
+import StudentOfferDetailPage from './pages/StudentOfferDetailPage';
+import StudentApplicationFormPage from './pages/StudentApplicationFormPage';
+import StudentEnterpriseDetailPage from './pages/StudentEnterpriseDetailPage';
 import EnterpriseDashboardPage from './pages/EnterpriseDashboardPage';
 import EnterpriseOffersPage from './pages/EnterpriseOffersPage';
 import EnterpriseCandidatesPage from './pages/EnterpriseCandidatesPage';
 import EnterpriseCreateOfferPage from './pages/EnterpriseCreateOfferPage';
+import EnterpriseOfferDetailPage from './pages/EnterpriseOfferDetailPage';
 import EnterpriseMessagesPage from './pages/EnterpriseMessagesPage';
 import EnterpriseSettingsPage from './pages/EnterpriseSettingsPage';
 import EnterpriseDashboardProfilePage from './pages/EnterpriseDashboardProfilePage';
+import EnterpriseStudentProfilePage from './pages/EnterpriseStudentProfilePage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import AdminUsersPage from './pages/AdminUsersPage';
 import AdminEnterprisesPage from './pages/AdminEnterprisesPage';
 import AdminOffersPage from './pages/AdminOffersPage';
+import AdminOfferDetailPage from './pages/AdminOfferDetailPage';
 import AdminApplicationsPage from './pages/AdminApplicationsPage';
 import AdminModerationPage from './pages/AdminModerationPage';
 import AdminNotificationsPage from './pages/AdminNotificationsPage';
@@ -81,10 +87,42 @@ function App() {
           }
         />
         <Route
+          path="/etudiant/stages/:id"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <StudentOfferDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/etudiant/emplois"
           element={
             <ProtectedRoute allowedRoles={['STUDENT']}>
               <StudentOffersSearchPage offerType="emploi" />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/etudiant/emplois/:id"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <StudentOfferDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/etudiant/postuler/:id"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <StudentApplicationFormPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/etudiant/entreprises/:id"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <StudentEnterpriseDetailPage />
             </ProtectedRoute>
           }
         />
@@ -153,10 +191,26 @@ function App() {
           }
         />
         <Route
+          path="/entreprise/offres/:id"
+          element={
+            <ProtectedRoute allowedRoles={['ENTERPRISE']}>
+              <EnterpriseOfferDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/entreprise/candidats"
           element={
             <ProtectedRoute allowedRoles={['ENTERPRISE']}>
               <EnterpriseCandidatesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/entreprise/candidats/:id"
+          element={
+            <ProtectedRoute allowedRoles={['ENTERPRISE']}>
+              <EnterpriseStudentProfilePage />
             </ProtectedRoute>
           }
         />
@@ -229,6 +283,14 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={['ADMIN']}>
               <AdminOffersPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/offres/:id"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminOfferDetailPage />
             </ProtectedRoute>
           }
         />

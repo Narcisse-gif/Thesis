@@ -41,6 +41,9 @@ export class Offer {
   @Column('text')
   candidateProfile: string;
 
+  @Column({ nullable: true })
+  studyLevel: string;
+
   @Column('simple-array', { nullable: true })
   requiredSkills: string[];
 
