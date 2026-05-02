@@ -56,35 +56,32 @@ export default function StudentSettingsPage() {
     setPasswordData((prev) => ({ ...prev, [name]: value }));
   };
 
+
   const handleSave = async () => {
     setSaving(true);
     setStatus('');
-    try {
-      await api.patch('/users/profile', formData);
-      setStatus('Informations mises a jour.');
-    } catch (error) {
-      console.error('Failed to update profile:', error);
-      setStatus('Erreur lors de la mise a jour.');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleEmailSave = async () => {
-    setSaving(true);
     setEmailStatus('');
     try {
-      const response = await api.post('/auth/change-email', { email: formData.email });
-      setAuthSession(response.data.access_token, 'STUDENT');
-      setProfile((prev) => ({ ...prev, email: formData.email }));
-      setEmailStatus('Email mis a jour.');
+      // Met à jour le profil général
+      await api.patch('/users/profile', formData);
+      // Met à jour l'email si modifié
+      if (formData.email && profile?.email !== formData.email) {
+        const response = await api.post('/auth/change-email', { email: formData.email });
+        setAuthSession(response.data.access_token, 'STUDENT');
+        setProfile((prev) => ({ ...prev, email: formData.email }));
+        setEmailStatus('Email mis a jour.');
+      }
+      setStatus('Informations mises a jour.');
     } catch (error) {
-      console.error('Failed to update email:', error);
+      console.error('Failed to update profile or email:', error);
+      setStatus('Erreur lors de la mise a jour.');
       setEmailStatus('Erreur lors de la mise a jour de l email.');
     } finally {
       setSaving(false);
     }
   };
+
+  // Suppression de handleEmailSave
 
   const handlePasswordSave = async () => {
     if (!passwordData.currentPassword || !passwordData.newPassword) {
@@ -93,6 +90,14 @@ export default function StudentSettingsPage() {
     }
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       setPasswordStatus('Les mots de passe ne correspondent pas.');
+      return;
+    }
+    if (passwordData.newPassword !== passwordData.newPassword.trim()) {
+      setPasswordStatus('Le nouveau mot de passe ne doit pas commencer ou finir par un espace.');
+      return;
+    }
+    if (!/^(?=.*[A-Z])(?=.*\d).{8,}$/.test(passwordData.newPassword)) {
+      setPasswordStatus('Mot de passe trop faible. Min. 8 caracteres, 1 majuscule et 1 chiffre.');
       return;
     }
 
@@ -104,10 +109,12 @@ export default function StudentSettingsPage() {
         newPassword: passwordData.newPassword,
       });
       setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
-      setPasswordStatus('Mot de passe mis a jour.');
+      setPasswordStatus('Mot de passe mis a jour. Utilisez ce nouveau mot de passe a la prochaine connexion.');
     } catch (error) {
       console.error('Failed to update password:', error);
-      setPasswordStatus('Erreur lors de la mise a jour du mot de passe.');
+      setPasswordStatus(
+        error.response?.data?.message || 'Erreur lors de la mise a jour du mot de passe.',
+      );
     } finally {
       setSaving(false);
     }
@@ -157,9 +164,6 @@ export default function StudentSettingsPage() {
                 <button className="px-6 py-3 rounded-xl bg-primary text-white text-sm font-bold hover:bg-blue-800 transition-all" onClick={handleSave} disabled={saving}>
                   {saving ? 'Mise a jour...' : 'Mettre a jour les informations'}
                 </button>
-                <button className="px-6 py-3 rounded-xl bg-slate-200 text-slate-700 text-sm font-bold hover:bg-slate-300 transition-all" onClick={handleEmailSave} disabled={saving}>
-                  {saving ? 'Mise a jour...' : 'Mettre a jour l email'}
-                </button>
               </div>
             </div>
 
@@ -185,7 +189,7 @@ export default function StudentSettingsPage() {
                 className="mt-4 w-full px-4 py-3 rounded-xl bg-red-50 text-red-600 text-sm font-bold hover:bg-red-100 transition-all"
                 onClick={() => {
                   clearAuthSession();
-                  navigate('/connexion');
+                  navigate('/');
                 }}
               >
                 Se deconnecter

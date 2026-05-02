@@ -66,9 +66,11 @@ export default function EnterpriseSettingsPage() {
     setPasswordData((prev) => ({ ...prev, [name]: value }));
   };
 
+
   const handleSave = async () => {
     setSaving(true);
     setStatus('');
+    setEmailStatus('');
     try {
       await api.patch('/users/profile', {
         companyName: formData.companyName,
@@ -81,33 +83,27 @@ export default function EnterpriseSettingsPage() {
         postalCode: formData.postalCode,
         shortDescription: formData.shortDescription,
       });
+      // Met à jour l'email si modifié
+      if (formData.email && profile?.email !== formData.email) {
+        const response = await api.post('/auth/change-email', { email: formData.email });
+        setAuthSession(response.data.access_token, 'ENTERPRISE');
+        setProfile((prev) => ({ ...prev, email: formData.email }));
+        setEmailStatus('Email mis a jour.');
+      }
       const refreshed = await api.get('/users/profile');
       setProfile(refreshed.data);
       window.dispatchEvent(new CustomEvent('profile:updated', { detail: refreshed.data }));
       setStatus('Informations mises a jour.');
     } catch (error) {
-      console.error('Failed to update enterprise profile:', error);
+      console.error('Failed to update enterprise profile or email:', error);
       setStatus('Erreur lors de la mise a jour.');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleEmailSave = async () => {
-    setSaving(true);
-    setEmailStatus('');
-    try {
-      const response = await api.post('/auth/change-email', { email: formData.email });
-      setAuthSession(response.data.access_token, 'ENTERPRISE');
-      setProfile((prev) => ({ ...prev, email: formData.email }));
-      setEmailStatus('Email mis a jour.');
-    } catch (error) {
-      console.error('Failed to update email:', error);
       setEmailStatus('Erreur lors de la mise a jour de l email.');
     } finally {
       setSaving(false);
     }
   };
+
+  // Suppression de handleEmailSave
 
   const handlePasswordSave = async () => {
     if (!passwordData.currentPassword || !passwordData.newPassword) {
@@ -116,6 +112,14 @@ export default function EnterpriseSettingsPage() {
     }
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       setPasswordStatus('Les mots de passe ne correspondent pas.');
+      return;
+    }
+    if (passwordData.newPassword !== passwordData.newPassword.trim()) {
+      setPasswordStatus('Le nouveau mot de passe ne doit pas commencer ou finir par un espace.');
+      return;
+    }
+    if (!/^(?=.*[A-Z])(?=.*\d).{8,}$/.test(passwordData.newPassword)) {
+      setPasswordStatus('Mot de passe trop faible. Min. 8 caracteres, 1 majuscule et 1 chiffre.');
       return;
     }
 
@@ -127,10 +131,12 @@ export default function EnterpriseSettingsPage() {
         newPassword: passwordData.newPassword,
       });
       setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
-      setPasswordStatus('Mot de passe mis a jour.');
+      setPasswordStatus('Mot de passe mis a jour. Utilisez ce nouveau mot de passe a la prochaine connexion.');
     } catch (error) {
       console.error('Failed to update password:', error);
-      setPasswordStatus('Erreur lors de la mise a jour du mot de passe.');
+      setPasswordStatus(
+        error.response?.data?.message || 'Erreur lors de la mise a jour du mot de passe.',
+      );
     } finally {
       setSaving(false);
     }
@@ -207,9 +213,6 @@ export default function EnterpriseSettingsPage() {
               <button className="px-6 py-3.5 rounded-xl bg-primary text-white text-[15px] font-bold shadow-lg shadow-primary/25 hover:bg-blue-800 transition-all" onClick={handleSave} disabled={saving}>
                 {saving ? 'Mise a jour...' : 'Mettre a jour'}
               </button>
-              <button className="px-6 py-3.5 rounded-xl bg-slate-200 text-slate-700 text-[15px] font-bold shadow-lg shadow-slate-200/25 hover:bg-slate-300 transition-all" onClick={handleEmailSave} disabled={saving}>
-                {saving ? 'Mise a jour...' : 'Mettre a jour l email'}
-              </button>
             </div>
           </div>
 
@@ -236,7 +239,7 @@ export default function EnterpriseSettingsPage() {
                 className="px-6 py-3.5 rounded-xl bg-red-50 text-red-600 text-[15px] font-bold hover:bg-red-100 transition-all shrink-0 flex items-center gap-2"
                 onClick={() => {
                   clearAuthSession();
-                  navigate('/connexion');
+                  navigate('/');
                 }}
               >
                 <span className="material-symbols-outlined !text-[18px]">logout</span>

@@ -13,6 +13,7 @@ import { Application } from './applications/entities/application.entity';
 import { Message } from './messages/entities/message.entity';
 import { Favorite } from './favorites/entities/favorite.entity';
 import { AdminSettings } from './admin/entities/admin-settings.entity';
+import { Notification } from './notifications/entities/notification.entity';
 
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
@@ -21,6 +22,9 @@ import { ApplicationsModule } from './applications/applications.module';
 import { MessagesModule } from './messages/messages.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { AdminModule } from './admin/admin.module';
+import { Article } from './articles/article.entity';
+import { ArticlesModule } from './articles/articles.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -43,6 +47,8 @@ import { AdminModule } from './admin/admin.module';
         Message,
         Favorite,
         AdminSettings,
+        Article,
+        Notification,
       ],
       synchronize: true, // Auto-create tables in dev environment
     }),
@@ -53,6 +59,8 @@ import { AdminModule } from './admin/admin.module';
     MessagesModule,
     FavoritesModule,
     AdminModule,
+    ArticlesModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

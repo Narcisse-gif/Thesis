@@ -3,12 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Message } from './entities/message.entity';
 import { User } from '../users/entities/user.entity';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class MessagesService {
   constructor(
     @InjectRepository(Message) private messageRepository: Repository<Message>,
     @InjectRepository(User) private userRepository: Repository<User>,
+    private notificationsService: NotificationsService,
   ) {}
 
   async sendMessage(senderId: string, receiverId: string, content: string, subject?: string) {
@@ -28,7 +30,22 @@ export class MessagesService {
       content: trimmedContent,
       subject: subject?.trim() || undefined,
     });
-    return this.messageRepository.save(message);
+    const savedMessage = await this.messageRepository.save(message);
+
+    await this.notificationsService.create({
+      userId: receiver.id,
+      title: 'Nouveau message',
+      message: `Vous avez recu un nouveau message de ${sender.email}.`,
+      type: 'MESSAGE',
+      link:
+        receiver.role === 'STUDENT'
+          ? '/etudiant/messages'
+          : receiver.role === 'ENTERPRISE'
+            ? '/entreprise/messages'
+            : '/admin/messages',
+    });
+
+    return savedMessage;
   }
 
   async getInbox(userId: string) {

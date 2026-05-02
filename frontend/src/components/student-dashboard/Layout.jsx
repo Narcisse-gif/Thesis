@@ -4,9 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { DarkModeContext, useDarkMode } from './DarkModeContext';
 export { useDarkMode };
 
-/* ──────────────────────────────────────────────────────────── */
-/* Nav items — correspond exactement à la maquette Stitch      */
-/* ──────────────────────────────────────────────────────────── */
+/* Nav items - correspond exactement a la maquette Stitch */
 const NAV = [
   { label: 'Dashboard',     to: '/etudiant/dashboard',     icon: 'dashboard' },
   { label: 'Search Jobs',   to: '/etudiant/stages',        icon: 'search' },

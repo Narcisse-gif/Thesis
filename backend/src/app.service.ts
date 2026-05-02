@@ -12,30 +12,54 @@ import { Application, ApplicationStatus } from './applications/entities/applicat
 export class AppService {
   constructor(@InjectEntityManager() private readonly em: EntityManager) {}
 
+  private getDefaultAdminCredentials() {
+    return {
+      email: process.env.ADMIN_EMAIL || 'admin@stagelink.bf',
+      password: process.env.ADMIN_PASSWORD || 'password123',
+    };
+  }
+
   getHello(): string {
     return 'Stagelink API Running';
+  }
+
+  async ensureDefaultAdminExists() {
+    const { email, password } = this.getDefaultAdminCredentials();
+
+    const existingAdmin = await this.em.findOne(User, {
+      where: { email, role: UserRole.ADMIN },
+    });
+
+    if (existingAdmin) {
+      return {
+        created: false,
+        credentials: { admin: `${email} / ${password}` },
+      };
+    }
+
+    const pwd = await bcrypt.hash(password, 10);
+    const admin = this.em.create(User, {
+      email,
+      passwordHash: pwd,
+      role: UserRole.ADMIN,
+      isVerified: true,
+    });
+    await this.em.save(admin);
+
+    return {
+      created: true,
+      credentials: { admin: `${email} / ${password}` },
+    };
   }
 
   async seedDatabase() {
     console.log('Seeding database...');
     // Drop logic
     await this.em.query('TRUNCATE TABLE applications, offers, student_profiles, enterprise_profiles, users CASCADE;');
-
-    const pwd = await bcrypt.hash('password123', 10);
-
-    // Admin only
-    const admin = this.em.create(User, {
-      email: 'admin@stagelink.bf',
-      passwordHash: pwd,
-      role: UserRole.ADMIN,
-      isVerified: true,
-    });
-    await this.em.save(admin);
+    const ensuredAdmin = await this.ensureDefaultAdminExists();
     return {
       message: 'Base de donnees reinitialisee et admin cree avec succes!',
-      credentials: {
-        admin: 'admin@stagelink.bf / password123'
-      }
+      credentials: ensuredAdmin.credentials,
     };
   }
 

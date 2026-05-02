@@ -6,6 +6,7 @@ import { Offer, OfferStatus } from '../offers/entities/offer.entity';
 import { StudentProfile } from '../users/entities/student-profile.entity';
 import { EnterpriseProfile } from '../users/entities/enterprise-profile.entity';
 import { User, UserRole } from '../users/entities/user.entity';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class ApplicationsService {
@@ -20,6 +21,7 @@ export class ApplicationsService {
     private enterpriseRepository: Repository<EnterpriseProfile>,
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private notificationsService: NotificationsService,
   ) {}
 
   async applyToOffer(
@@ -45,7 +47,7 @@ export class ApplicationsService {
 
     const offer = await this.offersRepository.findOne({
       where: { id: offerId },
-      relations: ['enterprise'],
+      relations: ['enterprise', 'enterprise.user'],
     });
     if (!offer) {
       throw new NotFoundException(`Offer #${offerId} not found`);
@@ -54,8 +56,19 @@ export class ApplicationsService {
       throw new BadRequestException('Offre non disponible');
     }
 
+    const existingApplication = await this.applicationsRepository.findOne({
+      where: {
+        student: { id: student.id },
+        offer: { id: offer.id },
+      },
+      relations: ['student', 'offer'],
+    });
+    if (existingApplication) {
+      throw new BadRequestException('Vous avez deja postule a cette offre');
+    }
+
     const requiredDocuments = Array.isArray(offer.requiredDocuments) ? offer.requiredDocuments : [];
-    const normalizedDocuments = requiredDocuments.filter((doc) => !doc.toLowerCase().includes('reference') && !doc.toLowerCase().includes('référence'));
+    const normalizedDocuments = requiredDocuments.filter((doc) => !doc.toLowerCase().includes('reference') && !doc.toLowerCase().includes('rÃ©fÃ©rence'));
     const requiresCv = normalizedDocuments.some((doc) => doc.toLowerCase().includes('cv'));
     const requiresCoverLetter = normalizedDocuments.some((doc) => doc.toLowerCase().includes('lettre'));
 
@@ -84,7 +97,27 @@ export class ApplicationsService {
       offer,
     });
 
-    return this.applicationsRepository.save(application);
+    const savedApplication = await this.applicationsRepository.save(application);
+
+    await this.notificationsService.create({
+      userId,
+      title: 'Candidature envoyee',
+      message: `Votre candidature pour "${offer.title}" a bien ete enregistree.`,
+      type: 'APPLICATION',
+      link: '/etudiant/candidatures',
+    });
+
+    if (offer.enterprise?.user?.id) {
+      await this.notificationsService.create({
+        userId: offer.enterprise.user.id,
+        title: 'Nouvelle candidature',
+        message: `Une nouvelle candidature a ete recue pour "${offer.title}".`,
+        type: 'APPLICATION',
+        link: '/entreprise/candidats',
+      });
+    }
+
+    return savedApplication;
   }
 
   async getMyApplications(userId: string) {
@@ -127,7 +160,7 @@ export class ApplicationsService {
 
     const application = await this.applicationsRepository.findOne({
       where: { id: applicationId },
-      relations: ['offer', 'offer.enterprise'],
+      relations: ['offer', 'offer.enterprise', 'student', 'student.user'],
     });
     if (!application) {
       throw new NotFoundException(`Application #${applicationId} not found`);
@@ -138,7 +171,19 @@ export class ApplicationsService {
     }
 
     application.status = status;
-    return this.applicationsRepository.save(application);
+    const savedApplication = await this.applicationsRepository.save(application);
+
+    if (application.student?.user?.id) {
+      await this.notificationsService.create({
+        userId: application.student.user.id,
+        title: 'Statut de candidature mis a jour',
+        message: `Votre candidature pour "${application.offer.title}" est maintenant "${this.mapApplicationStatus(status)}".`,
+        type: 'APPLICATION',
+        link: '/etudiant/candidatures',
+      });
+    }
+
+    return savedApplication;
   }
 
   async getApplicantProfile(applicationId: string, userId: string) {
@@ -172,5 +217,12 @@ export class ApplicationsService {
       ...safeUser,
       studentProfile: application.student,
     };
+  }
+
+  private mapApplicationStatus(status: ApplicationStatus) {
+    if (status === ApplicationStatus.ACCEPTED) return 'acceptee';
+    if (status === ApplicationStatus.REJECTED) return 'rejetee';
+    if (status === ApplicationStatus.INTERVIEW) return 'en entretien';
+    return 'en attente';
   }
 }

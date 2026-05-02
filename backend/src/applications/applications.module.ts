@@ -7,9 +7,11 @@ import { Offer } from '../offers/entities/offer.entity';
 import { StudentProfile } from '../users/entities/student-profile.entity';
 import { EnterpriseProfile } from '../users/entities/enterprise-profile.entity';
 import { User } from '../users/entities/user.entity';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [
+    NotificationsModule,
     TypeOrmModule.forFeature([
       Application,
       Offer,

@@ -5,6 +5,7 @@ import { User, UserRole } from '../users/entities/user.entity';
 import { Offer, OfferStatus } from '../offers/entities/offer.entity';
 import { Application } from '../applications/entities/application.entity';
 import { AdminSettings } from './entities/admin-settings.entity';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class AdminService {
@@ -13,6 +14,7 @@ export class AdminService {
     @InjectRepository(Offer) private offerRepository: Repository<Offer>,
     @InjectRepository(Application) private applicationRepository: Repository<Application>,
     @InjectRepository(AdminSettings) private adminSettingsRepository: Repository<AdminSettings>,
+    private notificationsService: NotificationsService,
   ) {}
 
   private async assertAdmin(adminId: string) {
@@ -82,7 +84,7 @@ export class AdminService {
 
     const offer = await this.offerRepository.findOne({
       where: { id: offerId },
-      relations: ['enterprise', 'applications'],
+      relations: ['enterprise', 'enterprise.user', 'applications'],
     });
 
     if (!offer) {
@@ -90,7 +92,19 @@ export class AdminService {
     }
 
     offer.status = status;
-    return this.offerRepository.save(offer);
+    const savedOffer = await this.offerRepository.save(offer);
+
+    if (offer.enterprise?.user?.id) {
+      await this.notificationsService.create({
+        userId: offer.enterprise.user.id,
+        title: 'Statut de votre offre mis a jour',
+        message: `Votre offre "${offer.title}" est maintenant "${this.mapOfferStatus(status)}".`,
+        type: 'GENERAL',
+        link: '/entreprise/offres',
+      });
+    }
+
+    return savedOffer;
   }
 
   async verifyEnterprise(
@@ -118,7 +132,49 @@ export class AdminService {
     } else {
       user.isVerified = isVerified;
     }
-    return this.userRepository.save(user);
+    const savedUser = await this.userRepository.save(user);
+
+    await this.notificationsService.create({
+      userId: savedUser.id,
+      title: 'Verification entreprise mise a jour',
+      message: this.buildEnterpriseModerationMessage(savedUser.isVerified, savedUser.isSuspended),
+      type: 'GENERAL',
+      link: '/entreprise/profil',
+    });
+
+    return savedUser;
+  }
+
+  async updateStudentSuspension(
+    adminId: string,
+    userId: string,
+    isSuspended: boolean,
+  ) {
+    await this.assertAdmin(adminId);
+
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['studentProfile'],
+    });
+
+    if (!user || user.role !== UserRole.STUDENT) {
+      throw new NotFoundException('Etudiant introuvable');
+    }
+
+    user.isSuspended = isSuspended;
+    const savedUser = await this.userRepository.save(user);
+
+    await this.notificationsService.create({
+      userId: savedUser.id,
+      title: 'Statut de compte mis a jour',
+      message: isSuspended
+        ? 'Votre compte etudiant a ete suspendu par un administrateur.'
+        : 'Votre compte etudiant a ete reactive par un administrateur.',
+      type: 'GENERAL',
+      link: '/etudiant/parametres',
+    });
+
+    return savedUser;
   }
 
   private async getOrCreateSettings() {
@@ -170,5 +226,22 @@ export class AdminService {
         : current.notificationPreferences,
     });
     return this.adminSettingsRepository.save(merged);
+  }
+
+  private mapOfferStatus(status: OfferStatus) {
+    if (status === OfferStatus.ACTIVE) return 'active';
+    if (status === OfferStatus.SIGNALEE) return 'signalee';
+    if (status === OfferStatus.EXPIREE) return 'expiree';
+    return 'en attente';
+  }
+
+  private buildEnterpriseModerationMessage(isVerified: boolean, isSuspended: boolean) {
+    if (isSuspended) {
+      return 'Votre compte entreprise a ete suspendu par un administrateur.';
+    }
+    if (isVerified) {
+      return 'Votre compte entreprise a ete verifie et active.';
+    }
+    return 'Le statut de verification de votre compte entreprise a ete mis a jour.';
   }
 }

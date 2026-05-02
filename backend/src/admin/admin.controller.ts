@@ -53,6 +53,15 @@ export class AdminController {
     return this.adminService.verifyEnterprise(req.user.userId, userId, flag, isSuspended);
   }
 
+  @Patch('students/:userId/suspension')
+  updateStudentSuspension(
+    @Req() req,
+    @Param('userId') userId: string,
+    @Body('isSuspended') isSuspended: boolean,
+  ) {
+    return this.adminService.updateStudentSuspension(req.user.userId, userId, isSuspended);
+  }
+
   @Get('settings')
   getSettings(@Req() req) {
     return this.adminService.getSettings(req.user.userId);

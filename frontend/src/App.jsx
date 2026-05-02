@@ -5,6 +5,10 @@ import InternshipsPage from './pages/InternshipsPage';
 import JobsPage from './pages/JobsPage';
 import EnterprisesPage from './pages/EnterprisesPage';
 import AdvicePage from './pages/AdvicePage';
+import ArticleDetailPage from './pages/ArticleDetailPage';
+import LegalNoticePage from './pages/LegalNoticePage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import TermsOfUsePage from './pages/TermsOfUsePage';
 import LoginPage from './pages/LoginPage';
 import RegisterSelectionPage from './pages/RegisterSelectionPage';
 import StudentRegisterPage from './pages/StudentRegisterPage';
@@ -19,12 +23,14 @@ import StudentMessagesPage from './pages/StudentMessagesPage';
 import StudentOfferDetailPage from './pages/StudentOfferDetailPage';
 import StudentApplicationFormPage from './pages/StudentApplicationFormPage';
 import StudentEnterpriseDetailPage from './pages/StudentEnterpriseDetailPage';
+import StudentNotificationsPage from './pages/StudentNotificationsPage';
 import EnterpriseDashboardPage from './pages/EnterpriseDashboardPage';
 import EnterpriseOffersPage from './pages/EnterpriseOffersPage';
 import EnterpriseCandidatesPage from './pages/EnterpriseCandidatesPage';
 import EnterpriseCreateOfferPage from './pages/EnterpriseCreateOfferPage';
 import EnterpriseOfferDetailPage from './pages/EnterpriseOfferDetailPage';
 import EnterpriseMessagesPage from './pages/EnterpriseMessagesPage';
+import EnterpriseNotificationsPage from './pages/EnterpriseNotificationsPage';
 import EnterpriseSettingsPage from './pages/EnterpriseSettingsPage';
 import EnterpriseDashboardProfilePage from './pages/EnterpriseDashboardProfilePage';
 import EnterpriseStudentProfilePage from './pages/EnterpriseStudentProfilePage';
@@ -36,6 +42,7 @@ import AdminOfferDetailPage from './pages/AdminOfferDetailPage';
 import AdminApplicationsPage from './pages/AdminApplicationsPage';
 import AdminModerationPage from './pages/AdminModerationPage';
 import AdminNotificationsPage from './pages/AdminNotificationsPage';
+import AdminMessagesPage from './pages/AdminMessagesPage';
 import AdminReportsPage from './pages/AdminReportsPage';
 import AdminSettingsPage from './pages/AdminSettingsPage';
 import AdminLogsPage from './pages/AdminLogsPage';
@@ -55,6 +62,10 @@ function App() {
         <Route path="/emplois" element={<JobsPage />} />
         <Route path="/emplois/:id" element={<OfferDetailPage />} />
         <Route path="/stages/:id" element={<InternshipDetailPage />} />
+        <Route path="/conseils/article/:id" element={<ArticleDetailPage />} />
+        <Route path="/mentions-legales" element={<LegalNoticePage />} />
+        <Route path="/confidentialite" element={<PrivacyPolicyPage />} />
+        <Route path="/cgu" element={<TermsOfUsePage />} />
         <Route
           path="/postuler/:id"
           element={
@@ -151,6 +162,14 @@ function App() {
           }
         />
         <Route
+          path="/etudiant/notifications"
+          element={
+            <ProtectedRoute allowedRoles={['STUDENT']}>
+              <StudentNotificationsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/etudiant/parametres"
           element={
             <ProtectedRoute allowedRoles={['STUDENT']}>
@@ -219,6 +238,14 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={['ENTERPRISE']}>
               <EnterpriseMessagesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/entreprise/notifications"
+          element={
+            <ProtectedRoute allowedRoles={['ENTERPRISE']}>
+              <EnterpriseNotificationsPage />
             </ProtectedRoute>
           }
         />
@@ -307,6 +334,14 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={['ADMIN']}>
               <AdminModerationPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/messages"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminMessagesPage />
             </ProtectedRoute>
           }
         />

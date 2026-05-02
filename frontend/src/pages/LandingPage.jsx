@@ -22,7 +22,6 @@ function LandingPage() {
       try {
         const response = await api.get('/offers');
         const mapped = response.data
-          .filter((offer) => offer.status === 'ACTIVE')
           .slice(0, 6)
           .map((offer) => ({
             id: offer.id,

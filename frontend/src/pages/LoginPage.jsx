@@ -18,6 +18,14 @@ export default function LoginPage() {
   
   const navigate = useNavigate();
 
+  const closeResetModal = () => {
+    setShowReset(false);
+    setResetToken('');
+    setResetPassword('');
+    setResetConfirm('');
+    setResetStatus('');
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -48,8 +56,7 @@ export default function LoginPage() {
     setResetStatus('');
     try {
       const response = await api.post('/auth/request-password-reset', { email: resetEmail });
-      setResetToken(response.data.resetToken || '');
-      setResetStatus('Un code a ete genere. Utilisez-le pour reinitialiser votre mot de passe.');
+      setResetStatus('Un code a été envoyé à votre email.');
     } catch (err) {
       setResetStatus(err.response?.data?.message || 'Erreur lors de la demande.');
     }
@@ -57,7 +64,7 @@ export default function LoginPage() {
 
   const handleResetPassword = async () => {
     if (!resetToken || !resetPassword) {
-      setResetStatus('Token et nouveau mot de passe requis.');
+      setResetStatus('Code et nouveau mot de passe requis.');
       return;
     }
     if (resetPassword !== resetConfirm) {
@@ -67,8 +74,13 @@ export default function LoginPage() {
     try {
       await api.post('/auth/reset-password', { token: resetToken, newPassword: resetPassword });
       setResetStatus('Mot de passe mis a jour. Vous pouvez vous connecter.');
+      setEmail(resetEmail);
+      setPassword('');
       setResetPassword('');
       setResetConfirm('');
+      setTimeout(() => {
+        closeResetModal();
+      }, 1200);
     } catch (err) {
       setResetStatus(err.response?.data?.message || 'Erreur lors de la reinitialisation.');
     }
@@ -195,7 +207,7 @@ export default function LoginPage() {
             <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
               <h3 className="text-lg font-bold text-slate-900">Reinitialiser le mot de passe</h3>
               <button
-                onClick={() => setShowReset(false)}
+                onClick={closeResetModal}
                 className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-200 text-slate-500 transition-colors"
                 type="button"
               >
@@ -221,11 +233,12 @@ export default function LoginPage() {
               </button>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-1.5">Token</label>
+                <label className="block text-sm font-bold text-slate-700 mb-1.5">Code</label>
                 <input
                   className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-4 focus:ring-primary/10 transition-all font-medium text-[15px]"
                   value={resetToken}
                   onChange={(e) => setResetToken(e.target.value)}
+                  placeholder="Entrez le code recu par email"
                 />
               </div>
               <div>
@@ -250,7 +263,7 @@ export default function LoginPage() {
             </div>
             <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
               <button
-                onClick={() => setShowReset(false)}
+                onClick={closeResetModal}
                 className="px-5 py-2.5 text-slate-600 font-bold hover:bg-slate-200 rounded-xl transition-colors text-sm"
                 type="button"
               >

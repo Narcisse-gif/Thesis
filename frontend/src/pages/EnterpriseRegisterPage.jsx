@@ -49,11 +49,9 @@ export default function EnterpriseRegisterPage() {
         postalCode: formData.postal_code,
         shortDescription: formData.description,
       };
-
       const response = await api.post('/auth/register', payload);
       const token = response.data.access_token;
       setAuthSession(token, 'ENTERPRISE');
-
       if (logoFile) {
         const payload = new FormData();
         payload.append('file', logoFile);
@@ -61,11 +59,12 @@ export default function EnterpriseRegisterPage() {
           headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
         });
       }
-
       navigate('/entreprise/dashboard');
     } catch (error) {
       if (error.response?.status === 503) {
         setErrorMsg('Plateforme en maintenance. Inscription reservee aux administrateurs.');
+      } else if (error.response?.data?.message?.includes('email')) {
+        setErrorMsg('Un compte existe déjà avec cet email. Veuillez utiliser une autre adresse.');
       } else {
         setErrorMsg(error.response?.data?.message || 'Erreur lors de l\'inscription');
       }

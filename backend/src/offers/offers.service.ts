@@ -4,6 +4,7 @@ import { Brackets, Repository } from 'typeorm';
 import { Offer, ContractType, OfferStatus } from './entities/offer.entity';
 import { EnterpriseProfile } from '../users/entities/enterprise-profile.entity';
 import { User, UserRole } from '../users/entities/user.entity';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class OffersService {
@@ -14,6 +15,7 @@ export class OffersService {
     private enterpriseRepository: Repository<EnterpriseProfile>,
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private notificationsService: NotificationsService,
   ) {}
 
   async create(createOfferDto: any, userId: string): Promise<Offer> {
@@ -37,7 +39,16 @@ export class OffersService {
     Object.assign(offer, createOfferDto);
     offer.enterprise = enterprise;
 
-    return this.offersRepository.save(offer);
+    const savedOffer = await this.offersRepository.save(offer);
+
+    await this.notificationsService.createForRole(UserRole.ADMIN, {
+      title: 'Nouvelle offre a moderer',
+      message: `${enterprise.companyName || 'Une entreprise'} a publie "${savedOffer.title}".`,
+      type: 'APPLICATION',
+      link: '/admin/offres',
+    });
+
+    return savedOffer;
   }
 
   async findAll(query?: any): Promise<Offer[]> {
@@ -186,6 +197,15 @@ export class OffersService {
         (offer as any)[field] = updateDto[field];
       }
     });
+
+    // Correction : si la date d'expiration est modifiée dans le futur et que le statut était EXPIREE, on remet à ACTIVE
+    if (
+      updateDto.applicationDeadline &&
+      offer.status === OfferStatus.EXPIREE &&
+      new Date(updateDto.applicationDeadline) > new Date()
+    ) {
+      offer.status = OfferStatus.ACTIVE;
+    }
 
     return this.offersRepository.save(offer);
   }

@@ -300,10 +300,6 @@ export default function AdminReportsPage() {
               ))
             )}
           </div>
-          
-          <button className="w-full mt-8 py-3 bg-slate-50 hover:bg-slate-100 text-slate-700 text-[13px] font-bold rounded-xl transition-colors">
-            Voir le détail des offres
-          </button>
         </div>
       </div>
     </AdminDashboardLayout>

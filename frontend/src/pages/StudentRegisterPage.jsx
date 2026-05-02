@@ -47,17 +47,15 @@ export default function StudentRegisterPage() {
         studyLevel: formData.study_level,
         university: formData.university,
       };
-      
       const response = await api.post('/auth/register', payload);
-      
-      // Update additional profile info if needed (city, phone, field)
       const token = response.data.access_token;
       setAuthSession(token, 'STUDENT');
-
       navigate('/etudiant/dashboard');
     } catch (err) {
       if (err.response?.status === 503) {
         setErrorMsg('Plateforme en maintenance. Inscription reservee aux administrateurs.');
+      } else if (err.response?.data?.message?.includes('email')) {
+        setErrorMsg('Un compte existe déjà avec cet email. Veuillez utiliser une autre adresse.');
       } else {
         setErrorMsg(err.response?.data?.message || 'Erreur lors de l\'inscription');
       }

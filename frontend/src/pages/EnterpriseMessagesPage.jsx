@@ -1,8 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import EnterpriseDashboardLayout from '../components/EnterpriseDashboardLayout';
 import api from '../services/api';
 
 export default function EnterpriseMessagesPage() {
+  const location = useLocation();
   const [threads, setThreads] = useState([]);
   const [selectedThread, setSelectedThread] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -14,6 +16,9 @@ export default function EnterpriseMessagesPage() {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState(null);
+  const [preferredThreadId, setPreferredThreadId] = useState(
+    location.state?.threadUserId || '',
+  );
 
   const formatTime = (value) => {
     if (!value) return '';
@@ -33,6 +38,15 @@ export default function EnterpriseMessagesPage() {
       setLoadingMessages(true);
       const response = await api.get(`/messages/conversation/${otherUserId}`);
       setMessages(response.data);
+      const unreadIncoming = (response.data || []).filter(
+        (message) => message.receiver?.id === currentUserId && !message.isRead,
+      );
+      if (unreadIncoming.length > 0) {
+        await Promise.all(
+          unreadIncoming.map((message) => api.patch(`/messages/read/${message.id}`)),
+        );
+        window.dispatchEvent(new CustomEvent('messages:refresh'));
+      }
     } catch (error) {
       console.error('Failed to load conversation:', error);
       setMessages([]);
@@ -45,10 +59,21 @@ export default function EnterpriseMessagesPage() {
     try {
       setLoadingThreads(true);
       const response = await api.get('/messages/inbox');
-      setThreads(response.data);
-      if (response.data.length > 0) {
-        setSelectedThread(response.data[0]);
-        await loadConversation(response.data[0].otherUser.id);
+      const inboxThreads = Array.isArray(response.data) ? response.data : [];
+      setThreads(inboxThreads);
+      if (inboxThreads.length > 0) {
+        const matchedThread =
+          inboxThreads.find((thread) => thread.otherUser?.id === preferredThreadId) ||
+          inboxThreads[0];
+        setSelectedThread(matchedThread);
+        await loadConversation(matchedThread.otherUser.id);
+        if (preferredThreadId) {
+          setPreferredThreadId('');
+          window.history.replaceState({}, document.title);
+        }
+      } else {
+        setSelectedThread(null);
+        setMessages([]);
       }
     } catch (error) {
       console.error('Failed to load inbox:', error);
@@ -78,6 +103,15 @@ export default function EnterpriseMessagesPage() {
     }
   };
 
+  const uniqueMessages = useMemo(() => {
+    const seen = new Set();
+    return messages.filter((message) => {
+      if (!message?.id || seen.has(message.id)) return false;
+      seen.add(message.id);
+      return true;
+    });
+  }, [messages]);
+
   useEffect(() => {
     const loadProfile = async () => {
       try {
@@ -92,6 +126,18 @@ export default function EnterpriseMessagesPage() {
     loadInbox();
   }, []);
 
+  useEffect(() => {
+    if (location.state?.threadUserId) {
+      setPreferredThreadId(location.state.threadUserId);
+    }
+  }, [location.state]);
+
+  useEffect(() => {
+    if (preferredThreadId) {
+      loadInbox();
+    }
+  }, [preferredThreadId]);
+
   const handleSend = async () => {
     if (!messageInput.trim() || !selectedThread?.otherUser?.id) {
       return;
@@ -101,20 +147,12 @@ export default function EnterpriseMessagesPage() {
       setMessageInput('');
       await loadConversation(selectedThread.otherUser.id);
       await loadInbox();
+      window.dispatchEvent(new CustomEvent('messages:refresh'));
     } catch (error) {
       console.error('Failed to send message:', error);
-      alert(error.response?.data?.message || 'Erreur lors de l\'envoi du message.');
+      alert(error.response?.data?.message || "Erreur lors de l'envoi du message.");
     }
   };
-
-  const uniqueMessages = useMemo(() => {
-    const seen = new Set();
-    return messages.filter((message) => {
-      if (!message?.id || seen.has(message.id)) return false;
-      seen.add(message.id);
-      return true;
-    });
-  }, [messages]);
 
   const handleDeleteMessage = (messageId) => {
     if (!messageId) return;
@@ -129,6 +167,7 @@ export default function EnterpriseMessagesPage() {
         await loadConversation(selectedThread.otherUser.id);
       }
       await loadInbox();
+      window.dispatchEvent(new CustomEvent('messages:refresh'));
     } catch (error) {
       console.error('Failed to delete message:', error);
       alert(error.response?.data?.message || 'Erreur lors de la suppression.');
@@ -143,44 +182,9 @@ export default function EnterpriseMessagesPage() {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm shrink-0">
           <div>
             <h2 className="text-2xl font-bold text-slate-900 mb-1">Messages</h2>
-        {pendingDeleteId && (
-          <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
-              <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-                <h3 className="text-lg font-bold text-slate-900">Supprimer le message</h3>
-                <button
-                  onClick={() => setPendingDeleteId(null)}
-                  className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-500 transition-colors"
-                  type="button"
-                >
-                  <span className="material-symbols-outlined !text-[20px]">close</span>
-                </button>
-              </div>
-              <div className="px-6 py-5">
-                <p className="text-sm text-slate-600">
-                  Cette action est definitive. Voulez-vous vraiment supprimer ce message ?
-                </p>
-              </div>
-              <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
-                <button
-                  onClick={() => setPendingDeleteId(null)}
-                  className="px-4 py-2 text-slate-600 font-bold hover:bg-slate-200 rounded-xl transition-colors text-sm"
-                  type="button"
-                >
-                  Annuler
-                </button>
-                <button
-                  onClick={confirmDelete}
-                  className="px-4 py-2 bg-rose-600 text-white font-bold rounded-xl hover:bg-rose-700 transition-colors text-sm"
-                  type="button"
-                >
-                  Supprimer
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-            <p className="text-slate-500 text-sm font-medium">Suivez vos echanges avec les candidats et démarrez de nouvelles discussions.</p>
+            <p className="text-slate-500 text-sm font-medium">
+              Suivez vos echanges avec les candidats et demarrez de nouvelles discussions.
+            </p>
           </div>
         </div>
 
@@ -233,6 +237,7 @@ export default function EnterpriseMessagesPage() {
                   const content = thread.lastMessage?.content?.trim() || '';
                   const showSubject = subject && subject !== content;
                   const preview = (showSubject ? subject : content).slice(0, 60) || '...';
+
                   return (
                     <button
                       key={thread.otherUser.id}
@@ -243,14 +248,20 @@ export default function EnterpriseMessagesPage() {
                       }}
                     >
                       <div className="flex items-center justify-between gap-3">
-                        <p className="font-bold text-slate-900 text-sm">{getDisplayName(thread.otherUser)}</p>
-                        <span className="text-xs text-slate-400">{formatTime(thread.lastMessage?.createdAt)}</span>
+                        <p className="font-bold text-slate-900 text-sm">
+                          {getDisplayName(thread.otherUser)}
+                        </p>
+                        <span className="text-xs text-slate-400">
+                          {formatTime(thread.lastMessage?.createdAt)}
+                        </span>
                       </div>
                       <p className="text-xs font-semibold text-primary mt-1">{preview}</p>
                       {showSubject && (
                         <p className="text-xs text-slate-500 mt-1 line-clamp-2">{content}</p>
                       )}
-                      {thread.unreadCount > 0 && <span className="inline-flex mt-2 w-2.5 h-2.5 rounded-full bg-blue-600" />}
+                      {thread.unreadCount > 0 && (
+                        <span className="inline-flex mt-2 w-2.5 h-2.5 rounded-full bg-blue-600" />
+                      )}
                     </button>
                   );
                 })
@@ -261,8 +272,12 @@ export default function EnterpriseMessagesPage() {
           <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 flex flex-col h-full overflow-hidden">
             <div className="pb-4 border-b border-slate-100 flex items-center justify-between shrink-0">
               <div>
-                <h3 className="text-lg font-bold text-slate-900">{getDisplayName(selectedThread?.otherUser)}</h3>
-                <p className="text-sm text-slate-500 font-medium mt-0.5">{selectedThread?.otherUser?.role || ''}</p>
+                <h3 className="text-lg font-bold text-slate-900">
+                  {getDisplayName(selectedThread?.otherUser)}
+                </h3>
+                <p className="text-sm text-slate-500 font-medium mt-0.5">
+                  {selectedThread?.otherUser?.role || ''}
+                </p>
               </div>
             </div>
 
@@ -277,9 +292,15 @@ export default function EnterpriseMessagesPage() {
                   return (
                     <div
                       key={message.id}
-                      className={`max-w-[75%] ${isMine ? 'ml-auto bg-primary text-white' : 'bg-slate-100 text-slate-700'} rounded-2xl px-4 py-3 text-sm relative group shadow-sm`}
+                      className={`max-w-[75%] ${
+                        isMine ? 'ml-auto bg-primary text-white' : 'bg-slate-100 text-slate-700'
+                      } rounded-2xl px-4 py-3 text-sm relative group shadow-sm`}
                     >
-                      <div className={`absolute -top-3 ${isMine ? 'left-3' : 'right-3'} opacity-0 group-hover:opacity-100 transition`}>
+                      <div
+                        className={`absolute -top-3 ${
+                          isMine ? 'left-3' : 'right-3'
+                        } opacity-0 group-hover:opacity-100 transition`}
+                      >
                         <button
                           type="button"
                           onClick={() => handleDeleteMessage(message.id)}
@@ -299,20 +320,60 @@ export default function EnterpriseMessagesPage() {
             <div className="pt-4 mt-auto border-t border-slate-100 flex flex-col sm:flex-row gap-3 shrink-0">
               <input
                 className="flex-1 rounded-xl border border-slate-200 px-5 py-3.5 text-[15px] font-medium outline-none focus:ring-4 focus:ring-primary/10 transition-shadow bg-slate-50 hover:bg-white"
-                placeholder="Rédigez un message (pour répondre ou engager la discussion)..."
+                placeholder="Redigez un message..."
                 type="text"
                 value={messageInput}
                 onChange={(event) => setMessageInput(event.target.value)}
               />
-              <button className="px-8 py-3.5 rounded-xl bg-primary text-white text-[15px] font-bold shadow-lg shadow-primary/25 hover:bg-blue-800 transition-all flex items-center justify-center gap-2" onClick={handleSend}>
+              <button
+                className="px-8 py-3.5 rounded-xl bg-primary text-white text-[15px] font-bold shadow-lg shadow-primary/25 hover:bg-blue-800 transition-all flex items-center justify-center gap-2"
+                onClick={handleSend}
+              >
                 Envoyer
                 <span className="material-symbols-outlined !text-[18px]">send</span>
               </button>
             </div>
           </div>
         </div>
-      </section>
 
+        {pendingDeleteId && (
+          <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+              <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                <h3 className="text-lg font-bold text-slate-900">Supprimer le message</h3>
+                <button
+                  onClick={() => setPendingDeleteId(null)}
+                  className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-500 transition-colors"
+                  type="button"
+                >
+                  <span className="material-symbols-outlined !text-[20px]">close</span>
+                </button>
+              </div>
+              <div className="px-6 py-5">
+                <p className="text-sm text-slate-600">
+                  Cette action est definitive. Voulez-vous vraiment supprimer ce message ?
+                </p>
+              </div>
+              <div className="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
+                <button
+                  onClick={() => setPendingDeleteId(null)}
+                  className="px-4 py-2 text-slate-600 font-bold hover:bg-slate-200 rounded-xl transition-colors text-sm"
+                  type="button"
+                >
+                  Annuler
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  className="px-4 py-2 bg-rose-600 text-white font-bold rounded-xl hover:bg-rose-700 transition-colors text-sm"
+                  type="button"
+                >
+                  Supprimer
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </section>
     </EnterpriseDashboardLayout>
   );
 }

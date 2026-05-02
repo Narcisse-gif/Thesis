@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Layout from '../components/student-dashboard/Layout';
 import api from '../services/api';
 
-/* â”€â”€â”€ DonnÃ©es de la maquette Stitch â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Donnees de la maquette Stitch */
 const FALLBACK_JOBS = [
   {
     id: 1,

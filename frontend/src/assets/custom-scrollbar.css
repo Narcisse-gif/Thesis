@@ -1,0 +1,17 @@
+/* Barre de défilement moderne pour sidebar admin */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #bdbdbd #f5f5f5;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  background: #f5f5f5;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #bdbdbd;
+  border-radius: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
+}

@@ -29,7 +29,7 @@ export default function AdminUsersPage() {
           .map((user) => {
             const profile = user.studentProfile || {};
             const name = `${profile.firstName || ''} ${profile.lastName || ''}`.trim() || user.email;
-            const status = 'Actif';
+            const status = user.isSuspended ? 'Suspendu' : 'Actif';
             const avatar = resolveAvatarUrl(user.avatarUrl) || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=e0e7ff&color=1e40af`;
             const joinedDate = user.createdAt ? new Date(user.createdAt).toLocaleDateString('fr-FR') : '—';
             return {
@@ -53,8 +53,26 @@ export default function AdminUsersPage() {
     fetchUsers();
   }, []);
 
-  const handleStatusChange = (id, newStatus) => {
-    setUsers(users.map(u => u.id === id ? { ...u, status: newStatus } : u));
+  const updateUserStatus = (id, newStatus) => {
+    setUsers((prev) => prev.map((user) => (user.id === id ? { ...user, status: newStatus } : user)));
+  };
+
+  const handleSuspendStudent = async (id) => {
+    try {
+      await api.patch(`/admin/students/${id}/suspension`, { isSuspended: true });
+      updateUserStatus(id, 'Suspendu');
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleActivateStudent = async (id) => {
+    try {
+      await api.patch(`/admin/students/${id}/suspension`, { isSuspended: false });
+      updateUserStatus(id, 'Actif');
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const filteredUsers = users.filter(u => {
@@ -158,7 +176,7 @@ export default function AdminUsersPage() {
                             </button>
                             {u.status === 'Actif' || u.status === 'En attente' ? (
                               <button 
-                                onClick={() => { handleStatusChange(u.id, 'Suspendu'); setDropdownOpen(null); }}
+                                onClick={() => { handleSuspendStudent(u.id); setDropdownOpen(null); }}
                                 className="w-full text-left px-4 py-2 hover:bg-rose-50 text-rose-600 flex items-center gap-2"
                               >
                                 <span className="material-symbols-outlined !text-[18px]">block</span>
@@ -166,7 +184,7 @@ export default function AdminUsersPage() {
                               </button>
                             ) : (
                                <button 
-                                onClick={() => { handleStatusChange(u.id, 'Actif'); setDropdownOpen(null); }}
+                                onClick={() => { handleActivateStudent(u.id); setDropdownOpen(null); }}
                                 className="w-full text-left px-4 py-2 hover:bg-emerald-50 text-emerald-600 flex items-center gap-2"
                               >
                                 <span className="material-symbols-outlined !text-[18px]">check_circle</span>
@@ -205,6 +223,5 @@ export default function AdminUsersPage() {
     </AdminDashboardLayout>
   );
 }
-
 
 

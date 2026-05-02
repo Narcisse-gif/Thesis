@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import StudentDashboardLayout from '../components/StudentDashboardLayout';
 import api from '../services/api';
 
 export default function StudentMessagesPage() {
+  const location = useLocation();
   const [threads, setThreads] = useState([]);
   const [selectedThread, setSelectedThread] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -14,6 +16,9 @@ export default function StudentMessagesPage() {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState(null);
+  const [preferredThreadId, setPreferredThreadId] = useState(
+    location.state?.threadUserId || '',
+  );
 
   const formatTime = (value) => {
     if (!value) return '';
@@ -34,6 +39,15 @@ export default function StudentMessagesPage() {
       setLoadingMessages(true);
       const response = await api.get(`/messages/conversation/${otherUserId}`);
       setMessages(response.data);
+      const unreadIncoming = (response.data || []).filter(
+        (message) => message.receiver?.id === currentUserId && !message.isRead,
+      );
+      if (unreadIncoming.length > 0) {
+        await Promise.all(
+          unreadIncoming.map((message) => api.patch(`/messages/read/${message.id}`)),
+        );
+        window.dispatchEvent(new CustomEvent('messages:refresh'));
+      }
     } catch (error) {
       console.error('Failed to load conversation:', error);
       setMessages([]);
@@ -46,10 +60,18 @@ export default function StudentMessagesPage() {
     try {
       setLoadingThreads(true);
       const response = await api.get('/messages/inbox');
-      setThreads(response.data);
-      if (response.data.length > 0) {
-        setSelectedThread(response.data[0]);
-        await loadConversation(response.data[0].otherUser.id);
+      const inboxThreads = Array.isArray(response.data) ? response.data : [];
+      setThreads(inboxThreads);
+      if (inboxThreads.length > 0) {
+        const matchedThread =
+          inboxThreads.find((thread) => thread.otherUser?.id === preferredThreadId) ||
+          inboxThreads[0];
+        setSelectedThread(matchedThread);
+        await loadConversation(matchedThread.otherUser.id);
+        if (preferredThreadId) {
+          setPreferredThreadId('');
+          window.history.replaceState({}, document.title);
+        }
       }
     } catch (error) {
       console.error('Failed to load inbox:', error);
@@ -102,6 +124,18 @@ export default function StudentMessagesPage() {
     loadInbox();
   }, []);
 
+  useEffect(() => {
+    if (location.state?.threadUserId) {
+      setPreferredThreadId(location.state.threadUserId);
+    }
+  }, [location.state]);
+
+  useEffect(() => {
+    if (preferredThreadId) {
+      loadInbox();
+    }
+  }, [preferredThreadId]);
+
   const handleSend = async () => {
     if (!messageInput.trim() || !selectedThread?.otherUser?.id) {
       return;
@@ -111,6 +145,7 @@ export default function StudentMessagesPage() {
       setMessageInput('');
       await loadConversation(selectedThread.otherUser.id);
       await loadInbox();
+      window.dispatchEvent(new CustomEvent('messages:refresh'));
     } catch (error) {
       console.error('Failed to send message:', error);
       alert(error.response?.data?.message || 'Erreur lors de l\'envoi du message.');
@@ -130,6 +165,7 @@ export default function StudentMessagesPage() {
         await loadConversation(selectedThread.otherUser.id);
       }
       await loadInbox();
+      window.dispatchEvent(new CustomEvent('messages:refresh'));
     } catch (error) {
       console.error('Failed to delete message:', error);
       alert(error.response?.data?.message || 'Erreur lors de la suppression.');

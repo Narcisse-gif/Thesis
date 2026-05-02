@@ -150,12 +150,7 @@ export default function EnterprisesPage() {
             )}
           </div>
 
-          <div className="mt-20 flex justify-center">
-            <button className="flex items-center gap-3 rounded-xl border-2 border-slate-200 px-10 py-4 font-bold text-slate-700 transition-all hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800" onClick={() => handleSearch()}>
-              <span className="material-symbols-outlined text-xl">sync</span>
-              Recharger les entreprises
-            </button>
-          </div>
+          {/* Bouton 'Recharger les entreprises' supprimé */}
         </div>
       </main>
 

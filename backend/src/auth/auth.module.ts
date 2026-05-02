@@ -9,10 +9,12 @@ import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { AdminSettings } from '../admin/entities/admin-settings.entity';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [
     UsersModule,
+    NotificationsModule,
     TypeOrmModule.forFeature([AdminSettings]),
     PassportModule,
     JwtModule.registerAsync({

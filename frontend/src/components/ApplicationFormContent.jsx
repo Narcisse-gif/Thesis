@@ -13,7 +13,6 @@ export default function ApplicationFormContent() {
     email: '',
     phone: '',
     cvUrl: '',
-    coverLetterText: '',
     portfolioUrl: '',
   });
   const [cvFile, setCvFile] = useState(null);
@@ -54,7 +53,6 @@ export default function ApplicationFormContent() {
       payload.append('email', formData.email || '');
       payload.append('phone', formData.phone || '');
       payload.append('portfolioUrl', formData.portfolioUrl || '');
-      payload.append('coverLetterText', formData.coverLetterText || '');
       if (cvFile) payload.append('cv', cvFile);
       if (coverLetterFile) payload.append('coverLetter', coverLetterFile);
       
@@ -72,6 +70,10 @@ export default function ApplicationFormContent() {
       }
       if (status === 400 && apiMessage === 'Offre non disponible') {
         setErrorMessage('Cette offre n\'est pas disponible pour candidature.');
+        return;
+      }
+      if (status === 400 && apiMessage === 'Vous avez deja postule a cette offre') {
+        setErrorMessage('Vous avez deja postule a cette offre.');
         return;
       }
       setErrorMessage(`Erreur lors de la candidature: ${apiMessage || err.message}`);
@@ -257,20 +259,6 @@ export default function ApplicationFormContent() {
             ) : (
               <div className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-[14px] font-semibold text-slate-500">
                 Aucun document requis pour cette offre.
-              </div>
-            )}
-
-            {!requiresCoverLetter && (
-              <div className="space-y-2 pt-4">
-                <label className="text-[13px] font-bold text-slate-600 ml-1">Message optionnel a l'entreprise</label>
-                <textarea
-                  rows={4}
-                  name="coverLetterText"
-                  value={formData.coverLetterText}
-                  onChange={handleChange}
-                  placeholder="Exprimez brievement votre motivation ou precisez votre disponibilite..."
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-[15px] font-medium placeholder:text-slate-400 resize-none"
-                ></textarea>
               </div>
             )}
           </section>

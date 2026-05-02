@@ -13,10 +13,14 @@ export class UsersService {
     @InjectRepository(EnterpriseProfile) private enterpriseRepository: Repository<EnterpriseProfile>,
   ) {}
 
+  private normalizeEmail(email: string) {
+    return String(email || '').trim().toLowerCase();
+  }
+
   async findByEmail(email: string): Promise<User | null> {
-    return this.usersRepository.findOne({ 
-      where: { email }, 
-      relations: ['studentProfile', 'enterpriseProfile'] 
+    return this.usersRepository.findOne({
+      where: { email: this.normalizeEmail(email) },
+      relations: ['studentProfile', 'enterpriseProfile']
     });
   }
 
@@ -31,12 +35,16 @@ export class UsersService {
     if (!userData.email) {
       throw new ConflictException('Email is required');
     }
-    const existingUser = await this.findByEmail(userData.email);
+    const normalizedEmail = this.normalizeEmail(String(userData.email));
+    const existingUser = await this.findByEmail(normalizedEmail);
     if (existingUser) {
       throw new ConflictException('User with this email already exists');
     }
 
-    const user = this.usersRepository.create(userData);
+    const user = this.usersRepository.create({
+      ...userData,
+      email: normalizedEmail,
+    });
 
     if (user.role === UserRole.STUDENT) {
       const student = this.studentRepository.create({
@@ -131,11 +139,12 @@ export class UsersService {
     if (!user) throw new NotFoundException('User not found');
 
     if (data.email) {
-      const existing = await this.findByEmail(data.email);
+      const normalizedEmail = this.normalizeEmail(data.email);
+      const existing = await this.findByEmail(normalizedEmail);
       if (existing && existing.id !== user.id) {
         throw new ConflictException('User with this email already exists');
       }
-      user.email = data.email;
+      user.email = normalizedEmail;
     }
 
     if (data.passwordHash) {
