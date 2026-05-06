@@ -1,14 +1,16 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import logo from '../assets/logo.png';
 import { getToken, getUserRole } from '../utils/authStorage';
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <>
       <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200/70 bg-white/85 px-6 py-4 shadow-sm backdrop-blur-xl supports-[backdrop-filter]:bg-white/75 dark:border-slate-800/70 dark:bg-background-dark/85 dark:supports-[backdrop-filter]:bg-background-dark/75 lg:px-20">
-        <div className="flex items-center gap-4 cursor-pointer" onClick={() => navigate('/')}>
+        <div className="flex items-center gap-4 cursor-pointer" onClick={() => navigate('/')}> 
           <div className="h-10 w-auto">
             <img alt="StageLink Burkina Logo" className="h-full w-auto object-contain" src={logo} />
           </div>
@@ -33,29 +35,89 @@ export default function Navbar() {
           <Link className="text-slate-700 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" to="/entreprises">Entreprises</Link>
           <Link className="text-slate-700 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" to="/conseils">Conseils</Link>
         </div>
-        <div className="flex gap-3">
-          <button onClick={() => navigate('/inscription')} className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-xl h-10 px-4 bg-primary text-white text-sm font-bold flex-shrink-0 hover:bg-primary/90 transition-all">
-            <span>S'inscrire</span>
-          </button>
+        <div className="flex items-center gap-3">
           <button
-            onClick={() => {
-              const token = getToken();
-              const role = getUserRole();
-              if (token && role) {
-                if (role === 'ADMIN') navigate('/admin/dashboard');
-                else if (role === 'ENTERPRISE') navigate('/entreprise/dashboard');
-                else navigate('/etudiant/dashboard');
-              } else {
-                navigate('/connexion');
-              }
-            }}
-            className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-xl h-10 px-4 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-sm font-bold flex-shrink-0 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+            type="button"
+            className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200/70 bg-white text-slate-700 shadow-sm hover:bg-slate-50 transition-colors"
+            onClick={() => setMobileOpen((value) => !value)}
+            aria-label="Ouvrir le menu"
+            aria-expanded={mobileOpen}
           >
-            <span>Connexion</span>
+            <span className="material-symbols-outlined text-xl">menu</span>
           </button>
+          <div className="hidden sm:flex gap-3">
+            <button onClick={() => navigate('/inscription')} className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-xl h-10 px-4 bg-primary text-white text-sm font-bold flex-shrink-0 hover:bg-primary/90 transition-all">
+              <span>S'inscrire</span>
+            </button>
+            <button
+              onClick={() => {
+                const token = getToken();
+                const role = getUserRole();
+                if (token && role) {
+                  if (role === 'ADMIN') navigate('/admin/dashboard');
+                  else if (role === 'ENTERPRISE') navigate('/entreprise/dashboard');
+                  else navigate('/etudiant/dashboard');
+                } else {
+                  navigate('/connexion');
+                }
+              }}
+              className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-xl h-10 px-4 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-sm font-bold flex-shrink-0 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+            >
+              <span>Connexion</span>
+            </button>
+          </div>
         </div>
       </header>
       <div aria-hidden="true" className="h-[73px] shrink-0" />
+      {mobileOpen && (
+        <div className="md:hidden fixed inset-0 z-40">
+          <button
+            type="button"
+            className="absolute inset-0 bg-slate-900/30"
+            aria-label="Fermer le menu"
+            onClick={() => setMobileOpen(false)}
+          />
+          <div className="absolute left-0 right-0 top-[73px] bg-white/95 backdrop-blur-xl border-b border-slate-200/70 shadow-xl">
+            <nav className="flex flex-col gap-3 px-6 py-6 text-slate-700">
+              <Link className="text-sm font-semibold" to="/" onClick={() => setMobileOpen(false)}>Accueil</Link>
+              <Link className="text-sm font-semibold" to="/stages" onClick={() => setMobileOpen(false)}>Offres de stage</Link>
+              <Link className="text-sm font-semibold" to="/emplois" onClick={() => setMobileOpen(false)}>Offres d'emplois</Link>
+              <Link className="text-sm font-semibold" to="/entreprises" onClick={() => setMobileOpen(false)}>Entreprises</Link>
+              <Link className="text-sm font-semibold" to="/conseils" onClick={() => setMobileOpen(false)}>Conseils</Link>
+              <div className="pt-3 mt-2 border-t border-slate-200 flex flex-col gap-2">
+                <button
+                  onClick={() => {
+                    setMobileOpen(false);
+                    navigate('/inscription');
+                  }}
+                  className="h-11 rounded-xl bg-primary text-white text-sm font-bold"
+                  type="button"
+                >
+                  S'inscrire
+                </button>
+                <button
+                  onClick={() => {
+                    setMobileOpen(false);
+                    const token = getToken();
+                    const role = getUserRole();
+                    if (token && role) {
+                      if (role === 'ADMIN') navigate('/admin/dashboard');
+                      else if (role === 'ENTERPRISE') navigate('/entreprise/dashboard');
+                      else navigate('/etudiant/dashboard');
+                    } else {
+                      navigate('/connexion');
+                    }
+                  }}
+                  className="h-11 rounded-xl bg-slate-100 text-slate-900 text-sm font-bold"
+                  type="button"
+                >
+                  Connexion
+                </button>
+              </div>
+            </nav>
+          </div>
+        </div>
+      )}
     </>
   );
 }
