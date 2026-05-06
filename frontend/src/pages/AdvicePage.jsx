@@ -1,31 +1,65 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import {
-  featuredPillars,
-  getArticleById,
-  recentArticleIds,
-} from '../data/adviceArticles';
+import api from '../services/api';
 
 export default function AdvicePage() {
   const navigate = useNavigate();
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState('');
 
-  const pillars = useMemo(
-    () =>
-      featuredPillars
-        .map((pillar) => ({
-          ...pillar,
-          article: getArticleById(pillar.articleId),
-        }))
-        .filter((pillar) => pillar.article),
-    [],
-  );
+  const getCategoryIcon = (category) => {
+    const normalized = (category || '').toLowerCase();
+    if (normalized.includes('cv')) return 'description';
+    if (normalized.includes('entretien')) return 'forum';
+    if (normalized.includes('lettre')) return 'mail';
+    if (normalized.includes('reseau')) return 'hub';
+    if (normalized.includes('carriere')) return 'trending_up';
+    return 'article';
+  };
 
-  const articles = useMemo(
-    () => recentArticleIds.map((id) => getArticleById(id)).filter(Boolean),
-    [],
-  );
+  const getExcerpt = (text, maxLength = 160) => {
+    const clean = (text || '').toString().replace(/\s+/g, ' ').trim();
+    if (!clean) return '';
+    if (clean.length <= maxLength) return clean;
+    return `${clean.slice(0, maxLength).trim()}...`;
+  };
+
+  useEffect(() => {
+    const loadArticles = async () => {
+      try {
+        setLoading(true);
+        setErrorMsg('');
+        const response = await api.get('/articles');
+        setArticles(Array.isArray(response.data) ? response.data : []);
+      } catch (error) {
+        console.error('Failed to load articles:', error);
+        setArticles([]);
+        setErrorMsg('Impossible de charger les articles pour le moment.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadArticles();
+  }, []);
+
+  const pillars = useMemo(() => {
+    if (articles.length === 0) return [];
+    return articles.slice(0, 4).map((article) => ({
+      ...article,
+      icon: getCategoryIcon(article.category),
+      description: getExcerpt(article.content, 140),
+    }));
+  }, [articles]);
+
+  const recentArticles = useMemo(() => {
+    if (articles.length === 0) return [];
+    const startIndex = articles.length > 4 ? 4 : 0;
+    return articles.slice(startIndex, startIndex + 3);
+  }, [articles]);
 
   return (
     <div className="relative flex min-h-screen flex-col overflow-x-hidden bg-white text-slate-900 font-display transition-colors duration-300">
@@ -68,9 +102,18 @@ export default function AdvicePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {loading && (
+              <div className="col-span-full text-center text-slate-500">Chargement des articles...</div>
+            )}
+            {!loading && errorMsg && (
+              <div className="col-span-full text-center text-slate-500">{errorMsg}</div>
+            )}
+            {!loading && !errorMsg && pillars.length === 0 && (
+              <div className="col-span-full text-center text-slate-500">Aucun article disponible.</div>
+            )}
             {pillars.map((pillar) => (
               <div
-                key={pillar.articleId}
+                key={pillar.id}
                 className="group bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:border-primary/20 transition-all duration-300 flex flex-col h-full"
               >
                 <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
@@ -82,11 +125,11 @@ export default function AdvicePage() {
                   {pillar.title}
                 </h3>
                 <p className="text-slate-600 text-sm leading-relaxed mb-8 flex-grow">
-                  {pillar.description}
+                  {pillar.description || 'Conseils pratiques pour progresser dans votre parcours.'}
                 </p>
                 <button
                   className="inline-flex items-center text-primary font-bold text-sm group-hover:gap-3 transition-all"
-                  onClick={() => navigate(`/conseils/article/${pillar.article.id}`)}
+                  onClick={() => navigate(`/conseils/article/${pillar.id}`)}
                   type="button"
                 >
                   Lire l'article
@@ -106,7 +149,16 @@ export default function AdvicePage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-              {articles.map((article) => (
+              {loading && (
+                <div className="col-span-full text-center text-slate-500">Chargement des articles...</div>
+              )}
+              {!loading && errorMsg && (
+                <div className="col-span-full text-center text-slate-500">{errorMsg}</div>
+              )}
+              {!loading && !errorMsg && recentArticles.length === 0 && (
+                <div className="col-span-full text-center text-slate-500">Aucun article disponible.</div>
+              )}
+              {recentArticles.map((article) => (
                 <article
                   key={article.id}
                   className="group cursor-pointer"
@@ -120,24 +172,30 @@ export default function AdvicePage() {
                   }}
                 >
                   <div className="relative overflow-hidden rounded-3xl mb-6 aspect-[16/10] bg-slate-200">
-                    <img
-                      alt={article.category}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      src={article.image}
-                    />
+                    {article.image ? (
+                      <img
+                        alt={article.category || 'Article'}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        src={article.image}
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-slate-300" />
+                    )}
                     <div className="absolute top-4 left-4 bg-primary text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">
-                      {article.category}
+                      {article.category || 'Conseils'}
                     </div>
                   </div>
                   <h4 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-primary transition-colors leading-snug">
                     {article.title}
                   </h4>
                   <p className="text-slate-600 text-sm leading-relaxed line-clamp-2 mb-6">
-                    {article.description}
+                    {getExcerpt(article.content, 140)}
                   </p>
                   <div className="mt-auto">
                     <span className="text-[11px] text-slate-500 font-semibold">
-                      {article.readTime}
+                      {article.createdAt
+                        ? `Publie le ${new Date(article.createdAt).toLocaleDateString('fr-FR')}`
+                        : 'Publication recente'}
                     </span>
                   </div>
                 </article>
