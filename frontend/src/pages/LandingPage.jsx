@@ -38,10 +38,12 @@ function LandingPage() {
       } catch (error) {
         console.error('Failed to load offers:', error);
         setFeaturedOffers([]);
-      } finally {
+      }
+      finally {
         setLoadingOffers(false);
       }
     };
+
     fetchFeatured();
   }, []);
 
