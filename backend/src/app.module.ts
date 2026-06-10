@@ -36,7 +36,7 @@ import { NotificationsModule } from './notifications/notifications.module';
       host: process.env.DB_HOST || 'localhost',
       port: parseInt(process.env.DB_PORT || '5432', 10),
       username: process.env.DB_USERNAME || 'postgres',
-      password: process.env.DB_PASSWORD || 'password',
+      password: 'Narcisse',
       database: process.env.DB_NAME || 'stagelink',
       entities: [
         User,
