@@ -17,7 +17,7 @@ async function initializeDatabase() {
     
     if (shouldSync) {
       try {
-        await AppDataSource.synchronize(true);
+        await AppDataSource.synchronize();
         console.log('Database schema synchronized');
       } catch (error) {
         console.error('Failed to synchronize database schema:', error);
