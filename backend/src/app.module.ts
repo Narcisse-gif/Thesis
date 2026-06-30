@@ -50,15 +50,12 @@ import { NotificationsModule } from './notifications/notifications.module';
         const isProduction = configService.get<string>('NODE_ENV') === 'production';
         const databaseUrl = configService.get<string>('DATABASE_URL');
 
-        const dbSyncFlag = configService.get<string>('DB_SYNC');
-        const forceSync = dbSyncFlag === 'true';
-
         if (databaseUrl) {
           return {
             type: 'postgres' as const,
             url: databaseUrl,
             entities,
-            synchronize: forceSync ? true : !isProduction,
+            synchronize: false,
             ssl: isProduction ? { rejectUnauthorized: false } : undefined,
           };
         }
@@ -71,7 +68,7 @@ import { NotificationsModule } from './notifications/notifications.module';
           password: configService.get<string>('DB_PASSWORD') || 'Narcisse',
           database: configService.get<string>('DB_NAME') || 'stagelink',
           entities,
-          synchronize: forceSync ? true : !isProduction,
+          synchronize: false,
           ssl: configService.get<string>('DB_SSL') === 'true' ? { rejectUnauthorized: false } : undefined,
         };
       },
