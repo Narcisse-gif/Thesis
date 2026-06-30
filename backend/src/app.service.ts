@@ -31,8 +31,16 @@ export class AppService {
     });
 
     if (existingAdmin) {
+      const passwordMatches = await bcrypt.compare(password, existingAdmin.passwordHash);
+      if (!passwordMatches) {
+        existingAdmin.passwordHash = await bcrypt.hash(password, 10);
+        existingAdmin.isVerified = true;
+        await this.em.save(existingAdmin);
+      }
+
       return {
         created: false,
+        updated: !passwordMatches,
         credentials: { admin: `${email} / ${password}` },
       };
     }
