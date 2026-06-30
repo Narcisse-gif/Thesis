@@ -2,14 +2,22 @@
 
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { join } from 'path';
 import { AppModule } from './app.module';
 import { AppService } from './app.service';
+import { getUploadRootPath } from './utils/upload-path';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.enableCors();
-  app.useStaticAssets(join(__dirname, '..', 'uploads'), { prefix: '/uploads/' });
+  const allowedOrigins = (process.env.CORS_ORIGIN || process.env.FRONTEND_URL || 'http://localhost:5173')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+  app.enableCors({
+    origin: allowedOrigins,
+    credentials: true,
+  });
+  app.useStaticAssets(getUploadRootPath(), { prefix: '/uploads/' });
 
   const appService = app.get(AppService);
   const adminBootstrap = await appService.ensureDefaultAdminExists();
@@ -17,7 +25,7 @@ async function bootstrap() {
     console.log(`Default admin created: ${adminBootstrap.credentials.admin}`);
   }
   
-  const port = process.env.PORT || 8081;
+  const port = parseInt(process.env.PORT || '8081', 10);
   await app.listen(port, '0.0.0.0');
   console.log(`Application is running on: ${await app.getUrl()}`);
 }

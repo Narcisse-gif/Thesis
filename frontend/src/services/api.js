@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { getToken } from '../utils/authStorage';
 
+const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8081';
+
 const api = axios.create({
-  baseURL: 'http://localhost:8081', // Adresse de ton backend NestJS
+  baseURL,
   headers: {
     'Content-Type': 'application/json',
   },

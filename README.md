@@ -41,14 +41,23 @@ npm install
 
 ### Backend (.env)
 
-Cree ou complete backend/.env. Variables utilisees par le code :
+Creer ou completer backend/.env a partir de backend/.env.example. Variables utilisees par le code :
 
 ```
+NODE_ENV=development
+PORT=8081
+
+DATABASE_URL=
 DB_HOST=localhost
 DB_PORT=5432
 DB_USERNAME=postgres
+DB_PASSWORD=Narcisse
 DB_NAME=stagelink
-PORT=8081
+DB_SSL=false
+UPLOAD_ROOT=
+
+CORS_ORIGIN=http://localhost:5173
+
 JWT_SECRET=change-me
 ADMIN_EMAIL=admin@stagelink.bf
 ADMIN_PASSWORD=change-me
@@ -60,14 +69,45 @@ EMAILJS_PRIVATE_KEY=...
 
 Notes:
 
-- Le mot de passe DB est actuellement fixe en dur dans [backend/src/app.module.ts](backend/src/app.module.ts). Si besoin, remplace-le par une variable d env.
+- Le backend lit maintenant DATABASE_URL ou, a defaut, DB_HOST/DB_PORT/DB_USERNAME/DB_PASSWORD/DB_NAME dans [backend/src/app.module.ts](backend/src/app.module.ts).
+- Le chemin des uploads est pilote par UPLOAD_ROOT dans [backend/src/utils/upload-path.ts](backend/src/utils/upload-path.ts).
+- Le CORS est pilote par CORS_ORIGIN ou FRONTEND_URL dans [backend/src/main.ts](backend/src/main.ts).
 - Le secret JWT est lu dans [backend/src/auth/strategies/jwt.strategy.ts](backend/src/auth/strategies/jwt.strategy.ts).
 - EmailJS est optionnel, utilise dans [backend/src/utils/emailjs.ts](backend/src/utils/emailjs.ts).
 - Un admin par defaut est cree au demarrage a partir de ADMIN_EMAIL/ADMIN_PASSWORD (voir [backend/src/app.service.ts](backend/src/app.service.ts)).
 
 ### Frontend (API baseURL)
 
-Le frontend utilise Axios dans [frontend/src/services/api.js](frontend/src/services/api.js). Modifie la baseURL si le backend tourne sur une autre URL/port.
+Le frontend utilise Axios dans [frontend/src/services/api.js](frontend/src/services/api.js). Definis VITE_API_URL pour pointer vers le backend Render.
+
+Exemple local:
+
+```bash
+VITE_API_URL=http://localhost:8081
+```
+
+Exemple production:
+
+```bash
+VITE_API_URL=https://ton-backend-render.onrender.com
+```
+
+## Deploiement complet
+
+Ordre recommande:
+
+1. Pousser le code sur GitHub.
+2. Creer la base PostgreSQL sur Render.
+3. Deployer le backend NestJS sur Render.
+4. Deployer le frontend React/Vite sur Vercel.
+5. Mettre a jour les variables d environnement de production.
+6. Tester la connexion frontend -> backend -> PostgreSQL.
+
+Variables a renseigner en production:
+
+- Backend Render: DATABASE_URL, NODE_ENV=production, JWT_SECRET, ADMIN_EMAIL, ADMIN_PASSWORD, CORS_ORIGIN
+- Frontend Vercel: VITE_API_URL
+- Render PostgreSQL: la base fournit directement la DATABASE_URL
 
 ## Lancer le projet
 

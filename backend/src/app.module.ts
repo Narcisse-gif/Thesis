@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -31,26 +31,47 @@ import { NotificationsModule } from './notifications/notifications.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DB_HOST || 'localhost',
-      port: parseInt(process.env.DB_PORT || '5432', 10),
-      username: process.env.DB_USERNAME || 'postgres',
-      password: 'Narcisse',
-      database: process.env.DB_NAME || 'stagelink',
-      entities: [
-        User,
-        StudentProfile,
-        EnterpriseProfile,
-        Offer,
-        Application,
-        Message,
-        Favorite,
-        AdminSettings,
-        Article,
-        Notification,
-      ],
-      synchronize: true, // Auto-create tables in dev environment
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const entities = [
+          User,
+          StudentProfile,
+          EnterpriseProfile,
+          Offer,
+          Application,
+          Message,
+          Favorite,
+          AdminSettings,
+          Article,
+          Notification,
+        ];
+        const isProduction = configService.get<string>('NODE_ENV') === 'production';
+        const databaseUrl = configService.get<string>('DATABASE_URL');
+
+        if (databaseUrl) {
+          return {
+            type: 'postgres' as const,
+            url: databaseUrl,
+            entities,
+            synchronize: !isProduction,
+            ssl: isProduction ? { rejectUnauthorized: false } : undefined,
+          };
+        }
+
+        return {
+          type: 'postgres' as const,
+          host: configService.get<string>('DB_HOST') || 'localhost',
+          port: parseInt(configService.get<string>('DB_PORT') || '5432', 10),
+          username: configService.get<string>('DB_USERNAME') || 'postgres',
+          password: configService.get<string>('DB_PASSWORD') || 'Narcisse',
+          database: configService.get<string>('DB_NAME') || 'stagelink',
+          entities,
+          synchronize: !isProduction,
+          ssl: configService.get<string>('DB_SSL') === 'true' ? { rejectUnauthorized: false } : undefined,
+        };
+      },
     }),
     UsersModule,
     AuthModule,

@@ -3,9 +3,10 @@ import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { extname, join } from 'path';
+import { extname } from 'path';
 import * as fs from 'fs';
 import { UserRole } from './entities/user.entity';
+import { getUploadFolder } from '../utils/upload-path';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
@@ -43,7 +44,7 @@ export class UsersController {
     FileInterceptor('file', {
       storage: diskStorage({
         destination: (_req, _file, cb) => {
-          const uploadPath = join(process.cwd(), 'uploads', 'avatars');
+          const uploadPath = getUploadFolder('avatars');
           fs.mkdir(uploadPath, { recursive: true }, (err) => cb(err, uploadPath));
         },
         filename: (_req, file, cb) => {
@@ -68,7 +69,7 @@ export class UsersController {
     FileInterceptor('file', {
       storage: diskStorage({
         destination: (_req, _file, cb) => {
-          const uploadPath = join(process.cwd(), 'uploads', 'banners');
+          const uploadPath = getUploadFolder('banners');
           fs.mkdir(uploadPath, { recursive: true }, (err) => cb(err, uploadPath));
         },
         filename: (_req, file, cb) => {
@@ -93,7 +94,7 @@ export class UsersController {
     FileInterceptor('file', {
       storage: diskStorage({
         destination: (_req, _file, cb) => {
-          const uploadPath = join(process.cwd(), 'uploads', 'logos');
+          const uploadPath = getUploadFolder('logos');
           fs.mkdir(uploadPath, { recursive: true }, (err) => cb(err, uploadPath));
         },
         filename: (_req, file, cb) => {
@@ -118,7 +119,7 @@ export class UsersController {
     FileInterceptor('file', {
       storage: diskStorage({
         destination: (_req, _file, cb) => {
-          const uploadPath = join(process.cwd(), 'uploads', 'cv');
+          const uploadPath = getUploadFolder('cv');
           fs.mkdir(uploadPath, { recursive: true }, (err) => cb(err, uploadPath));
         },
         filename: (_req, file, cb) => {
@@ -143,7 +144,7 @@ export class UsersController {
     FileInterceptor('file', {
       storage: diskStorage({
         destination: (_req, _file, cb) => {
-          const uploadPath = join(process.cwd(), 'uploads', 'cover-letters');
+          const uploadPath = getUploadFolder('cover-letters');
           fs.mkdir(uploadPath, { recursive: true }, (err) => cb(err, uploadPath));
         },
         filename: (_req, file, cb) => {
@@ -168,7 +169,7 @@ export class UsersController {
     FileInterceptor('file', {
       storage: diskStorage({
         destination: (_req, _file, cb) => {
-          const uploadPath = join(process.cwd(), 'uploads', 'company-cv');
+          const uploadPath = getUploadFolder('company-cv');
           fs.mkdir(uploadPath, { recursive: true }, (err) => cb(err, uploadPath));
         },
         filename: (_req, file, cb) => {
