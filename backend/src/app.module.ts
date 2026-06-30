@@ -60,6 +60,10 @@ import { NotificationsModule } from './notifications/notifications.module';
           };
         }
 
+        if (isProduction) {
+          throw new Error('DATABASE_URL is required in production');
+        }
+
         return {
           type: 'postgres' as const,
           host: configService.get<string>('DB_HOST') || 'localhost',

@@ -20,6 +20,10 @@ if (databaseUrl) {
     ssl: isProduction ? { rejectUnauthorized: false } : undefined,
   } as DataSourceOptions;
 } else {
+  if (isProduction) {
+    throw new Error('DATABASE_URL is required in production');
+  }
+
   options = {
     type: 'postgres',
     host: process.env.DB_HOST || 'localhost',

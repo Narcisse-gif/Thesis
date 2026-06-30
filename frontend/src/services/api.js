@@ -1,7 +1,14 @@
 import axios from 'axios';
 import { getToken } from '../utils/authStorage';
 
-const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8081';
+const isProduction = import.meta.env.PROD;
+const apiUrl = import.meta.env.VITE_API_URL;
+
+if (isProduction && !apiUrl) {
+  throw new Error('VITE_API_URL is required in production');
+}
+
+const baseURL = apiUrl || 'http://localhost:8081';
 
 const api = axios.create({
   baseURL,
